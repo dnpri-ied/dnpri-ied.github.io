@@ -7,6 +7,7 @@
 <script src="datos_bcra.js"></script>
 <script src="datos_unctad.js"></script>
 <script src="anuncios_inversion.js"></script>
+<script src="datos_rigi.js"></script>
 <style>
 :root{--n:#0b1f3a;--b:#163f73;--bg:#f5f7fb;--tx:#172033;--mu:#667085;--bd:#e4e7ec;--g:#027a48;--r:#b42318}
 *{box-sizing:border-box}body{margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--tx)}
@@ -34,7 +35,7 @@ footer{background:#fff;border-top:1px solid var(--bd);padding:24px 0;color:var(-
 </style>
 </head>
 <body>
-<header><div class="c"><div class="top"><div><h1>IED ARGENTINA</h1><div class="sub">Sistema de información y análisis de inversión extranjera directa</div></div><nav><a href="#dashboard">Dashboard</a><a href="#evolucion">Evolución</a><a href="#paises">Países</a><a href="#sectores">Sectores</a><a href="#composicion">Composición</a><a href="#unctad">UNCTAD</a><a href="#anuncios">Anuncios</a></nav></div>
+<header><div class="c"><div class="top"><div><h1>IED ARGENTINA</h1><div class="sub">Sistema de información y análisis de inversión extranjera directa</div></div><nav><a href="#dashboard">Dashboard</a><a href="#evolucion">Evolución</a><a href="#paises">Países</a><a href="#sectores">Sectores</a><a href="#composicion">Composición</a><a href="#unctad">UNCTAD</a><a href="#anuncios">Anuncios</a><a href="#rigi">RIGI</a></nav></div>
 <div class="hero"><h2>Inversión extranjera directa en Argentina</h2><p>Consulta interactiva de flujos, posición pasiva bruta, países inversores y sectores receptores con información oficial del Banco Central de la República Argentina.</p></div></div></header>
 <main><div class="c">
 <div id="err" class="error">No se pudo cargar <b>datos_bcra.js</b>. Verificá que esté junto a index.html.</div>
@@ -70,7 +71,28 @@ footer{background:#fff;border-top:1px solid var(--bd);padding:24px 0;color:var(-
 <div class="note"><b>Nota metodológica:</b> los anuncios no equivalen a IED efectivamente desembolsada. Los montos corresponden al valor anunciado y pueden ejecutarse en varios años.</div></section>
 
 <div class="note"><b>Fuente:</b> BCRA, Anexo del Informe de Inversión Extranjera Directa. Las series desde 2017 provienen del Relevamiento de Activos y Pasivos Externos. Valores en millones de dólares estadounidenses.</div>
-</div></main><footer><div class="c">IED Argentina · Fuente estadística: Banco Central de la República Argentina</div></footer>
+</div>
+<section id="rigi"><div class="title"><h3>RIGI — Proyectos aprobados y en estudio</h3>
+<p>Panorama de los proyectos vinculados al Régimen de Incentivo para Grandes Inversiones, según provincia, sector, país de origen y mineral.</p></div>
+<div class="cards">
+<div class="kpi"><div class="k">Proyectos por provincia</div><div class="v">41</div><div class="s">24 aprobados · 17 en estudio*</div></div>
+<div class="kpi"><div class="k">Proyectos por sector</div><div class="v">39</div><div class="s">23 aprobados · 16 en estudio</div></div>
+<div class="kpi"><div class="k">Principal sector</div><div class="v">43,6%</div><div class="s">Hidrocarburos · 17 proyectos</div></div>
+<div class="kpi"><div class="k">Países identificados</div><div class="v">14</div><div class="s">Origen de las empresas participantes</div></div>
+</div>
+<div class="grid" style="margin-top:16px">
+<div class="card"><div class="ml">Proyectos por provincia</div><div class="chart"><canvas id="rprov"></canvas></div></div>
+<div class="card"><div class="ml">Proyectos por sector</div><div class="chart"><canvas id="rsector"></canvas></div></div>
+</div>
+<div class="grid" style="margin-top:16px">
+<div class="card"><div class="ml">Proyectos por país de origen</div><div class="chart" style="height:430px"><canvas id="rpais"></canvas></div></div>
+<div class="card"><div class="ml">Minería: proyectos por mineral</div><div class="chart"><canvas id="rmin"></canvas></div></div>
+</div>
+<div class="note" style="margin-top:14px"><b>Nota provincial:</b> Salta y Catamarca comparten dos proyectos, uno aprobado y otro en estudio. Se apunta Cía. Mega en Buenos Aires.</div>
+<div class="note" style="margin-top:8px"><b>Nota minería:</b> existen proyectos en los cuales se extraen varios minerales o metales a la vez. Por ese motivo, los totales de los distintos cuadros no deben sumarse entre sí.</div>
+<div class="source">Fuente: elaboración sobre la solapa “Gráficos” del archivo RIGI — agosto de 2026.</div>
+</section>
+</main><footer><div class="c">IED Argentina · Fuente estadística: Banco Central de la República Argentina</div></footer>
 <script>
 (()=>{
 const D=window.DATOS_BCRA;if(!D){document.getElementById('err').style.display='block';return}
@@ -121,7 +143,7 @@ per.addEventListener('change',update);document.getElementById('topn').addEventLi
    if(!rows.length){
      note.innerHTML='<b>Serie pendiente de carga:</b> la interfaz ya está preparada para este país. El archivo datos_unctad.js admite los valores oficiales de los anexos 02 y 04 del WIR 2026.';
    }else note.textContent=U.meta.nota||'';
-   rows.forEach(r=>tb.insertAdjacentHTML('beforeend',`<tr><td>${r.anio}</td><td class="num">${nf.format(r.flow)}</td><td class="num">${nf.format(r.stock)}</td></tr>`));
+   rows.forEach(r=>tb.insertAdjacentHTML('beforeend',`<tr><td>${r.anio}</td><td class="num">${r.flow==null?'—':nf.format(r.flow)}</td><td class="num">${r.stock==null?'—':nf.format(r.stock)}</td></tr>`));
    if(uf)uf.destroy(); if(us)us.destroy();
    uf=new Chart(document.getElementById('cuFlow'),{type:'line',data:{labels:rows.map(r=>r.anio),datasets:[{label:'Outflows',data:rows.map(r=>r.flow),borderWidth:2,tension:.2}]},options:{responsive:true,maintainAspectRatio:false}});
    us=new Chart(document.getElementById('cuStock'),{type:'line',data:{labels:rows.map(r=>r.anio),datasets:[{label:'Outward stock',data:rows.map(r=>r.stock),borderWidth:2,tension:.2}]},options:{responsive:true,maintainAspectRatio:false}});
@@ -134,6 +156,24 @@ per.addEventListener('change',update);document.getElementById('topn').addEventLi
  pu.addEventListener('change',renderU); pa.addEventListener('change',renderA);
  const preferred=countries.find(c=>c.includes('Estados Unidos'))||countries[0];
  if(preferred){pu.value=preferred;pa.value=preferred} renderU();renderA();
+})();
+
+(function(){
+ const R=window.DATOS_RIGI; if(!R) return;
+ const mk=(id,rows,horizontal=false)=>{
+   const ctx=document.getElementById(id); if(!ctx) return;
+   return new Chart(ctx,{type:'bar',data:{labels:rows.map(x=>x.nombre),datasets:[
+     {label:'Aprobados',data:rows.map(x=>x.aprobados),backgroundColor:'#1769aa'},
+     {label:'En estudio',data:rows.map(x=>x.estudio),backgroundColor:'#90a4ae'}
+   ]},options:{responsive:true,maintainAspectRatio:false,indexAxis:horizontal?'y':'x',
+     plugins:{legend:{position:'bottom'}},
+     scales:{x:{stacked:true,beginAtZero:true},y:{stacked:true,beginAtZero:true}}
+   }});
+ };
+ mk('rprov',R.provincia,true);
+ mk('rsector',R.sector,false);
+ mk('rpais',R.pais,true);
+ mk('rmin',R.mineria,false);
 })();
 </script>
 </body></html>
