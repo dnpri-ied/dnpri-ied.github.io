@@ -223,10 +223,10 @@ header .c{position:relative!important;}
   .fp-add{margin-left:0}
 }
 
-.fp-auth-panel,.fp-editor-panel{display:none;margin:12px 0 16px;background:#fff;border:1px solid #d8dee9;border-radius:13px;padding:16px}
+.fp-auth-panel,.fp-recovery-panel,.fp-editor-panel{display:none;margin:12px 0 16px;background:#fff;border:1px solid #d8dee9;border-radius:13px;padding:16px}
 .fp-auth-grid,.fp-form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-.fp-form-grid .full{grid-column:1/-1}.fp-auth-panel label,.fp-editor-panel label{display:block;font-size:12px;font-weight:700;color:#475467;margin-bottom:5px}
-.fp-auth-panel input,.fp-editor-panel input,.fp-editor-panel select,.fp-editor-panel textarea{width:100%;box-sizing:border-box;border:1px solid #cfd7e6;border-radius:8px;padding:9px 10px;font:inherit;background:#fff}
+.fp-form-grid .full{grid-column:1/-1}.fp-auth-panel label,.fp-recovery-panel label,.fp-editor-panel label{display:block;font-size:12px;font-weight:700;color:#475467;margin-bottom:5px}
+.fp-auth-panel input,.fp-recovery-panel input,.fp-editor-panel input,.fp-editor-panel select,.fp-editor-panel textarea{width:100%;box-sizing:border-box;border:1px solid #cfd7e6;border-radius:8px;padding:9px 10px;font:inherit;background:#fff}
 .fp-editor-panel textarea{min-height:105px;resize:vertical}.fp-action{border:0;border-radius:8px;padding:9px 13px;font-weight:750;cursor:pointer;background:#163f73;color:#fff}.fp-action.secondary{background:#eef4ff;color:#163f73;border:1px solid #cfd7e6}.fp-action.danger{background:#fff1f0;color:#b42318;border:1px solid #fecdca}.fp-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.fp-userbar{display:none;align-items:center;gap:8px;margin-left:auto;font-size:12px;color:#475467}.fp-userbar strong{color:#163f73}.fp-message{display:none;margin-top:10px;border-radius:8px;padding:9px 11px;font-size:12px}.fp-message.ok{display:block;background:#ecfdf3;color:#027a48}.fp-message.err{display:block;background:#fef3f2;color:#b42318}.fp-contrib{border-top:1px solid #eef0f3;margin-top:12px;padding-top:12px}.fp-contrib h4{margin:0 0 5px;color:#172033}.fp-contrib-meta{font-size:11px;color:#667085;margin-bottom:6px}.fp-admin-list{margin-top:14px}.fp-review-card{border:1px solid #e4e7ec;border-radius:10px;padding:12px;margin:9px 0}.fp-review-card p{margin:6px 0;font-size:13px}.fp-status-pill{display:inline-block;padding:3px 7px;border-radius:999px;background:#fffaeb;color:#b54708;font-size:11px;font-weight:700}
 @media(max-width:700px){.fp-auth-grid,.fp-form-grid{grid-template-columns:1fr}.fp-form-grid .full{grid-column:auto}.fp-userbar{margin-left:0}}
 </style>
@@ -847,6 +847,17 @@ per.addEventListener('change',update);document.getElementById('topn').addEventLi
         <div id="fpAuthMsg" class="fp-message"></div>
       </div>
 
+      <div id="fpRecoveryPanel" class="fp-recovery-panel" style="display:none;margin:12px 0 16px;background:#fff;border:1px solid #d8dee9;border-radius:13px;padding:16px">
+        <h3 style="margin:0 0 6px">Establecer nueva contraseña</h3>
+        <p style="margin:0 0 12px;color:#667085;font-size:13px">Ingresá una nueva contraseña para tu cuenta DNPRI.</p>
+        <div class="fp-auth-grid">
+          <div><label for="fpNewPassword">Nueva contraseña</label><input id="fpNewPassword" type="password" autocomplete="new-password" minlength="8"></div>
+          <div><label for="fpNewPassword2">Confirmar contraseña</label><input id="fpNewPassword2" type="password" autocomplete="new-password" minlength="8"></div>
+        </div>
+        <div class="fp-actions"><button id="fpSavePassword" class="fp-action" type="button">Guardar nueva contraseña</button></div>
+        <div id="fpRecoveryMsg" class="fp-message"></div>
+      </div>
+
       <div id="fpEditorPanel" class="fp-editor-panel">
         <h3 style="margin:0 0 10px">Agregar información a Ficha País</h3>
         <div class="fp-form-grid">
@@ -901,11 +912,11 @@ per.addEventListener('change',update);document.getElementById('topn').addEventLi
 (function(){
   const modal=document.getElementById('fichaPaisModal'), open=document.getElementById('openFichaPais'), close=document.getElementById('closeFichaPais');
   const add=document.getElementById('fpAddInfo'), sel=document.getElementById('fpCountry');
-  const authPanel=document.getElementById('fpAuthPanel'), editorPanel=document.getElementById('fpEditorPanel'), userBar=document.getElementById('fpUserBar');
+  const authPanel=document.getElementById('fpAuthPanel'), recoveryPanel=document.getElementById('fpRecoveryPanel'), editorPanel=document.getElementById('fpEditorPanel'), userBar=document.getElementById('fpUserBar');
   const SUPABASE_URL='https://lrlioufcjzqbpeiigtxr.supabase.co';
   const SUPABASE_PUBLISHABLE_KEY='sb_publishable_yiZ7cH1Ss8V5VL1tuYs38g_iN2zyKMb';
   const db=window.supabase?.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
-  let currentUser=null,currentProfile=null,approvedByCountry={};
+  let currentUser=null,currentProfile=null,approvedByCountry={},recoveryMode=false;
 
   const aliases={
     "Germany":"Alemania","Angola":"Angola","Saudi Arabia":"Arabia Saudita","Algeria":"Argelia","Australia":"Australia","Austria":"Austria","Azerbaijan":"Azerbaiyán","Bahamas":"Bahamas","Bangladesh":"Bangladesh","Barbados":"Barbados","Belarus":"Bielorrusia","Belgium":"Bélgica","Bermuda":"Bermudas","Bolivia (Plurinational State of)":"Bolivia","Brazil":"Brasil","Bulgaria":"Bulgaria","Cambodia":"Camboya","Canada":"Canadá","Chile":"Chile","China":"China","Cyprus":"Chipre","Colombia":"Colombia","Costa Rica":"Costa Rica","Croatia":"Croacia","Denmark":"Dinamarca","Egypt":"Egipto","El Salvador":"El Salvador","United Arab Emirates":"Emiratos Árabes Unidos","Slovakia":"Eslovaquia","Slovenia":"Eslovenia","Spain":"España","United States":"Estados Unidos De América","Estonia":"Estonia","Russian Federation":"Federación De Rusia","Philippines":"Filipinas","Finland":"Finlandia","France":"Francia","Gabon":"Gabón","Greece":"Grecia","Guatemala":"Guatemala","Guyana":"Guyana","Honduras":"Honduras","Hungary":"Hungría","India":"India","Indonesia":"Indonesia","Iraq":"Iraq","Ireland":"Irlanda","Cayman Islands":"Islas Caimán","British Virgin Islands":"Islas Virgenes, Britanicas","Israel":"Israel","Italy":"Italia","Japan":"Japón","Kenya":"Kenya","Kuwait":"Kuwait","Lithuania":"Lituania","Luxembourg":"Luxemburgo","Malaysia":"Malasia","Malta":"Malta","Morocco":"Marruecos","Mauritius":"Mauricio","Mozambique":"Mozambique","Mexico":"México","Nicaragua":"Nicaragua","Nigeria":"Nigeria","Norway":"Noruega","New Zealand":"Nueva Zelandia","Oman":"Omán","Pakistan":"Pakistán","Panama":"Panamá","Paraguay":"Paraguay","Netherlands (Kingdom of the)":"Países Bajos","Peru":"Perú","Poland":"Polonia","Portugal":"Portugal","Qatar":"Qatar","United Kingdom":"Reino Unido De Gran Bretaña E Irlanda Del Norte","Dominican Republic":"Republica  Dominicana","Czechia":"Republica Checa","Republic of Korea":"Republica De Corea (Corea Del Sur)","Venezuela (Bolivarian Rep. of)":"República Bolivariana De Venezuela","Romania":"Rumania","Serbia":"Serbia","Singapore":"Singapur","Sri Lanka":"Sri Lanka","South Africa":"Sudáfrica","Sweden":"Suecia","Switzerland":"Suiza","Suriname":"Suriname","Thailand":"Tailandia","China, Taiwan Province of":"Taiwán (Provincia De China)","Trinidad and Tobago":"Trinidad Y Tabago","Turkiye":"Turquía","Tunisia":"Túnez","Ukraine":"Ucrania","Uruguay":"Uruguay","Viet Nam":"Viet Nam"
@@ -925,15 +936,36 @@ per.addEventListener('change',update);document.getElementById('topn').addEventLi
   async function profileFor(user){if(!user||!db)return null;const {data}=await db.from('usuarios_dnpri').select('email,nombre,rol,activo').eq('email',user.email).maybeSingle();return data?.activo?data:null}
   async function syncAuth(){if(!db)return;const {data}=await db.auth.getSession();currentUser=data.session?.user||null;currentProfile=await profileFor(currentUser);userBar.style.display=currentProfile?'flex':'none';if(currentProfile){document.getElementById('fpUserName').textContent=`${currentProfile.nombre} · ${currentProfile.rol}`;authPanel.style.display='none'}else{editorPanel.style.display='none'}document.getElementById('fpAdminArea').style.display=currentProfile?.rol==='administrador'?'block':'none';if(currentProfile?.rol==='administrador')loadPending()}
   async function doLogin(){const email=document.getElementById('fpEmail').value.trim(),password=document.getElementById('fpPassword').value;if(!email||!password)return msg(document.getElementById('fpAuthMsg'),'Ingresá correo y contraseña.',false);const {data,error}=await db.auth.signInWithPassword({email,password});if(error)return msg(document.getElementById('fpAuthMsg'),error.message,false);const p=await profileFor(data.user);if(!p){await db.auth.signOut();return msg(document.getElementById('fpAuthMsg'),'La cuenta no está autorizada para DNPRI.',false)}currentUser=data.user;currentProfile=p;msg(document.getElementById('fpAuthMsg'),'Acceso correcto.');await syncAuth();editorPanel.style.display='block'}
+  function openRecovery(){
+    recoveryMode=true;
+    modal.style.display='block';modal.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';
+    authPanel.style.display='none';editorPanel.style.display='none';recoveryPanel.style.display='block';
+  }
+  async function saveNewPassword(){
+    const p1=document.getElementById('fpNewPassword').value,p2=document.getElementById('fpNewPassword2').value,box=document.getElementById('fpRecoveryMsg');
+    if(p1.length<8)return msg(box,'La contraseña debe tener al menos 8 caracteres.',false);
+    if(p1!==p2)return msg(box,'Las contraseñas no coinciden.',false);
+    const {error}=await db.auth.updateUser({password:p1});
+    if(error)return msg(box,error.message,false);
+    recoveryMode=false;recoveryPanel.style.display='none';
+    document.getElementById('fpNewPassword').value='';document.getElementById('fpNewPassword2').value='';
+    msg(box,'Contraseña actualizada correctamente.');
+    await syncAuth();
+    alert('Contraseña actualizada correctamente. Ya podés usarla para iniciar sesión en DNPRI-IED.');
+  }
   async function forgot(){const email=document.getElementById('fpEmail').value.trim();if(!email)return msg(document.getElementById('fpAuthMsg'),'Ingresá tu correo primero.',false);const {error}=await db.auth.resetPasswordForEmail(email,{redirectTo:'https://dnpri-ied.github.io/'});msg(document.getElementById('fpAuthMsg'),error?error.message:'Se envió el correo de recuperación.',!error)}
   async function submitContribution(){if(!currentProfile)return;const title=document.getElementById('fpFormTitle').value.trim(),desc=document.getElementById('fpFormDesc').value.trim();if(!title||!desc)return msg(document.getElementById('fpEditorMsg'),'Título y descripción son obligatorios.',false);const payload={pais:sel.value,apartado:+document.getElementById('fpFormSection').value,titulo:title,descripcion:desc,empresa:document.getElementById('fpFormCompany').value.trim()||null,sector:document.getElementById('fpFormSector').value.trim()||null,fecha_hecho:document.getElementById('fpFormDate').value||null,fuente:document.getElementById('fpFormSource').value.trim()||null,url_fuente:document.getElementById('fpFormUrl').value.trim()||null,estado:'pendiente',creado_por:currentUser.id,creado_por_email:currentUser.email};const {error}=await db.from('aportes_ficha_pais').insert(payload);if(error)return msg(document.getElementById('fpEditorMsg'),error.message,false);msg(document.getElementById('fpEditorMsg'),'Aporte enviado. Quedó pendiente de aprobación.');['fpFormTitle','fpFormDesc','fpFormCompany','fpFormSector','fpFormDate','fpFormSource','fpFormUrl'].forEach(id=>document.getElementById(id).value='');if(currentProfile.rol==='administrador')loadPending()}
   async function loadPending(){if(currentProfile?.rol!=='administrador')return;const box=document.getElementById('fpPendingList');box.innerHTML='Cargando…';const {data,error}=await db.from('aportes_ficha_pais').select('*').eq('estado','pendiente').order('creado_en',{ascending:true});if(error){box.textContent=error.message;return}box.innerHTML=(data||[]).length?(data||[]).map(x=>`<div class="fp-review-card" data-id="${x.id}"><span class="fp-status-pill">Pendiente</span><p><b>${esc(x.pais)} · Apartado ${x.apartado} · ${esc(x.titulo)}</b></p><p>${esc(x.descripcion)}</p><p style="color:#667085">${esc(x.creado_por_email)}${x.fuente?' · '+esc(x.fuente):''}</p><div class="fp-actions"><button class="fp-action fp-approve" data-id="${x.id}">Aprobar</button><button class="fp-action danger fp-reject" data-id="${x.id}">Rechazar</button></div></div>`).join(''):'No hay aportes pendientes.';box.querySelectorAll('.fp-approve').forEach(b=>b.onclick=()=>review(+b.dataset.id,'aprobado'));box.querySelectorAll('.fp-reject').forEach(b=>b.onclick=()=>review(+b.dataset.id,'rechazado'))}
   async function review(id,state){const {error}=await db.from('aportes_ficha_pais').update({estado:state,revisado_por:currentUser.id,revisado_en:new Date().toISOString()}).eq('id',id);if(error)return alert(error.message);await loadPending();approvedByCountry[sel.value]=[];await loadApproved(sel.value)}
-  async function showEditor(){if(!db){alert('No se pudo cargar el servicio de autenticación.');return}await syncAuth();if(currentProfile){editorPanel.style.display=editorPanel.style.display==='block'?'none':'block';document.getElementById('fpFormCountry').value=displayCountry();if(currentProfile.rol==='administrador')loadPending()}else{authPanel.style.display=authPanel.style.display==='block'?'none':'block'}}
+  async function showEditor(){if(!db){alert('No se pudo cargar el servicio de autenticación.');return}if(recoveryMode){openRecovery();return}await syncAuth();if(currentProfile){editorPanel.style.display=editorPanel.style.display==='block'?'none':'block';document.getElementById('fpFormCountry').value=displayCountry();if(currentProfile.rol==='administrador')loadPending()}else{authPanel.style.display=authPanel.style.display==='block'?'none':'block'}}
   function show(){modal.style.display='block';modal.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';render(sel.value);loadApproved(sel.value);syncAuth()}
   function hide(){modal.style.display='none';modal.setAttribute('aria-hidden','true');document.body.style.overflow=''}
-  open?.addEventListener('click',show);close?.addEventListener('click',hide);sel?.addEventListener('change',()=>{render(sel.value);loadApproved(sel.value)});modal?.addEventListener('click',e=>{if(e.target===modal)hide()});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&modal.style.display==='block')hide()});add?.addEventListener('click',showEditor);document.getElementById('fpLogin')?.addEventListener('click',doLogin);document.getElementById('fpForgot')?.addEventListener('click',forgot);document.getElementById('fpLogout')?.addEventListener('click',async()=>{await db.auth.signOut();currentUser=currentProfile=null;editorPanel.style.display=authPanel.style.display=userBar.style.display='none'});document.getElementById('fpSubmitContribution')?.addEventListener('click',submitContribution);document.getElementById('fpCancelContribution')?.addEventListener('click',()=>editorPanel.style.display='none');
-  if(db){db.auth.onAuthStateChange(()=>setTimeout(syncAuth,0));syncAuth()}
+  open?.addEventListener('click',show);close?.addEventListener('click',hide);sel?.addEventListener('change',()=>{render(sel.value);loadApproved(sel.value)});modal?.addEventListener('click',e=>{if(e.target===modal)hide()});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&modal.style.display==='block')hide()});add?.addEventListener('click',showEditor);document.getElementById('fpLogin')?.addEventListener('click',doLogin);document.getElementById('fpForgot')?.addEventListener('click',forgot);document.getElementById('fpLogout')?.addEventListener('click',async()=>{await db.auth.signOut();currentUser=currentProfile=null;editorPanel.style.display=authPanel.style.display=userBar.style.display='none'});document.getElementById('fpSubmitContribution')?.addEventListener('click',submitContribution);document.getElementById('fpCancelContribution')?.addEventListener('click',()=>editorPanel.style.display='none');document.getElementById('fpSavePassword')?.addEventListener('click',saveNewPassword);
+  if(db){
+    db.auth.onAuthStateChange((event)=>{if(event==='PASSWORD_RECOVERY'){setTimeout(openRecovery,0)}else{setTimeout(syncAuth,0)}});
+    if(new URLSearchParams(location.hash.replace(/^#/, '')).get('type')==='recovery')openRecovery();
+    syncAuth();
+  }
   sel.value=Array.from(sel.options).some(o=>o.value==='India')?'India':sel.options[0]?.value;render(sel.value);
 })();
 </script>
