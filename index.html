@@ -614,6 +614,7 @@ per.addEventListener('change',update);document.getElementById('topn').addEventLi
 })();
 </script>
 
+
 <div id="fichaPaisModal" class="fp-modal" aria-hidden="true">
   <div class="fp-shell">
     <div class="fp-head">
@@ -627,13 +628,11 @@ per.addEventListener('change',update);document.getElementById('topn').addEventLi
       <div class="fp-toolbar">
         <div class="field">
           <label for="fpCountry">País</label>
-          <select id="fpCountry">
-            <option value="india">India</option>
-          </select>
+          <select id="fpCountry"></select>
         </div>
         <div>
-          <span class="fp-badge">Piloto</span>
-          <span class="fp-badge">Actualización: septiembre 2026</span>
+          <span class="fp-badge">UNCTAD 2025</span>
+          <span class="fp-badge">BCRA 2026-T1</span>
         </div>
         <button id="fpAddInfo" class="fp-add" type="button">🔒 Agregar información</button>
       </div>
@@ -643,64 +642,30 @@ per.addEventListener('change',update);document.getElementById('topn').addEventLi
       </div>
 
       <div class="fp-summary">
-        <div class="fp-kpi"><div class="lab">Stock mundial de IED saliente</div><div class="val">USD 296.446 M</div><div class="small">27° posición mundial · UNCTAD 2025</div></div>
-        <div class="fp-kpi"><div class="lab">Stock de India en Argentina</div><div class="val">USD 141,5 M</div><div class="small">40° inversor · BCRA, 1° trim. 2026</div></div>
-        <div class="fp-kpi"><div class="lab">Sectores de oportunidad</div><div class="val">4</div><div class="small">Minería · Energía · Agronegocios · TIC</div></div>
+        <div class="fp-kpi"><div class="lab">Stock mundial de IED saliente</div><div class="val" id="fpOutStock">—</div><div class="small" id="fpOutRank">UNCTAD 2025</div></div>
+        <div class="fp-kpi"><div class="lab">Stock del país en Argentina</div><div class="val" id="fpArStock">—</div><div class="small" id="fpArRank">BCRA 2026-T1</div></div>
+        <div class="fp-kpi"><div class="lab">Estado de la ficha</div><div class="val" id="fpStatus">Datos</div><div class="small" id="fpStatusText">Perfil estadístico disponible</div></div>
       </div>
 
       <details class="fp-section" open>
         <summary>1. Perfil inversor internacional</summary>
-        <div class="fp-content">
-          India registró en 2025 un stock de IED saliente de USD 296.446 millones, ubicándose en el puesto 27 entre las economías con mayor stock inversor en el exterior. Entre los destinos destacados de la inversión india se encuentran Singapur, Estados Unidos, Reino Unido y Países Bajos, con presencia relevante en manufacturas, servicios y minería.
-          <div class="fp-source">Fuentes: UNCTAD, World Investment Report 2026 / base UNCTADstat incorporada al sitio; documento DNPRI de referencia.</div>
-        </div>
+        <div class="fp-content" id="fpSec1"></div>
       </details>
-
       <details class="fp-section">
-        <summary>2. India como inversor en Argentina</summary>
-        <div class="fp-content">
-          De acuerdo con la última información BCRA incorporada al sitio, al primer trimestre de 2026 India registra una posición pasiva bruta de aproximadamente USD 141,5 millones y ocupa el puesto 40 entre los países inversores. A fines de 2025 el stock era de aproximadamente USD 134 millones.
-          <div class="fp-source">Fuente: BCRA, Anexo del Informe de Inversión Extranjera Directa. Datos cargados en DNPRI-IED.</div>
-        </div>
+        <summary>2. El país como inversor en Argentina</summary>
+        <div class="fp-content" id="fpSec2"></div>
       </details>
-
       <details class="fp-section">
         <summary>3. Empresas e inversiones vinculadas con Argentina</summary>
-        <div class="fp-content">
-          <ul>
-            <li>Entre las empresas de origen indio con presencia u operaciones vinculadas con Argentina se identifican Tata, Mahindra, Infosys, AEGIS, Hero, TVS Motor, Bajaj, UPL y Hinduja.</li>
-            <li>Mphasis inauguró en 2025 un centro de servicios tecnológicos orientado al sector bancario en Buenos Aires.</li>
-            <li>KABIL mantiene una vinculación con CAMYEN, en Catamarca, para exploración y desarrollo de oportunidades vinculadas al litio.</li>
-            <li>Empresas argentinas como Globant, Techint e IMPSA han desarrollado actividades en el mercado indio.</li>
-          </ul>
-          <div class="fp-source">Base: documento DNPRI aportado para la ficha. Complemento y contraste con fuentes públicas oficiales de Argentina e India.</div>
-        </div>
+        <div class="fp-content" id="fpSec3"></div>
       </details>
-
       <details class="fp-section">
         <summary>4. Sectores con potencial para nuevas inversiones</summary>
-        <div class="fp-content">
-          <ul>
-            <li><b>Minería:</b> litio, cobre y otros minerales críticos. La necesidad india de diversificar proveedores y fortalecer sus cadenas de suministro abre oportunidades para proyectos argentinos.</li>
-            <li><b>Energía:</b> petróleo, gas y GNL, incluyendo oportunidades asociadas al desarrollo exportador argentino.</li>
-            <li><b>Agronegocios:</b> alimentos, proteínas, legumbres y cadenas agroindustriales.</li>
-            <li><b>Tecnología y servicios:</b> software, servicios empresariales, fintech y centros tecnológicos.</li>
-          </ul>
-          <div class="fp-source">Fuentes: documento DNPRI; Secretaría de Minería de la Nación; Economic Survey 2025-26 de India.</div>
-        </div>
+        <div class="fp-content" id="fpSec4"></div>
       </details>
-
       <details class="fp-section">
         <summary>5. Novedades y casos destacados</summary>
-        <div class="fp-content">
-          <ul>
-            <li>Argentina e India profundizaron la cooperación en minerales críticos mediante el Grupo de Trabajo Conjunto en Recursos Mineros y sus subgrupos de exploración e inversiones.</li>
-            <li>La presencia de KABIL en Argentina se vincula con la estrategia india de asegurar suministros externos de litio y otros minerales críticos.</li>
-            <li>Se registran contactos y gestiones con empresas indias de minería, energía, industria, tecnología y agronegocios para analizar oportunidades en Argentina.</li>
-            <li>Entre los casos de repercusión reciente se encuentran operaciones o contratos vinculados con Adani, Welspun y KABIL.</li>
-          </ul>
-          <div class="fp-source">Fuentes: documento DNPRI; Argentina.gob.ar; Invest India / Economic Survey 2025-26. Las novedades deberán revisarse periódicamente.</div>
-        </div>
+        <div class="fp-content" id="fpSec5"></div>
       </details>
     </div>
   </div>
@@ -713,10 +678,127 @@ per.addEventListener('change',update);document.getElementById('topn').addEventLi
   const close=document.getElementById('closeFichaPais');
   const add=document.getElementById('fpAddInfo');
   const note=document.getElementById('fpLoginNote');
-  function show(){modal.style.display='block';modal.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';}
+  const sel=document.getElementById('fpCountry');
+
+  const aliases={
+    "Germany":"Alemania","Angola":"Angola","Saudi Arabia":"Arabia Saudita","Algeria":"Argelia",
+    "Australia":"Australia","Austria":"Austria","Azerbaijan":"Azerbaiyán","Bahamas":"Bahamas",
+    "Bangladesh":"Bangladesh","Barbados":"Barbados","Bermuda":"Bermudas","Bolivia (Plurinational State of)":"Bolivia",
+    "Brazil":"Brasil","Brunei Darussalam":"Brunei Darussalam","Bulgaria":"Bulgaria","Belgium":"Bélgica",
+    "Cambodia":"Camboya","Canada":"Canadá","Chile":"Chile","China":"China","Cyprus":"Chipre",
+    "Colombia":"Colombia","Côte d'Ivoire":"Costa De Marfil","Costa Rica":"Costa Rica","Croatia":"Croacia",
+    "Cuba":"Cuba","Denmark":"Dinamarca","Ecuador":"Ecuador","Egypt":"Egipto","El Salvador":"El Salvador",
+    "United Arab Emirates":"Emiratos Árabes Unidos","Slovakia":"Eslovaquia","Slovenia":"Eslovenia",
+    "Spain":"España","United States":"Estados Unidos De América","United States of America":"Estados Unidos De América",
+    "Estonia":"Estonia","Russian Federation":"Federación De Rusia","Philippines":"Filipinas","Finland":"Finlandia",
+    "France":"Francia","Gabon":"Gabón","Greece":"Grecia","Guatemala":"Guatemala","Guyana":"Guyana",
+    "Honduras":"Honduras","Hungary":"Hungría","India":"India","Indonesia":"Indonesia","Iraq":"Iraq",
+    "Ireland":"Irlanda","Cayman Islands":"Islas Caimán","British Virgin Islands":"Islas Virgenes, Britanicas",
+    "Israel":"Israel","Italy":"Italia","Japan":"Japón","Jersey":"Jersey","Kenya":"Kenya","Kuwait":"Kuwait",
+    "Liechtenstein":"Liechtenstein","Lithuania":"Lituania","Luxembourg":"Luxemburgo","Malaysia":"Malasia",
+    "Malta":"Malta","Morocco":"Marruecos","Mauritius":"Mauricio","Mozambique":"Mozambique","Myanmar":"Myanmar",
+    "Mexico":"México","Nicaragua":"Nicaragua","Nigeria":"Nigeria","Norway":"Noruega","New Zealand":"Nueva Zelandia",
+    "Oman":"Omán","Pakistan":"Pakistán","Panama":"Panamá","Paraguay":"Paraguay","Netherlands":"Países Bajos",
+    "Peru":"Perú","Poland":"Polonia","Portugal":"Portugal","Puerto Rico":"Puerto Rico","Qatar":"Qatar",
+    "United Kingdom":"Reino Unido De Gran Bretaña E Irlanda Del Norte","Dominican Republic":"Republica  Dominicana",
+    "Czechia":"Republica Checa","Republic of Korea":"Republica De Corea (Corea Del Sur)","Korea, Republic of":"Republica De Corea (Corea Del Sur)",
+    "Venezuela (Bolivarian Republic of)":"República Bolivariana De Venezuela","Romania":"Rumania","Serbia":"Serbia",
+    "Singapore":"Singapur","Sri Lanka":"Sri Lanka","South Africa":"Sudáfrica","Sweden":"Suecia","Switzerland":"Suiza",
+    "Suriname":"Suriname","Thailand":"Tailandia","Taiwan Province of China":"Taiwán (Provincia De China)",
+    "Trinidad and Tobago":"Trinidad Y Tabago","Türkiye":"Turquía","Turkey":"Turquía","Tunisia":"Túnez",
+    "Ukraine":"Ucrania","Uruguay":"Uruguay","Viet Nam":"Viet Nam"
+  };
+
+  const qualitative={
+    "India":{
+      s3:`<ul>
+        <li>Entre las empresas de origen indio con presencia u operaciones vinculadas con Argentina se identifican Tata, Mahindra, Infosys, AEGIS, Hero, TVS Motor, Bajaj, UPL y Hinduja.</li>
+        <li>Mphasis inauguró en 2025 un centro de servicios tecnológicos orientado al sector bancario en Buenos Aires.</li>
+        <li>KABIL mantiene una vinculación con CAMYEN, en Catamarca, para exploración y desarrollo de oportunidades vinculadas al litio.</li>
+        <li>Empresas argentinas como Globant, Techint e IMPSA han desarrollado actividades en el mercado indio.</li>
+      </ul><div class="fp-source">Base: documento DNPRI aportado para la ficha. Complemento con fuentes públicas.</div>`,
+      s4:`<ul>
+        <li><b>Minería:</b> litio, cobre y otros minerales críticos.</li>
+        <li><b>Energía:</b> petróleo, gas y GNL.</li>
+        <li><b>Agronegocios:</b> alimentos, proteínas, legumbres y cadenas agroindustriales.</li>
+        <li><b>Tecnología y servicios:</b> software, servicios empresariales, fintech y centros tecnológicos.</li>
+      </ul><div class="fp-source">Base: documento DNPRI y fuentes públicas sectoriales.</div>`,
+      s5:`<ul>
+        <li>Argentina e India profundizaron la cooperación en minerales críticos mediante el Grupo de Trabajo Conjunto en Recursos Mineros.</li>
+        <li>La presencia de KABIL se vincula con la estrategia india de asegurar suministros externos de litio y otros minerales críticos.</li>
+        <li>Se registran contactos con empresas indias de minería, energía, industria, tecnología y agronegocios.</li>
+        <li>Entre los casos de repercusión reciente se encuentran operaciones o contratos vinculados con Adani, Welspun y KABIL.</li>
+      </ul><div class="fp-source">Base: documento DNPRI; fuentes oficiales argentinas e indias.</div>`
+    }
+  };
+
+  const fmt=n => n==null || !Number.isFinite(+n) ? "—" :
+    "USD " + (+n).toLocaleString("es-AR",{maximumFractionDigits:1}) + " M";
+
+  function unctadLatest(country){
+    const arr=window.DATOS_UNCTAD?.series?.[country]||[];
+    return arr.find(x=>x.anio===2025) || arr[arr.length-1] || null;
+  }
+  function outwardRank(country){
+    const rows=Object.keys(window.DATOS_UNCTAD?.series||{}).map(c=>({c,v:unctadLatest(c)?.stock}))
+      .filter(x=>x.v!=null && Number.isFinite(+x.v)).sort((a,b)=>b.v-a.v);
+    const i=rows.findIndex(x=>x.c===country); return i>=0?i+1:null;
+  }
+  function bcraRow(country){
+    const bcraName=aliases[country]||country;
+    const rows=(window.DATOS_BCRA?.paises||[]).filter(r=>r[0]==="2026-T1");
+    return rows.find(r=>r[1]===bcraName)||null;
+  }
+  function bcraRank(country){
+    const row=bcraRow(country); if(!row)return null;
+    const rows=(window.DATOS_BCRA?.paises||[]).filter(r=>r[0]==="2026-T1" && r[1]!=="Confidencial" && r[1]!=="Sin Clasificar")
+      .sort((a,b)=>b[2]-a[2]);
+    const i=rows.findIndex(r=>r[1]===row[1]); return i>=0?i+1:null;
+  }
+  function render(country){
+    const u=unctadLatest(country), ur=outwardRank(country), b=bcraRow(country), br=bcraRank(country);
+    document.getElementById("fpOutStock").textContent=fmt(u?.stock);
+    document.getElementById("fpOutRank").textContent=(ur?ur+"° posición mundial · ":"")+"UNCTAD 2025";
+    document.getElementById("fpArStock").textContent=fmt(b?.[2]);
+    document.getElementById("fpArRank").textContent=(br?br+"° inversor · ":"")+"BCRA 2026-T1";
+
+    const flow=u?.flow;
+    document.getElementById("fpSec1").innerHTML =
+      `<b>${country}</b> registra en 2025 un stock de IED saliente de <b>${fmt(u?.stock)}</b>`+
+      (ur?`, ubicándose en la posición <b>${ur}</b> entre las economías con datos disponibles en la base UNCTAD.`:".")+
+      (flow!=null?` El flujo de IED saliente durante 2025 fue de <b>${fmt(flow)}</b>.`:"")+
+      `<div class="fp-source">Fuente: UNCTADstat / World Investment Report 2026. Millones de USD a precios corrientes.</div>`;
+
+    document.getElementById("fpSec2").innerHTML = b ?
+      `Al 31 de marzo de 2026, la posición pasiva bruta de inversión directa atribuida a <b>${country}</b> en Argentina asciende a <b>${fmt(b[2])}</b>`+
+      (br?`, lo que lo ubica en el puesto <b>${br}</b> entre los países inversores identificados por el BCRA.`:".")+
+      `<div class="fp-source">Fuente: BCRA, Informe de Inversión Extranjera Directa, primer trimestre de 2026.</div>` :
+      `No se registra una posición individual identificada para <b>${country}</b> en la apertura por país del BCRA correspondiente a 2026-T1. Esto no implica necesariamente ausencia de inversión: puede existir inversión canalizada a través de terceros países o información sujeta a secreto estadístico.<div class="fp-source">Fuente: BCRA, Informe de Inversión Extranjera Directa, primer trimestre de 2026.</div>`;
+
+    const q=qualitative[country];
+    const pending=`<div style="padding:8px 0"><b>Información cualitativa pendiente de validación.</b><br>
+      Este apartado se completará con fuentes oficiales, información corporativa, prensa económica y aportes validados de usuarios DNPRI. Se mantiene vacío para evitar publicar información no verificada.</div>`;
+    document.getElementById("fpSec3").innerHTML=q?.s3||pending;
+    document.getElementById("fpSec4").innerHTML=q?.s4||pending;
+    document.getElementById("fpSec5").innerHTML=q?.s5||pending;
+    document.getElementById("fpStatus").textContent=q?"Completa":"Estadística";
+    document.getElementById("fpStatusText").textContent=q?"Puntos 1 a 5 disponibles":"Puntos 1 y 2 disponibles · 3 a 5 por validar";
+  }
+
+  function init(){
+    const countries=Object.keys(window.DATOS_UNCTAD?.series||{}).sort((a,b)=>a.localeCompare(b,"es"));
+    sel.innerHTML=countries.map(c=>`<option value="${c.replace(/"/g,"&quot;")}">${c}</option>`).join("");
+    sel.value=countries.includes("India")?"India":countries[0];
+    render(sel.value);
+  }
+  function show(){
+    if(!sel.options.length)init();
+    modal.style.display='block'; modal.setAttribute('aria-hidden','false'); document.body.style.overflow='hidden';
+  }
   function hide(){modal.style.display='none';modal.setAttribute('aria-hidden','true');document.body.style.overflow='';}
   if(open)open.addEventListener('click',show);
   if(close)close.addEventListener('click',hide);
+  if(sel)sel.addEventListener('change',()=>render(sel.value));
   if(modal)modal.addEventListener('click',e=>{if(e.target===modal)hide();});
   document.addEventListener('keydown',e=>{if(e.key==='Escape'&&modal&&modal.style.display==='block')hide();});
   if(add)add.addEventListener('click',()=>{note.style.display=note.style.display==='block'?'none':'block';});
