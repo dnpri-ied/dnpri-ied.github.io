@@ -130,6 +130,43 @@ footer{background:#fff;border-top:1px solid var(--bd);padding:24px 0;color:var(-
   .main-nav{justify-content:flex-start!important}
 }
 </style>
+
+<style>
+header .c{position:relative!important;}
+.rigi-header-row{display:block!important;width:100%!important;}
+.rigi-header-row .rigi-hero-btn{
+  position:absolute!important;
+  top:30px!important;
+  right:0!important;
+  margin:0!important;
+  z-index:50!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  background:#0d6efd!important;
+  color:#fff!important;
+  padding:12px 22px!important;
+  border:1px solid rgba(255,255,255,.55)!important;
+  border-radius:10px!important;
+  font-weight:800!important;
+  font-size:15px!important;
+  box-shadow:0 6px 18px rgba(0,0,0,.28)!important;
+  cursor:pointer!important;
+}
+.main-nav{
+  margin-top:22px!important;
+  padding-right:0!important;
+  display:flex!important;
+  justify-content:flex-end!important;
+  gap:18px!important;
+}
+@media(max-width:850px){
+  .rigi-header-row .rigi-hero-btn{
+    position:static!important;
+    margin-top:14px!important;
+  }
+  .main-nav{justify-content:flex-start!important;flex-wrap:wrap!important;}
+}
+</style>
 </head>
 <body>
 <header><div class="c">
