@@ -36,7 +36,7 @@ footer{background:#fff;border-top:1px solid var(--bd);padding:24px 0;color:var(-
 </head>
 <body>
 <header><div class="c"><div class="top"><div><h1>IED ARGENTINA</h1><div class="sub">Sistema de información y análisis de inversión extranjera directa</div></div><nav><a href="#dashboard">Dashboard</a><a href="#evolucion">Evolución</a><a href="#paises">Países</a><a href="#sectores">Sectores</a><a href="#composicion">Composición</a><a href="#unctad">UNCTAD</a><a href="#anuncios">Anuncios</a><button id="openRigi" type="button" style="background:none;border:0;color:inherit;font:inherit;cursor:pointer;padding:0">Proyecto RIGI</button></nav></div>
-<div class="hero"><h2>Inversión extranjera directa en Argentina</h2><p>Consulta interactiva de flujos, posición pasiva bruta, países inversores y sectores receptores con información oficial.</p></div></div></header>
+<div class="hero"><h2>Inversión extranjera directa en Argentina</h2><p>Consulta interactiva de flujos, posición pasiva bruta, países inversores y sectores receptores con información oficial del Banco Central de la República Argentina.</p></div></div></header>
 <main><div class="c">
 <div id="err" class="error">No se pudo cargar <b>datos_bcra.js</b>. Verificá que esté junto a index.html.</div>
 <div class="tools"><div class="field"><label>Período</label><select id="periodo"></select></div><div class="field"><label>Ranking</label><select id="topn"><option>5</option><option selected>10</option><option>15</option></select></div><div class="source" id="src">Fuente: BCRA</div></div>
@@ -139,23 +139,7 @@ per.addEventListener('change',update);document.getElementById('topn').addEventLi
  if(preferred){pu.value=preferred;pa.value=preferred} renderU();renderA();
 })();
 
-(function(){
- const R=window.DATOS_RIGI; if(!R) return;
- const mk=(id,rows,horizontal=false)=>{
-   const ctx=document.getElementById(id); if(!ctx) return;
-   return new Chart(ctx,{type:'bar',data:{labels:rows.map(x=>x.nombre),datasets:[
-     {label:'Aprobados',data:rows.map(x=>x.aprobados),backgroundColor:'#1769aa'},
-     {label:'En estudio',data:rows.map(x=>x.estudio),backgroundColor:'#90a4ae'}
-   ]},options:{responsive:true,maintainAspectRatio:false,indexAxis:horizontal?'y':'x',
-     plugins:{legend:{position:'bottom'}},
-     scales:{x:{stacked:true,beginAtZero:true},y:{stacked:true,beginAtZero:true}}
-   }});
- };
- mk('rprov',R.provincia,true);
- mk('rsector',R.sector,false);
- mk('rpais',R.pais,true);
- mk('rmin',R.mineria,false);
-})();
+
 </script>
 
 <div id="rigiModal" aria-hidden="true" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.55);padding:24px;overflow:auto">
@@ -186,9 +170,62 @@ per.addEventListener('change',update);document.getElementById('topn').addEventLi
 
 <script>
 (function(){
- const m=document.getElementById('rigiModal'), o=document.getElementById('openRigi'), c=document.getElementById('closeRigi');
- function openRigi(){m.style.display='block';m.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';setTimeout(()=>window.dispatchEvent(new Event('resize')),80);}
- function closeRigi(){m.style.display='none';m.setAttribute('aria-hidden','true');document.body.style.overflow='';}
+ const m=document.getElementById('rigiModal');
+ const o=document.getElementById('openRigi');
+ const c=document.getElementById('closeRigi');
+ let chartsCreated=false;
+
+ function createRigiCharts(){
+   if(chartsCreated) {
+     setTimeout(()=>window.dispatchEvent(new Event('resize')),50);
+     return;
+   }
+   const R=window.DATOS_RIGI;
+   if(!R || typeof Chart==='undefined') return;
+
+   const mk=(id,rows,horizontal=false)=>{
+     const ctx=document.getElementById(id);
+     if(!ctx) return;
+     return new Chart(ctx,{
+       type:'bar',
+       data:{
+         labels:rows.map(x=>x.nombre),
+         datasets:[
+           {label:'Aprobados',data:rows.map(x=>x.aprobados),backgroundColor:'#1769aa'},
+           {label:'En estudio',data:rows.map(x=>x.estudio),backgroundColor:'#90a4ae'}
+         ]
+       },
+       options:{
+         responsive:true,
+         maintainAspectRatio:false,
+         indexAxis:horizontal?'y':'x',
+         plugins:{legend:{position:'bottom'}},
+         scales: horizontal
+           ? {x:{stacked:true,beginAtZero:true},y:{stacked:true}}
+           : {x:{stacked:true},y:{stacked:true,beginAtZero:true}}
+       }
+     });
+   };
+
+   mk('rprov',R.provincia,true);
+   mk('rsector',R.sector,false);
+   mk('rpais',R.pais,true);
+   mk('rmin',R.mineria,false);
+   chartsCreated=true;
+   setTimeout(()=>window.dispatchEvent(new Event('resize')),80);
+ }
+
+ function openRigi(){
+   m.style.display='block';
+   m.setAttribute('aria-hidden','false');
+   document.body.style.overflow='hidden';
+   requestAnimationFrame(()=>requestAnimationFrame(createRigiCharts));
+ }
+ function closeRigi(){
+   m.style.display='none';
+   m.setAttribute('aria-hidden','true');
+   document.body.style.overflow='';
+ }
  if(o)o.addEventListener('click',openRigi);
  if(c)c.addEventListener('click',closeRigi);
  if(m)m.addEventListener('click',e=>{if(e.target===m)closeRigi();});
