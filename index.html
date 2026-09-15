@@ -223,6 +223,22 @@ header .c{position:relative!important;}
   .fp-add{margin-left:0}
 }
 </style>
+
+<style>
+/* Ajuste final del encabezado: Ficha País + Proyectos RIGI */
+header .c .header-actions{
+  position:absolute!important;top:30px!important;right:0!important;z-index:100!important;
+  display:flex!important;align-items:center!important;gap:12px!important;width:auto!important;
+}
+header .c .header-actions .ficha-pais-btn,
+header .c .header-actions .rigi-hero-btn{
+  position:static!important;top:auto!important;right:auto!important;left:auto!important;
+  margin:0!important;visibility:visible!important;opacity:1!important;transform:none!important;
+}
+@media(max-width:850px){
+ header .c .header-actions{position:static!important;margin-top:14px!important;flex-wrap:wrap!important;}
+}
+</style>
 </head>
 <body>
 <header><div class="c">
