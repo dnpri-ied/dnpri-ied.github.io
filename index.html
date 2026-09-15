@@ -5,6 +5,8 @@
 <title>IED Argentina | Inversión Extranjera Directa</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="datos_bcra.js"></script>
+<script src="datos_unctad.js"></script>
+<script src="anuncios_inversion.js"></script>
 <style>
 :root{--n:#0b1f3a;--b:#163f73;--bg:#f5f7fb;--tx:#172033;--mu:#667085;--bd:#e4e7ec;--g:#027a48;--r:#b42318}
 *{box-sizing:border-box}body{margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--tx)}
@@ -24,10 +26,15 @@ table{width:100%;border-collapse:collapse;font-size:14px}th,td{padding:10px;bord
 footer{background:#fff;border-top:1px solid var(--bd);padding:24px 0;color:var(--mu);font-size:13px}
 @media(max-width:900px){.cards{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}.source{margin-left:0}.hero h2{font-size:32px}}
 @media(max-width:560px){.cards{grid-template-columns:1fr}.field{width:100%}.hero h2{font-size:28px}}
+
+.ann-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}.ann{background:#fff;border:1px solid var(--bd);border-radius:14px;padding:15px}
+.ann .amount{font-size:22px;font-weight:800;margin:8px 0}.ann h4{margin:0;font-size:15px}.ann p{font-size:12px;color:var(--mu);line-height:1.45}
+.ann a{font-size:12px;color:var(--b);font-weight:700;text-decoration:none}.empty{padding:22px;color:var(--mu);text-align:center}
+@media(max-width:900px){.ann-grid{grid-template-columns:1fr 1fr}}@media(max-width:560px){.ann-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
-<header><div class="c"><div class="top"><div><h1>IED ARGENTINA</h1><div class="sub">Sistema de información y análisis de inversión extranjera directa</div></div><nav><a href="#dashboard">Dashboard</a><a href="#evolucion">Evolución</a><a href="#paises">Países</a><a href="#sectores">Sectores</a><a href="#composicion">Composición</a></nav></div>
+<header><div class="c"><div class="top"><div><h1>IED ARGENTINA</h1><div class="sub">Sistema de información y análisis de inversión extranjera directa</div></div><nav><a href="#dashboard">Dashboard</a><a href="#evolucion">Evolución</a><a href="#paises">Países</a><a href="#sectores">Sectores</a><a href="#composicion">Composición</a><a href="#unctad">UNCTAD</a><a href="#anuncios">Anuncios</a></nav></div>
 <div class="hero"><h2>Inversión extranjera directa en Argentina</h2><p>Consulta interactiva de flujos, posición pasiva bruta, países inversores y sectores receptores con información oficial del Banco Central de la República Argentina.</p></div></div></header>
 <main><div class="c">
 <div id="err" class="error">No se pudo cargar <b>datos_bcra.js</b>. Verificá que esté junto a index.html.</div>
@@ -45,6 +52,23 @@ footer{background:#fff;border-top:1px solid var(--bd);padding:24px 0;color:var(-
 <div class="tools" style="margin-top:0"><div class="field" style="min-width:320px"><label>País</label><select id="paispie"></select></div><div class="source" id="pietotal"></div></div>
 <div class="grid" style="margin-top:16px"><div class="card"><div class="chart pie"><canvas id="cpi"></canvas></div></div><div class="card"><div class="ml">Detalle</div><div id="piedetail" style="margin-top:12px"></div><div id="piewarn" class="note warn" style="display:none"></div></div></div>
 </section>
+
+<section id="unctad"><div class="title"><h3>Perfil internacional de inversión — UNCTAD</h3>
+<p>Flujos de IED hacia el exterior (outflows) y stock de IED en el exterior (outward stock), 2017–2025.</p></div>
+<div class="tools" style="margin-top:0"><div class="field" style="min-width:320px"><label>País</label><select id="paisunctad"></select></div>
+<div class="source">Fuente: UNCTAD · World Investment Report 2026</div></div>
+<div class="grid" style="margin-top:16px"><div class="card"><div class="ml">Flujos de IED hacia el exterior</div><div class="chart"><canvas id="cuFlow"></canvas></div></div>
+<div class="card"><div class="ml">Stock de IED en el exterior</div><div class="chart"><canvas id="cuStock"></canvas></div></div></div>
+<div class="tablecard" style="margin-top:16px"><div class="scroll"><table><thead><tr><th>Año</th><th class="num">Outflow</th><th class="num">Outward stock</th></tr></thead><tbody id="tu"></tbody></table></div>
+<div id="unote" class="note" style="margin-top:12px"></div></div></section>
+
+<section id="anuncios"><div class="title"><h3>Principales anuncios de inversión en Argentina</h3>
+<p>Hasta cinco mayores anuncios identificados por país durante 2022–2026, ordenados por monto anunciado.</p></div>
+<div class="tools" style="margin-top:0"><div class="field" style="min-width:320px"><label>País</label><select id="paisann"></select></div>
+<div class="source">Fuentes: prensa, compañías y organismos oficiales</div></div>
+<div id="anncards" class="ann-grid" style="margin-top:16px"></div>
+<div class="note"><b>Nota metodológica:</b> los anuncios no equivalen a IED efectivamente desembolsada. Los montos corresponden al valor anunciado y pueden ejecutarse en varios años.</div></section>
+
 <div class="note"><b>Fuente:</b> BCRA, Anexo del Informe de Inversión Extranjera Directa. Las series desde 2017 provienen del Relevamiento de Activos y Pasivos Externos. Valores en millones de dólares estadounidenses.</div>
 </div></main><footer><div class="c">IED Argentina · Fuente estadística: Banco Central de la República Argentina</div></footer>
 <script>
@@ -81,4 +105,35 @@ let pc=document.getElementById('paispie');Object.keys(D.pie_paises_2026T1).sort(
 if(D.pie_paises_2026T1['Estados Unidos De América'])pc.value='Estados Unidos De América';
 per.addEventListener('change',update);document.getElementById('topn').addEventListener('change',update);pc.addEventListener('change',pieUpdate);update();pieUpdate();
 })();
-</script></body></html>
+</script><script>
+(()=>{
+ const U=window.DATOS_UNCTAD||{series:{},meta:{}}, A=window.ANUNCIOS_INVERSION||{datos:[]};
+ const pu=document.getElementById('paisunctad'), pa=document.getElementById('paisann');
+ if(!pu||!pa)return;
+ const countries=[...new Set([...(Object.keys(U.series||{})),...A.datos.map(x=>x.pais)])].sort((a,b)=>a.localeCompare(b,'es'));
+ countries.forEach(c=>{pu.add(new Option(c,c));pa.add(new Option(c,c));});
+ let uf,us;
+ const nf=new Intl.NumberFormat('es-AR',{maximumFractionDigits:1});
+ function renderU(){
+   const c=pu.value, rows=(U.series&&U.series[c])||[];
+   const tb=document.getElementById('tu'), note=document.getElementById('unote');
+   tb.innerHTML='';
+   if(!rows.length){
+     note.innerHTML='<b>Serie pendiente de carga:</b> la interfaz ya está preparada para este país. El archivo datos_unctad.js admite los valores oficiales de los anexos 02 y 04 del WIR 2026.';
+   }else note.textContent=U.meta.nota||'';
+   rows.forEach(r=>tb.insertAdjacentHTML('beforeend',`<tr><td>${r.anio}</td><td class="num">${nf.format(r.flow)}</td><td class="num">${nf.format(r.stock)}</td></tr>`));
+   if(uf)uf.destroy(); if(us)us.destroy();
+   uf=new Chart(document.getElementById('cuFlow'),{type:'line',data:{labels:rows.map(r=>r.anio),datasets:[{label:'Outflows',data:rows.map(r=>r.flow),borderWidth:2,tension:.2}]},options:{responsive:true,maintainAspectRatio:false}});
+   us=new Chart(document.getElementById('cuStock'),{type:'line',data:{labels:rows.map(r=>r.anio),datasets:[{label:'Outward stock',data:rows.map(r=>r.stock),borderWidth:2,tension:.2}]},options:{responsive:true,maintainAspectRatio:false}});
+ }
+ function renderA(){
+   const c=pa.value, rows=A.datos.filter(x=>x.pais===c).sort((a,b)=>b.monto-a.monto).slice(0,5), box=document.getElementById('anncards');
+   box.innerHTML=rows.length?'':'<div class="card empty">No se identificaron todavía anuncios verificables para este país.</div>';
+   rows.forEach((r,i)=>box.insertAdjacentHTML('beforeend',`<article class="ann"><div class="ml">#${i+1} · ${r.fecha}</div><h4>${r.empresa}</h4><div class="amount">USD ${nf.format(r.monto)} M</div><p><b>${r.proyecto}</b><br>${r.sector}<br>${r.estado}</p><a href="${r.url}" target="_blank" rel="noopener">Ver fuente · ${r.fuente}</a></article>`));
+ }
+ pu.addEventListener('change',renderU); pa.addEventListener('change',renderA);
+ const preferred=countries.find(c=>c.includes('Estados Unidos'))||countries[0];
+ if(preferred){pu.value=preferred;pa.value=preferred} renderU();renderA();
+})();
+</script>
+</body></html>
