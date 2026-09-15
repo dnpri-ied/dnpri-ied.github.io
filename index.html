@@ -73,12 +73,52 @@ footer{background:#fff;border-top:1px solid var(--bd);padding:24px 0;color:var(-
  .rigi-hero-btn{margin:10px 0 0 0;padding:9px 14px}
 }
 </style>
+
+<style>
+.site-title-row{
+  display:flex;
+  align-items:center;
+  width:100%;
+  gap:18px;
+}
+.site-title-row h1{margin:0}
+.site-title-row .rigi-hero-btn{
+  margin-left:auto;
+  padding:9px 16px;
+  border-radius:9px;
+  background:#1769aa;
+  color:#fff;
+  border:1px solid rgba(255,255,255,.35);
+  font-weight:800;
+  box-shadow:0 4px 14px rgba(0,0,0,.22);
+}
+@media(max-width:700px){
+  .site-title-row{gap:10px}
+  .site-title-row .rigi-hero-btn{padding:8px 12px}
+}
+</style>
+
+<style>
+.site-brand-rigi{
+  flex:1 1 auto;
+  min-width:0;
+}
+@media(max-width:700px){
+  .site-title-row{width:100%}
+  .site-title-row .rigi-hero-btn{margin-left:auto}
+}
+</style>
 </head>
 <body>
-<header><div class="c"><div class="top"><div><h1>IED ARGENTINA</h1><div class="sub">Sistema de información y análisis de inversión extranjera directa</div></div><button id="openRigi" type="button" class="rigi-hero-btn">
-  <span class="rigi-hero-icon">◆</span>
-  <span>Proyecto RIGI</span>
-</button><nav><a href="#dashboard">Dashboard</a><a href="#evolucion">Evolución</a><a href="#paises">Países</a><a href="#sectores">Sectores</a><a href="#composicion">Composición</a><a href="#unctad">UNCTAD</a><a href="#anuncios">Anuncios</a></nav></div>
+<header><div class="c"><div class="top"><div class="site-brand-rigi">
+  <div class="site-title-row">
+    <h1>IED ARGENTINA</h1>
+    <button id="openRigi" type="button" class="rigi-hero-btn">
+      <span>Proyectos RIGI</span>
+    </button>
+  </div>
+  <div class="sub">Sistema de información y análisis de inversión extranjera directa</div>
+</div><nav><a href="#dashboard">Dashboard</a><a href="#evolucion">Evolución</a><a href="#paises">Países</a><a href="#sectores">Sectores</a><a href="#composicion">Composición</a><a href="#unctad">UNCTAD</a><a href="#anuncios">Anuncios</a></nav></div>
 <div class="hero"><h2>Inversión extranjera directa en Argentina</h2><p>Consulta interactiva de flujos, posición pasiva bruta, países inversores y sectores receptores con información oficial del Banco Central de la República Argentina.</p></div></div></header>
 <main><div class="c">
 <div id="err" class="error">No se pudo cargar <b>datos_bcra.js</b>. Verificá que esté junto a index.html.</div>
