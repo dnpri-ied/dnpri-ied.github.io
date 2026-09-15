@@ -1,0 +1,1 @@
+window.DATOS_UNCTAD={"meta":{"fuente":"UNCTAD — World Investment Report 2026, Annex tables 02 and 04","periodo":"2017–2025","unidad":"Millones de USD","nota":"Outflows = IED realizada en el exterior por residentes de la economía; outward stock = stock acumulado de IED en el exterior."},"series":{}};
