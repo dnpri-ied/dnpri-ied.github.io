@@ -33,9 +33,52 @@ footer{background:#fff;border-top:1px solid var(--bd);padding:24px 0;color:var(-
 .ann a{font-size:12px;color:var(--b);font-weight:700;text-decoration:none}.empty{padding:22px;color:var(--mu);text-align:center}
 @media(max-width:900px){.ann-grid{grid-template-columns:1fr 1fr}}@media(max-width:560px){.ann-grid{grid-template-columns:1fr}}
 </style>
+
+<style>
+.rigi-static-chart{margin-top:14px}
+.rigi-row{display:grid;grid-template-columns:minmax(120px,190px) 1fr 34px;gap:10px;align-items:center;margin:9px 0;font-size:12px}
+.rigi-label{color:#475467;text-align:right}
+.rigi-bars{height:24px;display:flex;align-items:stretch;background:#f2f4f7;border-radius:6px;overflow:hidden}
+.rigi-a,.rigi-e{min-width:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff}
+.rigi-a{background:#1769aa}.rigi-e{background:#90a4ae}
+.rigi-total{font-weight:700;color:#344054}
+.rigi-legend{display:flex;gap:18px;justify-content:center;margin-top:15px;font-size:12px;color:#667085}
+.rigi-dot{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px}.rigi-dot.a{background:#1769aa}.rigi-dot.e{background:#90a4ae}
+@media(max-width:700px){.rigi-row{grid-template-columns:110px 1fr 28px}.rigi-label{font-size:11px}}
+</style>
+
+<style>
+.rigi-hero-btn{
+  margin-left:auto;
+  display:inline-flex;
+  align-items:center;
+  gap:9px;
+  padding:10px 17px;
+  border:1px solid rgba(255,255,255,.35);
+  border-radius:10px;
+  background:#1769aa;
+  color:#fff;
+  font:inherit;
+  font-weight:750;
+  letter-spacing:.1px;
+  cursor:pointer;
+  box-shadow:0 5px 16px rgba(0,0,0,.18);
+  transition:transform .15s ease,filter .15s ease,box-shadow .15s ease;
+  white-space:nowrap;
+}
+.rigi-hero-btn:hover{filter:brightness(1.1);transform:translateY(-1px);box-shadow:0 7px 20px rgba(0,0,0,.24)}
+.rigi-hero-btn:focus-visible{outline:3px solid rgba(255,255,255,.55);outline-offset:2px}
+.rigi-hero-icon{font-size:12px;opacity:.95}
+@media(max-width:850px){
+ .rigi-hero-btn{margin:10px 0 0 0;padding:9px 14px}
+}
+</style>
 </head>
 <body>
-<header><div class="c"><div class="top"><div><h1>IED ARGENTINA</h1><div class="sub">Sistema de información y análisis de inversión extranjera directa</div></div><nav><a href="#dashboard">Dashboard</a><a href="#evolucion">Evolución</a><a href="#paises">Países</a><a href="#sectores">Sectores</a><a href="#composicion">Composición</a><a href="#unctad">UNCTAD</a><a href="#anuncios">Anuncios</a><button id="openRigi" type="button" style="background:none;border:0;color:inherit;font:inherit;cursor:pointer;padding:0">Proyecto RIGI</button></nav></div>
+<header><div class="c"><div class="top"><div><h1>IED ARGENTINA</h1><div class="sub">Sistema de información y análisis de inversión extranjera directa</div></div><button id="openRigi" type="button" class="rigi-hero-btn">
+  <span class="rigi-hero-icon">◆</span>
+  <span>Proyecto RIGI</span>
+</button><nav><a href="#dashboard">Dashboard</a><a href="#evolucion">Evolución</a><a href="#paises">Países</a><a href="#sectores">Sectores</a><a href="#composicion">Composición</a><a href="#unctad">UNCTAD</a><a href="#anuncios">Anuncios</a></nav></div>
 <div class="hero"><h2>Inversión extranjera directa en Argentina</h2><p>Consulta interactiva de flujos, posición pasiva bruta, países inversores y sectores receptores con información oficial del Banco Central de la República Argentina.</p></div></div></header>
 <main><div class="c">
 <div id="err" class="error">No se pudo cargar <b>datos_bcra.js</b>. Verificá que esté junto a index.html.</div>
@@ -154,12 +197,229 @@ per.addEventListener('change',update);document.getElementById('topn').addEventLi
 <div class="kpi"><div class="k">Países identificados</div><div class="v">14</div><div class="s">Origen de las empresas participantes</div></div>
 </div>
 <div class="grid" style="margin-top:16px">
-<div class="card"><div class="ml">Proyectos por provincia</div><div class="chart"><canvas id="rprov"></canvas></div></div>
-<div class="card"><div class="ml">Proyectos por sector</div><div class="chart"><canvas id="rsector"></canvas></div></div>
+<div class="card"><div class="ml">Proyectos por provincia</div><div class="rigi-static-chart" aria-label="Proyectos por provincia"><div class="rigi-row">
+          <div class="rigi-label">Mendoza</div>
+          <div class="rigi-bars">
+            <div class="rigi-a" style="width:22.22%">2</div>
+            <div class="rigi-e" style="width:0.00%"></div>
+          </div>
+          <div class="rigi-total">2</div>
+        </div><div class="rigi-row">
+          <div class="rigi-label">Buenos Aires</div>
+          <div class="rigi-bars">
+            <div class="rigi-a" style="width:66.67%">6</div>
+            <div class="rigi-e" style="width:11.11%">1</div>
+          </div>
+          <div class="rigi-total">7</div>
+        </div><div class="rigi-row">
+          <div class="rigi-label">Río Negro</div>
+          <div class="rigi-bars">
+            <div class="rigi-a" style="width:33.33%">3</div>
+            <div class="rigi-e" style="width:11.11%">1</div>
+          </div>
+          <div class="rigi-total">4</div>
+        </div><div class="rigi-row">
+          <div class="rigi-label">Salta</div>
+          <div class="rigi-bars">
+            <div class="rigi-a" style="width:11.11%">1</div>
+            <div class="rigi-e" style="width:33.33%">3</div>
+          </div>
+          <div class="rigi-total">4</div>
+        </div><div class="rigi-row">
+          <div class="rigi-label">Catamarca</div>
+          <div class="rigi-bars">
+            <div class="rigi-a" style="width:33.33%">3</div>
+            <div class="rigi-e" style="width:44.44%">4</div>
+          </div>
+          <div class="rigi-total">7</div>
+        </div><div class="rigi-row">
+          <div class="rigi-label">San Juan</div>
+          <div class="rigi-bars">
+            <div class="rigi-a" style="width:44.44%">4</div>
+            <div class="rigi-e" style="width:11.11%">1</div>
+          </div>
+          <div class="rigi-total">5</div>
+        </div><div class="rigi-row">
+          <div class="rigi-label">Santa Fe</div>
+          <div class="rigi-bars">
+            <div class="rigi-a" style="width:11.11%">1</div>
+            <div class="rigi-e" style="width:0.00%"></div>
+          </div>
+          <div class="rigi-total">1</div>
+        </div><div class="rigi-row">
+          <div class="rigi-label">Neuquén</div>
+          <div class="rigi-bars">
+            <div class="rigi-a" style="width:33.33%">3</div>
+            <div class="rigi-e" style="width:66.67%">6</div>
+          </div>
+          <div class="rigi-total">9</div>
+        </div><div class="rigi-row">
+          <div class="rigi-label">Jujuy</div>
+          <div class="rigi-bars">
+            <div class="rigi-a" style="width:11.11%">1</div>
+            <div class="rigi-e" style="width:0.00%"></div>
+          </div>
+          <div class="rigi-total">1</div>
+        </div><div class="rigi-row">
+          <div class="rigi-label">Chubut</div>
+          <div class="rigi-bars">
+            <div class="rigi-a" style="width:0.00%"></div>
+            <div class="rigi-e" style="width:11.11%">1</div>
+          </div>
+          <div class="rigi-total">1</div>
+        </div><div class="rigi-legend"><span><i class="rigi-dot a"></i>Aprobados</span><span><i class="rigi-dot e"></i>En estudio</span></div></div></div>
+<div class="card"><div class="ml">Proyectos por sector</div><div class="rigi-static-chart" aria-label="Proyectos por sector"><div class="rigi-row">
+          <div class="rigi-label">Energías Renovables</div>
+          <div class="rigi-bars">
+            <div class="rigi-a" style="width:11.76%">2</div>
+            <div class="rigi-e" style="width:5.88%">1</div>
+          </div>
+          <div class="rigi-total">3</div>
+        </div><div class="rigi-row">
+          <div class="rigi-label">Hidrocarburos</div>
+          <div class="rigi-bars">
+            <div class="rigi-a" style="width:35.29%">6</div>
+            <div class="rigi-e" style="width:64.71%">11</div>
+          </div>
+          <div class="rigi-total">17</div>
+        </div><div class="rigi-row">
+          <div class="rigi-label">Minería</div>
+          <div class="rigi-bars">
+            <div class="rigi-a" style="width:70.59%">12</div>
+            <div class="rigi-e" style="width:23.53%">4</div>
+          </div>
+          <div class="rigi-total">16</div>
+        </div><div class="rigi-row">
+          <div class="rigi-label">Industria</div>
+          <div class="rigi-bars">
+            <div class="rigi-a" style="width:17.65%">3</div>
+            <div class="rigi-e" style="width:0.00%"></div>
+          </div>
+          <div class="rigi-total">3</div>
+        </div><div class="rigi-legend"><span><i class="rigi-dot a"></i>Aprobados</span><span><i class="rigi-dot e"></i>En estudio</span></div></div></div>
 </div>
 <div class="grid" style="margin-top:16px">
-<div class="card"><div class="ml">Proyectos por país de origen</div><div class="chart" style="height:430px"><canvas id="rpais"></canvas></div></div>
-<div class="card"><div class="ml">Minería: proyectos por mineral</div><div class="chart"><canvas id="rmin"></canvas></div></div>
+<div class="card"><div class="ml">Proyectos por país de origen</div><div class="rigi-static-chart" aria-label="Proyectos por país de origen"><div class="rigi-row">
+          <div class="rigi-label">Argentina</div>
+          <div class="rigi-bars">
+            <div class="rigi-a" style="width:39.13%">9</div>
+            <div class="rigi-e" style="width:60.87%">14</div>
+          </div>
+          <div class="rigi-total">23</div>
+        </div><div class="rigi-row">
+          <div class="rigi-label">Noruega</div>
+          <div class="rigi-bars">
+            <div class="rigi-a" style="width:8.70%">2</div>
+            <div class="rigi-e" style="width:0.00%"></div>
+          </div>
+          <div class="rigi-total">2</div>
+        </div><div class="rigi-row">
+          <div class="rigi-label">Reino Unido</div>
+          <div class="rigi-bars">
+            <div class="rigi-a" style="width:21.74%">5</div>
+            <div class="rigi-e" style="width:4.35%">1</div>
+          </div>
+          <div class="rigi-total">6</div>
+        </div><div class="rigi-row">
+          <div class="rigi-label">Australia</div>
+          <div class="rigi-bars">
+            <div class="rigi-a" style="width:8.70%">2</div>
+            <div class="rigi-e" style="width:0.00%"></div>
+          </div>
+          <div class="rigi-total">2</div>
+        </div><div class="rigi-row">
+          <div class="rigi-label">Canadá</div>
+          <div class="rigi-bars">
+            <div class="rigi-a" style="width:21.74%">5</div>
+            <div class="rigi-e" style="width:0.00%"></div>
+          </div>
+          <div class="rigi-total">5</div>
+        </div><div class="rigi-row">
+          <div class="rigi-label">Corea del Sur</div>
+          <div class="rigi-bars">
+            <div class="rigi-a" style="width:4.35%">1</div>
+            <div class="rigi-e" style="width:0.00%"></div>
+          </div>
+          <div class="rigi-total">1</div>
+        </div><div class="rigi-row">
+          <div class="rigi-label">China</div>
+          <div class="rigi-bars">
+            <div class="rigi-a" style="width:8.70%">2</div>
+            <div class="rigi-e" style="width:8.70%">2</div>
+          </div>
+          <div class="rigi-total">4</div>
+        </div><div class="rigi-row">
+          <div class="rigi-label">Suiza</div>
+          <div class="rigi-bars">
+            <div class="rigi-a" style="width:8.70%">2</div>
+            <div class="rigi-e" style="width:8.70%">2</div>
+          </div>
+          <div class="rigi-total">4</div>
+        </div><div class="rigi-row">
+          <div class="rigi-label">Estados Unidos</div>
+          <div class="rigi-bars">
+            <div class="rigi-a" style="width:4.35%">1</div>
+            <div class="rigi-e" style="width:4.35%">1</div>
+          </div>
+          <div class="rigi-total">2</div>
+        </div><div class="rigi-row">
+          <div class="rigi-label">India</div>
+          <div class="rigi-bars">
+            <div class="rigi-a" style="width:4.35%">1</div>
+            <div class="rigi-e" style="width:0.00%"></div>
+          </div>
+          <div class="rigi-total">1</div>
+        </div><div class="rigi-row">
+          <div class="rigi-label">España</div>
+          <div class="rigi-bars">
+            <div class="rigi-a" style="width:4.35%">1</div>
+            <div class="rigi-e" style="width:0.00%"></div>
+          </div>
+          <div class="rigi-total">1</div>
+        </div><div class="rigi-row">
+          <div class="rigi-label">Italia</div>
+          <div class="rigi-bars">
+            <div class="rigi-a" style="width:0.00%"></div>
+            <div class="rigi-e" style="width:4.35%">1</div>
+          </div>
+          <div class="rigi-total">1</div>
+        </div><div class="rigi-row">
+          <div class="rigi-label">Emiratos Árabes Unidos</div>
+          <div class="rigi-bars">
+            <div class="rigi-a" style="width:0.00%"></div>
+            <div class="rigi-e" style="width:4.35%">1</div>
+          </div>
+          <div class="rigi-total">1</div>
+        </div><div class="rigi-row">
+          <div class="rigi-label">Países Bajos</div>
+          <div class="rigi-bars">
+            <div class="rigi-a" style="width:4.35%">1</div>
+            <div class="rigi-e" style="width:0.00%"></div>
+          </div>
+          <div class="rigi-total">1</div>
+        </div><div class="rigi-legend"><span><i class="rigi-dot a"></i>Aprobados</span><span><i class="rigi-dot e"></i>En estudio</span></div></div></div>
+<div class="card"><div class="ml">Minería: proyectos por mineral</div><div class="rigi-static-chart" aria-label="Minería: proyectos por mineral"><div class="rigi-row">
+          <div class="rigi-label">Litio</div>
+          <div class="rigi-bars">
+            <div class="rigi-a" style="width:75.00%">6</div>
+            <div class="rigi-e" style="width:25.00%">2</div>
+          </div>
+          <div class="rigi-total">8</div>
+        </div><div class="rigi-row">
+          <div class="rigi-label">Cobre</div>
+          <div class="rigi-bars">
+            <div class="rigi-a" style="width:37.50%">3</div>
+            <div class="rigi-e" style="width:25.00%">2</div>
+          </div>
+          <div class="rigi-total">5</div>
+        </div><div class="rigi-row">
+          <div class="rigi-label">Oro</div>
+          <div class="rigi-bars">
+            <div class="rigi-a" style="width:50.00%">4</div>
+            <div class="rigi-e" style="width:0.00%"></div>
+          </div>
+          <div class="rigi-total">4</div>
+        </div><div class="rigi-legend"><span><i class="rigi-dot a"></i>Aprobados</span><span><i class="rigi-dot e"></i>En estudio</span></div></div></div>
 </div>
 <div class="note" style="margin-top:14px"><b>Nota provincial:</b> Salta y Catamarca comparten dos proyectos, uno aprobado y otro en estudio. Se apunta Cía. Mega en Buenos Aires.</div>
 <div class="note" style="margin-top:8px"><b>Nota minería:</b> existen proyectos en los cuales se extraen varios minerales o metales a la vez. Por ese motivo, los totales de los distintos cuadros no deben sumarse entre sí.</div>
@@ -170,62 +430,9 @@ per.addEventListener('change',update);document.getElementById('topn').addEventLi
 
 <script>
 (function(){
- const m=document.getElementById('rigiModal');
- const o=document.getElementById('openRigi');
- const c=document.getElementById('closeRigi');
- let chartsCreated=false;
-
- function createRigiCharts(){
-   if(chartsCreated) {
-     setTimeout(()=>window.dispatchEvent(new Event('resize')),50);
-     return;
-   }
-   const R=window.DATOS_RIGI;
-   if(!R || typeof Chart==='undefined') return;
-
-   const mk=(id,rows,horizontal=false)=>{
-     const ctx=document.getElementById(id);
-     if(!ctx) return;
-     return new Chart(ctx,{
-       type:'bar',
-       data:{
-         labels:rows.map(x=>x.nombre),
-         datasets:[
-           {label:'Aprobados',data:rows.map(x=>x.aprobados),backgroundColor:'#1769aa'},
-           {label:'En estudio',data:rows.map(x=>x.estudio),backgroundColor:'#90a4ae'}
-         ]
-       },
-       options:{
-         responsive:true,
-         maintainAspectRatio:false,
-         indexAxis:horizontal?'y':'x',
-         plugins:{legend:{position:'bottom'}},
-         scales: horizontal
-           ? {x:{stacked:true,beginAtZero:true},y:{stacked:true}}
-           : {x:{stacked:true},y:{stacked:true,beginAtZero:true}}
-       }
-     });
-   };
-
-   mk('rprov',R.provincia,true);
-   mk('rsector',R.sector,false);
-   mk('rpais',R.pais,true);
-   mk('rmin',R.mineria,false);
-   chartsCreated=true;
-   setTimeout(()=>window.dispatchEvent(new Event('resize')),80);
- }
-
- function openRigi(){
-   m.style.display='block';
-   m.setAttribute('aria-hidden','false');
-   document.body.style.overflow='hidden';
-   requestAnimationFrame(()=>requestAnimationFrame(createRigiCharts));
- }
- function closeRigi(){
-   m.style.display='none';
-   m.setAttribute('aria-hidden','true');
-   document.body.style.overflow='';
- }
+ const m=document.getElementById('rigiModal'),o=document.getElementById('openRigi'),c=document.getElementById('closeRigi');
+ function openRigi(){m.style.display='block';m.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';}
+ function closeRigi(){m.style.display='none';m.setAttribute('aria-hidden','true');document.body.style.overflow='';}
  if(o)o.addEventListener('click',openRigi);
  if(c)c.addEventListener('click',closeRigi);
  if(m)m.addEventListener('click',e=>{if(e.target===m)closeRigi();});
