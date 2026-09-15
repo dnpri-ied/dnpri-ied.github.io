@@ -108,17 +108,39 @@ footer{background:#fff;border-top:1px solid var(--bd);padding:24px 0;color:var(-
   .site-title-row .rigi-hero-btn{margin-left:auto}
 }
 </style>
+
+<style>
+.rigi-header-row{display:flex!important;align-items:center!important;justify-content:space-between!important;width:100%!important;gap:30px!important;flex-wrap:nowrap!important}
+.rigi-header-row .rigi-hero-btn{
+  margin-left:auto!important;
+  margin-right:0!important;
+  flex:0 0 auto!important;
+  background:#0d6efd!important;
+  color:#fff!important;
+  padding:11px 20px!important;
+  border:1px solid rgba(255,255,255,.45)!important;
+  border-radius:10px!important;
+  font-weight:800!important;
+  box-shadow:0 6px 18px rgba(0,0,0,.25)!important;
+}
+.main-nav{margin-top:22px!important;display:flex!important;justify-content:flex-end!important;gap:18px!important}
+@media(max-width:700px){
+  .rigi-header-row{flex-wrap:wrap!important}
+  .rigi-header-row .rigi-hero-btn{margin-left:0!important}
+  .main-nav{justify-content:flex-start!important}
+}
+</style>
 </head>
 <body>
-<header><div class="c"><div class="top"><div class="site-brand-rigi">
-  <div class="site-title-row">
+<header><div class="c">
+<div class="top rigi-header-row">
+  <div>
     <h1>IED ARGENTINA</h1>
-    <button id="openRigi" type="button" class="rigi-hero-btn">
-      <span>Proyectos RIGI</span>
-    </button>
+    <div class="sub">Sistema de información y análisis de inversión extranjera directa</div>
   </div>
-  <div class="sub">Sistema de información y análisis de inversión extranjera directa</div>
-</div><nav><a href="#dashboard">Dashboard</a><a href="#evolucion">Evolución</a><a href="#paises">Países</a><a href="#sectores">Sectores</a><a href="#composicion">Composición</a><a href="#unctad">UNCTAD</a><a href="#anuncios">Anuncios</a></nav></div>
+  <button id="openRigi" type="button" class="rigi-hero-btn"><span>Proyectos RIGI</span></button>
+</div>
+<nav class="main-nav"><a href="#dashboard">Dashboard</a><a href="#evolucion">Evolución</a><a href="#paises">Países</a><a href="#sectores">Sectores</a><a href="#composicion">Composición</a><a href="#unctad">UNCTAD</a><a href="#anuncios">Anuncios</a></nav>
 <div class="hero"><h2>Inversión extranjera directa en Argentina</h2><p>Consulta interactiva de flujos, posición pasiva bruta, países inversores y sectores receptores con información oficial del Banco Central de la República Argentina.</p></div></div></header>
 <main><div class="c">
 <div id="err" class="error">No se pudo cargar <b>datos_bcra.js</b>. Verificá que esté junto a index.html.</div>
