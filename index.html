@@ -167,6 +167,62 @@ header .c{position:relative!important;}
   .main-nav{justify-content:flex-start!important;flex-wrap:wrap!important;}
 }
 </style>
+
+<style>
+.header-actions{
+  position:absolute!important;
+  top:30px!important;
+  right:0!important;
+  z-index:60!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:12px!important;
+}
+.header-actions .rigi-hero-btn{
+  position:static!important;
+  top:auto!important;
+  right:auto!important;
+}
+.ficha-pais-btn{
+  display:inline-flex;
+  align-items:center;
+  padding:12px 22px;
+  border:1px solid rgba(255,255,255,.55);
+  border-radius:10px;
+  background:#fff;
+  color:#163f73;
+  font:inherit;
+  font-size:15px;
+  font-weight:800;
+  cursor:pointer;
+  box-shadow:0 6px 18px rgba(0,0,0,.20);
+}
+.ficha-pais-btn:hover{filter:brightness(.97);transform:translateY(-1px)}
+.fp-modal{display:none;position:fixed;inset:0;z-index:10020;background:rgba(5,18,38,.68);padding:22px;overflow:auto}
+.fp-shell{max-width:1080px;margin:18px auto;background:#f8fafc;border-radius:18px;box-shadow:0 24px 70px rgba(0,0,0,.32);overflow:hidden}
+.fp-head{background:linear-gradient(135deg,#0b1f3a,#163f73);color:#fff;padding:22px 26px;display:flex;justify-content:space-between;gap:18px;align-items:flex-start}
+.fp-head h2{margin:0 0 5px;font-size:27px}.fp-head p{margin:0;color:#d9e3f0;font-size:13px}
+.fp-close{border:0;background:transparent;color:#fff;font-size:30px;line-height:1;cursor:pointer}
+.fp-body{padding:22px 26px 28px}
+.fp-toolbar{display:flex;align-items:end;gap:14px;flex-wrap:wrap;background:#fff;border:1px solid #e4e7ec;border-radius:14px;padding:14px 16px;margin-bottom:16px}
+.fp-toolbar .field{min-width:230px}
+.fp-add{margin-left:auto;border:1px solid #cfd7e6;background:#eef4ff;color:#163f73;border-radius:9px;padding:10px 14px;font-weight:750;cursor:pointer}
+.fp-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:0 0 16px}
+.fp-kpi{background:#fff;border:1px solid #e4e7ec;border-radius:13px;padding:15px}
+.fp-kpi .lab{font-size:12px;color:#667085}.fp-kpi .val{font-size:23px;font-weight:800;margin-top:5px}.fp-kpi .small{font-size:12px;color:#667085;margin-top:4px}
+.fp-section{background:#fff;border:1px solid #e4e7ec;border-radius:13px;margin-top:10px;overflow:hidden}
+.fp-section summary{cursor:pointer;padding:16px 18px;font-weight:800;color:#172033}
+.fp-content{padding:0 18px 18px;color:#344054;font-size:14px;line-height:1.55}
+.fp-content ul{margin:8px 0 0 20px;padding:0}.fp-content li{margin:6px 0}
+.fp-source{font-size:11px;color:#667085;margin-top:12px;padding-top:10px;border-top:1px solid #eef0f3}
+.fp-badge{display:inline-block;border-radius:999px;padding:4px 8px;background:#eef4ff;color:#163f73;font-size:11px;font-weight:700;margin-right:5px}
+.fp-login-note{display:none;margin-top:12px;background:#fffaeb;border:1px solid #fedf89;border-radius:10px;padding:12px 14px;font-size:13px;color:#7a2e0e}
+@media(max-width:850px){
+  .header-actions{position:static!important;margin-top:14px!important;flex-wrap:wrap}
+  .fp-summary{grid-template-columns:1fr}
+  .fp-add{margin-left:0}
+}
+</style>
 </head>
 <body>
 <header><div class="c">
@@ -175,7 +231,10 @@ header .c{position:relative!important;}
     <h1>IED ARGENTINA</h1>
     <div class="sub">Sistema de información y análisis de inversión extranjera directa</div>
   </div>
+  <div class="header-actions">
+  <button id="openFichaPais" type="button" class="ficha-pais-btn"><span>Ficha País</span></button>
   <button id="openRigi" type="button" class="rigi-hero-btn"><span>Proyectos RIGI</span></button>
+</div>
 </div>
 <nav class="main-nav"><a href="#dashboard">Dashboard</a><a href="#evolucion">Evolución</a><a href="#paises">Países</a><a href="#sectores">Sectores</a><a href="#composicion">Composición</a><a href="#unctad">UNCTAD</a><a href="#anuncios">Anuncios</a></nav>
 <div class="hero"><h2>Inversión extranjera directa en Argentina</h2><p>Consulta interactiva de flujos, posición pasiva bruta, países inversores y sectores receptores con información oficial del Banco Central de la República Argentina.</p></div></div></header>
@@ -538,4 +597,114 @@ per.addEventListener('change',update);document.getElementById('topn').addEventLi
  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&m&&m.style.display==='block')closeRigi();});
 })();
 </script>
+
+<div id="fichaPaisModal" class="fp-modal" aria-hidden="true">
+  <div class="fp-shell">
+    <div class="fp-head">
+      <div>
+        <h2>Ficha País</h2>
+        <p>Perfil ejecutivo de inversión y oportunidades para la Argentina.</p>
+      </div>
+      <button id="closeFichaPais" class="fp-close" type="button" aria-label="Cerrar">×</button>
+    </div>
+    <div class="fp-body">
+      <div class="fp-toolbar">
+        <div class="field">
+          <label for="fpCountry">País</label>
+          <select id="fpCountry">
+            <option value="india">India</option>
+          </select>
+        </div>
+        <div>
+          <span class="fp-badge">Piloto</span>
+          <span class="fp-badge">Actualización: septiembre 2026</span>
+        </div>
+        <button id="fpAddInfo" class="fp-add" type="button">🔒 Agregar información</button>
+      </div>
+
+      <div id="fpLoginNote" class="fp-login-note">
+        La carga estará restringida a usuarios autorizados de DNPRI. La autenticación y el circuito de aprobación se incorporarán en la siguiente etapa.
+      </div>
+
+      <div class="fp-summary">
+        <div class="fp-kpi"><div class="lab">Stock mundial de IED saliente</div><div class="val">USD 296.446 M</div><div class="small">27° posición mundial · UNCTAD 2025</div></div>
+        <div class="fp-kpi"><div class="lab">Stock de India en Argentina</div><div class="val">USD 141,5 M</div><div class="small">40° inversor · BCRA, 1° trim. 2026</div></div>
+        <div class="fp-kpi"><div class="lab">Sectores de oportunidad</div><div class="val">4</div><div class="small">Minería · Energía · Agronegocios · TIC</div></div>
+      </div>
+
+      <details class="fp-section" open>
+        <summary>1. Perfil inversor internacional</summary>
+        <div class="fp-content">
+          India registró en 2025 un stock de IED saliente de USD 296.446 millones, ubicándose en el puesto 27 entre las economías con mayor stock inversor en el exterior. Entre los destinos destacados de la inversión india se encuentran Singapur, Estados Unidos, Reino Unido y Países Bajos, con presencia relevante en manufacturas, servicios y minería.
+          <div class="fp-source">Fuentes: UNCTAD, World Investment Report 2026 / base UNCTADstat incorporada al sitio; documento DNPRI de referencia.</div>
+        </div>
+      </details>
+
+      <details class="fp-section">
+        <summary>2. India como inversor en Argentina</summary>
+        <div class="fp-content">
+          De acuerdo con la última información BCRA incorporada al sitio, al primer trimestre de 2026 India registra una posición pasiva bruta de aproximadamente USD 141,5 millones y ocupa el puesto 40 entre los países inversores. A fines de 2025 el stock era de aproximadamente USD 134 millones.
+          <div class="fp-source">Fuente: BCRA, Anexo del Informe de Inversión Extranjera Directa. Datos cargados en DNPRI-IED.</div>
+        </div>
+      </details>
+
+      <details class="fp-section">
+        <summary>3. Empresas e inversiones vinculadas con Argentina</summary>
+        <div class="fp-content">
+          <ul>
+            <li>Entre las empresas de origen indio con presencia u operaciones vinculadas con Argentina se identifican Tata, Mahindra, Infosys, AEGIS, Hero, TVS Motor, Bajaj, UPL y Hinduja.</li>
+            <li>Mphasis inauguró en 2025 un centro de servicios tecnológicos orientado al sector bancario en Buenos Aires.</li>
+            <li>KABIL mantiene una vinculación con CAMYEN, en Catamarca, para exploración y desarrollo de oportunidades vinculadas al litio.</li>
+            <li>Empresas argentinas como Globant, Techint e IMPSA han desarrollado actividades en el mercado indio.</li>
+          </ul>
+          <div class="fp-source">Base: documento DNPRI aportado para la ficha. Complemento y contraste con fuentes públicas oficiales de Argentina e India.</div>
+        </div>
+      </details>
+
+      <details class="fp-section">
+        <summary>4. Sectores con potencial para nuevas inversiones</summary>
+        <div class="fp-content">
+          <ul>
+            <li><b>Minería:</b> litio, cobre y otros minerales críticos. La necesidad india de diversificar proveedores y fortalecer sus cadenas de suministro abre oportunidades para proyectos argentinos.</li>
+            <li><b>Energía:</b> petróleo, gas y GNL, incluyendo oportunidades asociadas al desarrollo exportador argentino.</li>
+            <li><b>Agronegocios:</b> alimentos, proteínas, legumbres y cadenas agroindustriales.</li>
+            <li><b>Tecnología y servicios:</b> software, servicios empresariales, fintech y centros tecnológicos.</li>
+          </ul>
+          <div class="fp-source">Fuentes: documento DNPRI; Secretaría de Minería de la Nación; Economic Survey 2025-26 de India.</div>
+        </div>
+      </details>
+
+      <details class="fp-section">
+        <summary>5. Novedades y casos destacados</summary>
+        <div class="fp-content">
+          <ul>
+            <li>Argentina e India profundizaron la cooperación en minerales críticos mediante el Grupo de Trabajo Conjunto en Recursos Mineros y sus subgrupos de exploración e inversiones.</li>
+            <li>La presencia de KABIL en Argentina se vincula con la estrategia india de asegurar suministros externos de litio y otros minerales críticos.</li>
+            <li>Se registran contactos y gestiones con empresas indias de minería, energía, industria, tecnología y agronegocios para analizar oportunidades en Argentina.</li>
+            <li>Entre los casos de repercusión reciente se encuentran operaciones o contratos vinculados con Adani, Welspun y KABIL.</li>
+          </ul>
+          <div class="fp-source">Fuentes: documento DNPRI; Argentina.gob.ar; Invest India / Economic Survey 2025-26. Las novedades deberán revisarse periódicamente.</div>
+        </div>
+      </details>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const modal=document.getElementById('fichaPaisModal');
+  const open=document.getElementById('openFichaPais');
+  const close=document.getElementById('closeFichaPais');
+  const add=document.getElementById('fpAddInfo');
+  const note=document.getElementById('fpLoginNote');
+  function show(){modal.style.display='block';modal.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';}
+  function hide(){modal.style.display='none';modal.setAttribute('aria-hidden','true');document.body.style.overflow='';}
+  if(open)open.addEventListener('click',show);
+  if(close)close.addEventListener('click',hide);
+  if(modal)modal.addEventListener('click',e=>{if(e.target===modal)hide();});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&modal&&modal.style.display==='block')hide();});
+  if(add)add.addEventListener('click',()=>{note.style.display=note.style.display==='block'?'none':'block';});
+})();
+</script>
+
 </body></html>
