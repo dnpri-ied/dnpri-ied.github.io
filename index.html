@@ -35,7 +35,7 @@ footer{background:#fff;border-top:1px solid var(--bd);padding:24px 0;color:var(-
 </style>
 </head>
 <body>
-<header><div class="c"><div class="top"><div><h1>IED ARGENTINA</h1><div class="sub">Sistema de información y análisis de inversión extranjera directa</div></div><nav><a href="#dashboard">Dashboard</a><a href="#evolucion">Evolución</a><a href="#paises">Países</a><a href="#sectores">Sectores</a><a href="#composicion">Composición</a><a href="#unctad">UNCTAD</a><a href="#anuncios">Anuncios</a><a href="#rigi">RIGI</a></nav></div>
+<header><div class="c"><div class="top"><div><h1>IED ARGENTINA</h1><div class="sub">Sistema de información y análisis de inversión extranjera directa</div></div><nav><a href="#dashboard">Dashboard</a><a href="#evolucion">Evolución</a><a href="#paises">Países</a><a href="#sectores">Sectores</a><a href="#composicion">Composición</a><a href="#unctad">UNCTAD</a><a href="#anuncios">Anuncios</a><button id="openRigi" type="button" style="background:none;border:0;color:inherit;font:inherit;cursor:pointer;padding:0">Proyecto RIGI</button></nav></div>
 <div class="hero"><h2>Inversión extranjera directa en Argentina</h2><p>Consulta interactiva de flujos, posición pasiva bruta, países inversores y sectores receptores con información oficial del Banco Central de la República Argentina.</p></div></div></header>
 <main><div class="c">
 <div id="err" class="error">No se pudo cargar <b>datos_bcra.js</b>. Verificá que esté junto a index.html.</div>
@@ -72,52 +72,6 @@ footer{background:#fff;border-top:1px solid var(--bd);padding:24px 0;color:var(-
 
 <div class="note"><b>Fuente:</b> BCRA, Anexo del Informe de Inversión Extranjera Directa. Las series desde 2017 provienen del Relevamiento de Activos y Pasivos Externos. Valores en millones de dólares estadounidenses.</div>
 </div>
-
-<section id="rigi">
-  <div class="title">
-    <h3>RIGI</h3>
-    <p>Proyectos de inversión vinculados al Régimen de Incentivo para Grandes Inversiones.</p>
-  </div>
-
-  <details class="card" style="padding:0;overflow:hidden">
-    <summary style="cursor:pointer;padding:18px 20px;font-weight:700;font-size:17px;list-style-position:inside">
-      Proyecto RIGI
-    </summary>
-
-    <div style="padding:0 20px 20px">
-      <div class="cards">
-        <div class="kpi"><div class="k">Proyectos por provincia</div><div class="v">41</div><div class="s">24 aprobados · 17 en estudio*</div></div>
-        <div class="kpi"><div class="k">Proyectos por sector</div><div class="v">39</div><div class="s">23 aprobados · 16 en estudio</div></div>
-        <div class="kpi"><div class="k">Principal sector</div><div class="v">43,6%</div><div class="s">Hidrocarburos · 17 proyectos</div></div>
-        <div class="kpi"><div class="k">Países identificados</div><div class="v">14</div><div class="s">Origen de las empresas participantes</div></div>
-      </div>
-
-      <details class="card" style="margin-top:14px">
-        <summary style="cursor:pointer;font-weight:700">Proyectos por provincia</summary>
-        <div class="chart" style="height:420px;margin-top:14px"><canvas id="rprov"></canvas></div>
-      </details>
-
-      <details class="card" style="margin-top:12px">
-        <summary style="cursor:pointer;font-weight:700">Proyectos por sector</summary>
-        <div class="chart" style="height:360px;margin-top:14px"><canvas id="rsector"></canvas></div>
-      </details>
-
-      <details class="card" style="margin-top:12px">
-        <summary style="cursor:pointer;font-weight:700">Proyectos por país de origen</summary>
-        <div class="chart" style="height:520px;margin-top:14px"><canvas id="rpais"></canvas></div>
-      </details>
-
-      <details class="card" style="margin-top:12px">
-        <summary style="cursor:pointer;font-weight:700">Minería: proyectos por mineral</summary>
-        <div class="chart" style="height:340px;margin-top:14px"><canvas id="rmin"></canvas></div>
-      </details>
-
-      <div class="note" style="margin-top:14px"><b>Nota provincial:</b> Salta y Catamarca comparten dos proyectos, uno aprobado y otro en estudio. Se apunta Cía. Mega en Buenos Aires.</div>
-      <div class="note" style="margin-top:8px"><b>Nota minería:</b> existen proyectos en los cuales se extraen varios minerales o metales a la vez. Por ese motivo, los totales de los distintos cuadros no deben sumarse entre sí.</div>
-      <div class="source">Fuente: elaboración sobre la solapa “Gráficos” del archivo RIGI — agosto de 2026.</div>
-    </div>
-  </details>
-</section>
 
 </main><footer><div class="c">IED Argentina · Fuente estadística: Banco Central de la República Argentina</div></footer>
 <script>
@@ -201,6 +155,44 @@ per.addEventListener('change',update);document.getElementById('topn').addEventLi
  mk('rsector',R.sector,false);
  mk('rpais',R.pais,true);
  mk('rmin',R.mineria,false);
+})();
+</script>
+
+<div id="rigiModal" aria-hidden="true" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.55);padding:24px;overflow:auto">
+  <div style="max-width:1180px;margin:20px auto;background:var(--card,#fff);border-radius:16px;padding:22px;position:relative;box-shadow:0 20px 60px rgba(0,0,0,.25)">
+    <button id="closeRigi" type="button" aria-label="Cerrar" style="position:absolute;right:18px;top:14px;border:0;background:transparent;font-size:30px;cursor:pointer;color:inherit">×</button>
+    <div class="title"><h3>Proyecto RIGI</h3><p>Proyectos aprobados y en estudio vinculados al Régimen de Incentivo para Grandes Inversiones.</p></div>
+    
+<div class="cards">
+<div class="kpi"><div class="k">Proyectos por provincia</div><div class="v">41</div><div class="s">24 aprobados · 17 en estudio*</div></div>
+<div class="kpi"><div class="k">Proyectos por sector</div><div class="v">39</div><div class="s">23 aprobados · 16 en estudio</div></div>
+<div class="kpi"><div class="k">Principal sector</div><div class="v">43,6%</div><div class="s">Hidrocarburos · 17 proyectos</div></div>
+<div class="kpi"><div class="k">Países identificados</div><div class="v">14</div><div class="s">Origen de las empresas participantes</div></div>
+</div>
+<div class="grid" style="margin-top:16px">
+<div class="card"><div class="ml">Proyectos por provincia</div><div class="chart"><canvas id="rprov"></canvas></div></div>
+<div class="card"><div class="ml">Proyectos por sector</div><div class="chart"><canvas id="rsector"></canvas></div></div>
+</div>
+<div class="grid" style="margin-top:16px">
+<div class="card"><div class="ml">Proyectos por país de origen</div><div class="chart" style="height:430px"><canvas id="rpais"></canvas></div></div>
+<div class="card"><div class="ml">Minería: proyectos por mineral</div><div class="chart"><canvas id="rmin"></canvas></div></div>
+</div>
+<div class="note" style="margin-top:14px"><b>Nota provincial:</b> Salta y Catamarca comparten dos proyectos, uno aprobado y otro en estudio. Se apunta Cía. Mega en Buenos Aires.</div>
+<div class="note" style="margin-top:8px"><b>Nota minería:</b> existen proyectos en los cuales se extraen varios minerales o metales a la vez. Por ese motivo, los totales de los distintos cuadros no deben sumarse entre sí.</div>
+<div class="source">Fuente: elaboración sobre la solapa “Gráficos” del archivo RIGI — agosto de 2026.</div>
+
+  </div>
+</div>
+
+<script>
+(function(){
+ const m=document.getElementById('rigiModal'), o=document.getElementById('openRigi'), c=document.getElementById('closeRigi');
+ function openRigi(){m.style.display='block';m.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';setTimeout(()=>window.dispatchEvent(new Event('resize')),80);}
+ function closeRigi(){m.style.display='none';m.setAttribute('aria-hidden','true');document.body.style.overflow='';}
+ if(o)o.addEventListener('click',openRigi);
+ if(c)c.addEventListener('click',closeRigi);
+ if(m)m.addEventListener('click',e=>{if(e.target===m)closeRigi();});
+ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&m&&m.style.display==='block')closeRigi();});
 })();
 </script>
 </body></html>
