@@ -72,26 +72,53 @@ footer{background:#fff;border-top:1px solid var(--bd);padding:24px 0;color:var(-
 
 <div class="note"><b>Fuente:</b> BCRA, Anexo del Informe de Inversión Extranjera Directa. Las series desde 2017 provienen del Relevamiento de Activos y Pasivos Externos. Valores en millones de dólares estadounidenses.</div>
 </div>
-<section id="rigi"><div class="title"><h3>RIGI — Proyectos aprobados y en estudio</h3>
-<p>Panorama de los proyectos vinculados al Régimen de Incentivo para Grandes Inversiones, según provincia, sector, país de origen y mineral.</p></div>
-<div class="cards">
-<div class="kpi"><div class="k">Proyectos por provincia</div><div class="v">41</div><div class="s">24 aprobados · 17 en estudio*</div></div>
-<div class="kpi"><div class="k">Proyectos por sector</div><div class="v">39</div><div class="s">23 aprobados · 16 en estudio</div></div>
-<div class="kpi"><div class="k">Principal sector</div><div class="v">43,6%</div><div class="s">Hidrocarburos · 17 proyectos</div></div>
-<div class="kpi"><div class="k">Países identificados</div><div class="v">14</div><div class="s">Origen de las empresas participantes</div></div>
-</div>
-<div class="grid" style="margin-top:16px">
-<div class="card"><div class="ml">Proyectos por provincia</div><div class="chart"><canvas id="rprov"></canvas></div></div>
-<div class="card"><div class="ml">Proyectos por sector</div><div class="chart"><canvas id="rsector"></canvas></div></div>
-</div>
-<div class="grid" style="margin-top:16px">
-<div class="card"><div class="ml">Proyectos por país de origen</div><div class="chart" style="height:430px"><canvas id="rpais"></canvas></div></div>
-<div class="card"><div class="ml">Minería: proyectos por mineral</div><div class="chart"><canvas id="rmin"></canvas></div></div>
-</div>
-<div class="note" style="margin-top:14px"><b>Nota provincial:</b> Salta y Catamarca comparten dos proyectos, uno aprobado y otro en estudio. Se apunta Cía. Mega en Buenos Aires.</div>
-<div class="note" style="margin-top:8px"><b>Nota minería:</b> existen proyectos en los cuales se extraen varios minerales o metales a la vez. Por ese motivo, los totales de los distintos cuadros no deben sumarse entre sí.</div>
-<div class="source">Fuente: elaboración sobre la solapa “Gráficos” del archivo RIGI — agosto de 2026.</div>
+
+<section id="rigi">
+  <div class="title">
+    <h3>RIGI</h3>
+    <p>Proyectos de inversión vinculados al Régimen de Incentivo para Grandes Inversiones.</p>
+  </div>
+
+  <details class="card" style="padding:0;overflow:hidden">
+    <summary style="cursor:pointer;padding:18px 20px;font-weight:700;font-size:17px;list-style-position:inside">
+      Proyecto RIGI
+    </summary>
+
+    <div style="padding:0 20px 20px">
+      <div class="cards">
+        <div class="kpi"><div class="k">Proyectos por provincia</div><div class="v">41</div><div class="s">24 aprobados · 17 en estudio*</div></div>
+        <div class="kpi"><div class="k">Proyectos por sector</div><div class="v">39</div><div class="s">23 aprobados · 16 en estudio</div></div>
+        <div class="kpi"><div class="k">Principal sector</div><div class="v">43,6%</div><div class="s">Hidrocarburos · 17 proyectos</div></div>
+        <div class="kpi"><div class="k">Países identificados</div><div class="v">14</div><div class="s">Origen de las empresas participantes</div></div>
+      </div>
+
+      <details class="card" style="margin-top:14px">
+        <summary style="cursor:pointer;font-weight:700">Proyectos por provincia</summary>
+        <div class="chart" style="height:420px;margin-top:14px"><canvas id="rprov"></canvas></div>
+      </details>
+
+      <details class="card" style="margin-top:12px">
+        <summary style="cursor:pointer;font-weight:700">Proyectos por sector</summary>
+        <div class="chart" style="height:360px;margin-top:14px"><canvas id="rsector"></canvas></div>
+      </details>
+
+      <details class="card" style="margin-top:12px">
+        <summary style="cursor:pointer;font-weight:700">Proyectos por país de origen</summary>
+        <div class="chart" style="height:520px;margin-top:14px"><canvas id="rpais"></canvas></div>
+      </details>
+
+      <details class="card" style="margin-top:12px">
+        <summary style="cursor:pointer;font-weight:700">Minería: proyectos por mineral</summary>
+        <div class="chart" style="height:340px;margin-top:14px"><canvas id="rmin"></canvas></div>
+      </details>
+
+      <div class="note" style="margin-top:14px"><b>Nota provincial:</b> Salta y Catamarca comparten dos proyectos, uno aprobado y otro en estudio. Se apunta Cía. Mega en Buenos Aires.</div>
+      <div class="note" style="margin-top:8px"><b>Nota minería:</b> existen proyectos en los cuales se extraen varios minerales o metales a la vez. Por ese motivo, los totales de los distintos cuadros no deben sumarse entre sí.</div>
+      <div class="source">Fuente: elaboración sobre la solapa “Gráficos” del archivo RIGI — agosto de 2026.</div>
+    </div>
+  </details>
 </section>
+
 </main><footer><div class="c">IED Argentina · Fuente estadística: Banco Central de la República Argentina</div></footer>
 <script>
 (()=>{
