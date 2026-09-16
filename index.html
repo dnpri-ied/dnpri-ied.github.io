@@ -206,6 +206,7 @@ header .c{position:relative!important;}
 .fp-body{padding:22px 26px 28px}
 .fp-toolbar{display:flex;align-items:end;gap:14px;flex-wrap:wrap;background:#fff;border:1px solid #e4e7ec;border-radius:14px;padding:14px 16px;margin-bottom:16px}
 .fp-toolbar .field{min-width:230px}
+.fp-pdf-row{flex-basis:100%;display:flex;justify-content:flex-start;padding-top:2px}
 .fp-add{margin-left:auto;border:1px solid #cfd7e6;background:#eef4ff;color:#163f73;border-radius:9px;padding:10px 14px;font-weight:750;cursor:pointer}
 .fp-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:0 0 16px}
 .fp-kpi{background:#fff;border:1px solid #e4e7ec;border-radius:13px;padding:15px}
@@ -867,8 +868,10 @@ per.addEventListener('change',update);document.getElementById('topn').addEventLi
           <span class="fp-badge">UNCTAD 2025</span>
           <span class="fp-badge">BCRA 2026-T1</span>
         </div>
-        <button id="fpDownloadPdf" class="fp-pdf" type="button">⬇ Descargar PDF</button>
         <button id="fpAddInfo" class="fp-add" type="button">📋 Revisar propuestas</button>
+        <div class="fp-pdf-row">
+          <button id="fpDownloadPdf" class="fp-pdf" type="button">⬇ Descargar PDF</button>
+        </div>
       </div>
 
       <div id="fpUserBar" class="fp-userbar"><span>Sesión: <strong id="fpUserName"></strong></span><button id="fpLogout" class="fp-action secondary" type="button">Cerrar sesión</button></div>
