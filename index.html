@@ -246,8 +246,36 @@ header .c .header-actions .rigi-hero-btn{
  header .c .header-actions{position:static!important;margin-top:14px!important;flex-wrap:wrap!important;}
 }
 </style>
+
+<style>
+body.auth-locked > *:not(#siteAuthGate):not(script){display:none!important}
+body.auth-locked.auth-setup > #fichaPaisModal{display:flex!important}
+.site-auth-gate{position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;padding:24px;background:linear-gradient(135deg,#07182d,#163f73)}
+body:not(.auth-locked) .site-auth-gate{display:none}
+.site-auth-card{width:min(430px,100%);background:#fff;border-radius:18px;padding:32px;box-shadow:0 24px 70px rgba(0,0,0,.28)}
+.site-auth-brand{font-size:13px;font-weight:800;letter-spacing:1.5px;color:#1769aa;text-transform:uppercase}
+.site-auth-card h2{margin:8px 0 8px;font-size:25px;color:#0b1f3a}.site-auth-sub{margin:0 0 22px;color:#667085;font-size:14px}
+.site-auth-card label{display:block;margin:13px 0 6px;color:#475467}.site-auth-card input{width:100%;padding:11px 12px;border:1px solid #cfd7e6;border-radius:9px;font:inherit}
+.site-auth-primary{width:100%;margin-top:18px;padding:11px;border:0;border-radius:9px;background:#1769aa;color:#fff;font:inherit;font-weight:750;cursor:pointer}
+.site-auth-link{width:100%;margin-top:8px;padding:9px;border:0;background:transparent;color:#1769aa;font:inherit;font-weight:700;cursor:pointer}
+.site-auth-msg{min-height:20px;margin-top:9px;font-size:13px;color:#b42318}
+</style>
 </head>
-<body>
+<body class="auth-locked">
+<div id="siteAuthGate" class="site-auth-gate">
+  <div class="site-auth-card">
+    <div class="site-auth-brand">DNPRI</div>
+    <h2>Monitor de Inversión Extranjera Directa</h2>
+    <p class="site-auth-sub">Acceso exclusivo para usuarios autorizados.</p>
+    <label for="siteEmail">Correo electrónico</label>
+    <input id="siteEmail" type="email" autocomplete="username" placeholder="usuario@correo.com">
+    <label for="sitePassword">Contraseña</label>
+    <input id="sitePassword" type="password" autocomplete="current-password" placeholder="Contraseña">
+    <button id="siteLogin" class="site-auth-primary" type="button">Ingresar</button>
+    <button id="siteForgot" class="site-auth-link" type="button">Recuperar contraseña</button>
+    <div id="siteAuthMsg" class="site-auth-msg"></div>
+  </div>
+</div>
 <header><div class="c">
 <div class="top rigi-header-row">
   <div>
@@ -916,6 +944,9 @@ per.addEventListener('change',update);document.getElementById('topn').addEventLi
   const SUPABASE_URL='https://lrlioufcjzqbpeiigtxr.supabase.co';
   const SUPABASE_PUBLISHABLE_KEY='sb_publishable_yiZ7cH1Ss8V5VL1tuYs38g_iN2zyKMb';
   const db=window.supabase?.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
+  const siteGate=document.getElementById('siteAuthGate');
+  function setSiteAccess(ok){document.body.classList.toggle('auth-locked',!ok);if(ok)document.body.classList.remove('auth-setup')}
+  function siteMsg(text,ok=false){const el=document.getElementById('siteAuthMsg');if(el){el.textContent=text||'';el.style.color=ok?'#027a48':'#b42318'}}
   let currentUser=null,currentProfile=null,approvedByCountry={},recoveryMode=false,passwordSetupMode=null;
   const initialAuthParams=new URLSearchParams((location.hash||'').replace(/^#/,''));
   const initialQueryParams=new URLSearchParams(location.search||'');
@@ -937,10 +968,38 @@ per.addEventListener('change',update);document.getElementById('topn').addEventLi
   async function loadApproved(country){if(!db)return;const {data,error}=await db.from('aportes_ficha_pais').select('id,pais,apartado,titulo,descripcion,empresa,sector,fecha_hecho,fuente,url_fuente').eq('pais',country).eq('estado','aprobado').order('fecha_hecho',{ascending:false,nullsFirst:false});if(!error)approvedByCountry[country]=data||[];render(country)}
   function render(country){const name=displayCountry(),u=unctadLatest(country),ur=outwardRank(country),b=bcraRow(country),br=bcraRank(country);document.getElementById('fpOutStock').textContent=fmt(u?.stock);document.getElementById('fpOutRank').textContent=(ur?ur+'° posición mundial · ':'')+'UNCTAD 2025';document.getElementById('fpArStock').textContent=fmt(b?.[2]);document.getElementById('fpArRank').textContent=(br?br+'° inversor · ':'')+'BCRA 2026-T1';document.getElementById('fpSec1').innerHTML=`<b>${esc(name)}</b> registra en 2025 un stock de IED saliente de <b>${fmt(u?.stock)}</b>`+(ur?`, ubicándose en la posición <b>${ur}</b> entre las economías con datos disponibles en la base UNCTAD.`:'.')+(u?.flow!=null?` El flujo de IED saliente durante 2025 fue de <b>${fmt(u.flow)}</b>.`:'')+`<div class="fp-source">Fuente: UNCTADstat / World Investment Report 2026. Millones de USD a precios corrientes.</div>`;const key=aliases[country]||country,comp=window.DATOS_BCRA?.pie_paises_2026T1?.[key],sectorText=comp?.porciones?.length?`<br><br><b>Composición sectorial:</b> `+comp.porciones.map(x=>`${esc(x[0])}: <b>${Number(x[2]).toLocaleString('es-AR',{maximumFractionDigits:1})}%</b>`).join('; ')+'.':'';document.getElementById('fpSec2').innerHTML=b?`Al 31 de marzo de 2026, la posición pasiva bruta de inversión directa atribuida a <b>${esc(name)}</b> en Argentina asciende a <b>${fmt(b[2])}</b>`+(br?`, lo que lo ubica en el puesto <b>${br}</b> entre los países inversores identificados por el BCRA.`:'.')+sectorText+`<div class="fp-source">Fuente: BCRA. Participación porcentual de los tres principales sectores de cada país y el agregado “Otros”, calculada a partir de “Tabla de datos I”.</div>`:`No se registra una posición individual identificada para <b>${esc(name)}</b> en la apertura por país del BCRA correspondiente a 2026-T1.`+sectorText+`<div class="fp-source">Fuente: BCRA. Participación porcentual de los tres principales sectores de cada país y el agregado “Otros”, calculada a partir de “Tabla de datos I”.</div>`;const q=qualitative[country],pending=`<div style="padding:8px 0"><b>Información cualitativa pendiente de validación.</b><br>Este apartado se completará con fuentes oficiales, información corporativa, prensa económica y aportes validados de usuarios DNPRI.</div>`;[3,4,5].forEach(n=>{const base=q?.['s'+n]||pending;document.getElementById('fpSec'+n).innerHTML=base+contributionsHTML(country,n)});const has=(approvedByCountry[country]||[]).length>0;document.getElementById('fpStatus').textContent=q||has?'Completa':'Estadística';document.getElementById('fpStatusText').textContent=q||has?'Información cualitativa disponible':'Puntos 1 y 2 disponibles · 3 a 5 por validar';document.getElementById('fpFormCountry').value=name}
   async function profileFor(user){if(!user||!db)return null;const {data}=await db.from('usuarios_dnpri').select('email,nombre,rol,activo').eq('email',user.email).maybeSingle();return data?.activo?data:null}
-  async function syncAuth(){if(!db)return;const {data}=await db.auth.getSession();currentUser=data.session?.user||null;currentProfile=await profileFor(currentUser);userBar.style.display=currentProfile?'flex':'none';if(currentProfile){document.getElementById('fpUserName').textContent=`${currentProfile.nombre} · ${currentProfile.rol}`;authPanel.style.display='none'}else{editorPanel.style.display='none'}document.getElementById('fpAdminArea').style.display=currentProfile?.rol==='administrador'?'block':'none';if(currentProfile?.rol==='administrador')loadPending()}
+  async function syncAuth(){
+    if(!db){setSiteAccess(false);siteMsg('No se pudo cargar el servicio de autenticación.');return}
+    const {data}=await db.auth.getSession();
+    currentUser=data.session?.user||null;currentProfile=await profileFor(currentUser);
+    if(currentUser && !currentProfile){await db.auth.signOut();currentUser=null;setSiteAccess(false);siteMsg('La cuenta no está autorizada para DNPRI.');return}
+    setSiteAccess(!!currentProfile);
+    userBar.style.display=currentProfile?'flex':'none';
+    if(currentProfile){document.getElementById('fpUserName').textContent=`${currentProfile.nombre} · ${currentProfile.rol}`;authPanel.style.display='none'}else{editorPanel.style.display='none'}
+    document.getElementById('fpAdminArea').style.display=currentProfile?.rol==='administrador'?'block':'none';
+    if(currentProfile?.rol==='administrador')loadPending();
+  }
+
+  async function siteLogin(){
+    const email=document.getElementById('siteEmail').value.trim(),password=document.getElementById('sitePassword').value;
+    if(!email||!password)return siteMsg('Ingresá correo y contraseña.');
+    siteMsg('Ingresando…',true);
+    const {data,error}=await db.auth.signInWithPassword({email,password});
+    if(error)return siteMsg(error.message);
+    const p=await profileFor(data.user);
+    if(!p){await db.auth.signOut();return siteMsg('La cuenta no está autorizada para DNPRI.')}
+    currentUser=data.user;currentProfile=p;siteMsg('Acceso correcto.',true);await syncAuth();
+  }
+  async function siteForgot(){
+    const email=document.getElementById('siteEmail').value.trim();
+    if(!email)return siteMsg('Ingresá tu correo primero.');
+    const {error}=await db.auth.resetPasswordForEmail(email,{redirectTo:'https://dnpri-ied.github.io/'});
+    siteMsg(error?error.message:'Se envió el correo de recuperación.',!error);
+  }
   async function doLogin(){const email=document.getElementById('fpEmail').value.trim(),password=document.getElementById('fpPassword').value;if(!email||!password)return msg(document.getElementById('fpAuthMsg'),'Ingresá correo y contraseña.',false);const {data,error}=await db.auth.signInWithPassword({email,password});if(error)return msg(document.getElementById('fpAuthMsg'),error.message,false);const p=await profileFor(data.user);if(!p){await db.auth.signOut();return msg(document.getElementById('fpAuthMsg'),'La cuenta no está autorizada para DNPRI.',false)}currentUser=data.user;currentProfile=p;msg(document.getElementById('fpAuthMsg'),'Acceso correcto.');await syncAuth();editorPanel.style.display='block'}
   function openPasswordSetup(mode='recovery'){
     recoveryMode=true;passwordSetupMode=mode;
+    document.body.classList.add('auth-locked','auth-setup');
     modal.style.display='block';modal.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';
     authPanel.style.display='none';editorPanel.style.display='none';userBar.style.display='none';recoveryPanel.style.display='block';
     const title=document.getElementById('fpPasswordSetupTitle'), text=document.getElementById('fpPasswordSetupText');
@@ -973,7 +1032,10 @@ per.addEventListener('change',update);document.getElementById('topn').addEventLi
   async function showEditor(){if(!db){alert('No se pudo cargar el servicio de autenticación.');return}if(recoveryMode){openPasswordSetup(passwordSetupMode||'recovery');return}await syncAuth();if(currentProfile){editorPanel.style.display=editorPanel.style.display==='block'?'none':'block';document.getElementById('fpFormCountry').value=displayCountry();if(currentProfile.rol==='administrador')loadPending()}else{authPanel.style.display=authPanel.style.display==='block'?'none':'block'}}
   function show(){modal.style.display='block';modal.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';render(sel.value);loadApproved(sel.value);syncAuth()}
   function hide(){modal.style.display='none';modal.setAttribute('aria-hidden','true');document.body.style.overflow=''}
-  open?.addEventListener('click',show);close?.addEventListener('click',hide);sel?.addEventListener('change',()=>{render(sel.value);loadApproved(sel.value)});modal?.addEventListener('click',e=>{if(e.target===modal)hide()});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&modal.style.display==='block')hide()});add?.addEventListener('click',showEditor);document.getElementById('fpLogin')?.addEventListener('click',doLogin);document.getElementById('fpForgot')?.addEventListener('click',forgot);document.getElementById('fpLogout')?.addEventListener('click',async()=>{await db.auth.signOut();currentUser=currentProfile=null;editorPanel.style.display=authPanel.style.display=userBar.style.display='none'});document.getElementById('fpSubmitContribution')?.addEventListener('click',submitContribution);document.getElementById('fpCancelContribution')?.addEventListener('click',()=>editorPanel.style.display='none');document.getElementById('fpSavePassword')?.addEventListener('click',saveNewPassword);
+  open?.addEventListener('click',show);close?.addEventListener('click',hide);sel?.addEventListener('change',()=>{render(sel.value);loadApproved(sel.value)});modal?.addEventListener('click',e=>{if(e.target===modal)hide()});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&modal.style.display==='block')hide()});add?.addEventListener('click',showEditor);document.getElementById('fpLogin')?.addEventListener('click',doLogin);document.getElementById('fpForgot')?.addEventListener('click',forgot);document.getElementById('fpLogout')?.addEventListener('click',async()=>{await db.auth.signOut();currentUser=currentProfile=null;editorPanel.style.display=authPanel.style.display=userBar.style.display='none';setSiteAccess(false);siteMsg('Sesión cerrada.',true)});document.getElementById('fpSubmitContribution')?.addEventListener('click',submitContribution);document.getElementById('fpCancelContribution')?.addEventListener('click',()=>editorPanel.style.display='none');document.getElementById('fpSavePassword')?.addEventListener('click',saveNewPassword);
+  document.getElementById('siteLogin')?.addEventListener('click',siteLogin);
+  document.getElementById('siteForgot')?.addEventListener('click',siteForgot);
+  document.getElementById('sitePassword')?.addEventListener('keydown',e=>{if(e.key==='Enter')siteLogin()});
   if(db){
     db.auth.onAuthStateChange((event)=>{
       if(event==='PASSWORD_RECOVERY'){setTimeout(()=>openPasswordSetup('recovery'),0);return}
