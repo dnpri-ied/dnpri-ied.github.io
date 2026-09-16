@@ -232,6 +232,13 @@ header .c{position:relative!important;}
 </style>
 
 <style>
+
+/* Exportación PDF de Ficha País */
+.fp-pdf{background:#0f4c81;color:#fff;border:0;border-radius:9px;padding:10px 14px;font-weight:700;cursor:pointer;white-space:nowrap}
+.fp-pdf:hover{filter:brightness(.95)}
+.fp-pdf:disabled{opacity:.6;cursor:wait}
+.fp-pdf-note{font-size:12px;color:#667085;margin-left:4px}
+
 /* Ajuste final del encabezado: Ficha País + Proyectos RIGI */
 header .c .header-actions{
   position:absolute!important;top:30px!important;right:0!important;z-index:100!important;
@@ -860,6 +867,7 @@ per.addEventListener('change',update);document.getElementById('topn').addEventLi
           <span class="fp-badge">UNCTAD 2025</span>
           <span class="fp-badge">BCRA 2026-T1</span>
         </div>
+        <button id="fpDownloadPdf" class="fp-pdf" type="button">⬇ Descargar PDF</button>
         <button id="fpAddInfo" class="fp-add" type="button">📋 Revisar propuestas</button>
       </div>
 
@@ -921,11 +929,12 @@ per.addEventListener('change',update);document.getElementById('topn').addEventLi
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/html2pdf.js@0.10.2/dist/html2pdf.bundle.min.js"></script>
 
 <script>
 (function(){
   const modal=document.getElementById('fichaPaisModal'), open=document.getElementById('openFichaPais'), close=document.getElementById('closeFichaPais');
-  const add=document.getElementById('fpAddInfo'), sel=document.getElementById('fpCountry');
+  const add=document.getElementById('fpAddInfo'), pdfBtn=document.getElementById('fpDownloadPdf'), sel=document.getElementById('fpCountry');
   const authPanel=document.getElementById('fpAuthPanel'), recoveryPanel=document.getElementById('fpRecoveryPanel'), editorPanel=document.getElementById('fpEditorPanel'), userBar=document.getElementById('fpUserBar');
   const SUPABASE_URL='https://lrlioufcjzqbpeiigtxr.supabase.co';
   const SUPABASE_PUBLISHABLE_KEY='sb_publishable_yiZ7cH1Ss8V5VL1tuYs38g_iN2zyKMb';
@@ -1028,10 +1037,43 @@ per.addEventListener('change',update);document.getElementById('topn').addEventLi
   function currentTextFor(country,apartado){const old=sel.value;sel.value=country;const ov=latestFullEdit(country,apartado);let html=ov?esc(ov.descripcion).replace(/\n/g,'<br>'):baseSectionHTML(country,apartado);sel.value=old;const tmp=document.createElement('div');tmp.innerHTML=html;return tmp.innerText.trim()}
   async function loadPending(){if(currentProfile?.rol!=='administrador')return;const box=document.getElementById('fpPendingList');box.innerHTML='Cargando…';const {data,error}=await db.from('aportes_ficha_pais').select('*').eq('estado','pendiente').order('creado_en',{ascending:true});if(error){box.textContent=error.message;return}box.innerHTML=(data||[]).length?(data||[]).map(x=>{const actual=currentTextFor(x.pais,x.apartado),direct=isFullEdit(x);return `<div class="fp-review-card" data-id="${x.id}"><span class="fp-status-pill">Pendiente</span><p><b>${esc(x.pais)} · Apartado ${x.apartado}${direct?' · Edición directa':' · '+esc(x.titulo)}</b></p>${direct?`<p><b>Texto actualmente publicado:</b></p><div class="fp-current">${esc(actual)}</div><p><b>Texto propuesto:</b></p><div class="fp-proposed">${esc(x.descripcion)}</div>`:`<p><b>Contenido propuesto:</b><br>${esc(x.descripcion).replace(/\n/g,'<br>')}</p>`}<p style="color:#667085"><b>Editor:</b> ${esc(x.creado_por_email)}${x.fuente?' · <b>Fuente:</b> '+esc(x.fuente):''}${x.url_fuente?' · <a href="'+esc(x.url_fuente)+'" target="_blank" rel="noopener">Ver fuente</a>':''}</p><div class="fp-actions"><button class="fp-action fp-approve" data-id="${x.id}">Aprobar</button><button class="fp-action danger fp-reject" data-id="${x.id}">Rechazar</button></div></div>`}).join(''):'No hay propuestas pendientes.';box.querySelectorAll('.fp-approve').forEach(b=>b.onclick=()=>review(+b.dataset.id,'aprobado'));box.querySelectorAll('.fp-reject').forEach(b=>b.onclick=()=>review(+b.dataset.id,'rechazado'))}
   async function review(id,state){const {error}=await db.from('aportes_ficha_pais').update({estado:state,revisado_por:currentUser.id,revisado_en:new Date().toISOString()}).eq('id',id);if(error)return alert(error.message);await loadPending();approvedByCountry[sel.value]=[];await loadApproved(sel.value)}
+  function cleanPdfSection(el){
+    const clone=el.cloneNode(true);
+    clone.querySelectorAll('button,.fp-actions,.fp-edit-box,.fp-admin-controls').forEach(x=>x.remove());
+    return clone.innerHTML;
+  }
+  function pdfSafeName(name){return (name||'Pais').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-zA-Z0-9_-]+/g,'_').replace(/^_+|_+$/g,'')}
+  async function downloadFichaPdf(){
+    if(!window.html2pdf)return alert('No se pudo cargar el generador de PDF. Verificá la conexión a Internet e intentá nuevamente.');
+    const country=sel.value;
+    await loadApproved(country);
+    render(country);
+    const countryLabel=sel.options[sel.selectedIndex]?.textContent||country;
+    const today=new Intl.DateTimeFormat('es-AR',{day:'2-digit',month:'2-digit',year:'numeric'}).format(new Date());
+    const report=document.createElement('div');
+    report.style.cssText='font-family:Arial,Helvetica,sans-serif;color:#172033;background:#fff;padding:28px 34px;width:760px;line-height:1.45;font-size:12px';
+    const sections=[
+      ['1. Perfil inversor internacional','fpSec1'],
+      ['2. El país como inversor en Argentina','fpSec2'],
+      ['3. Empresas e inversiones vinculadas con Argentina','fpSec3'],
+      ['4. Sectores con potencial para nuevas inversiones','fpSec4'],
+      ['5. Novedades y casos destacados','fpSec5']
+    ];
+    report.innerHTML=`<div style="border-bottom:3px solid #173f6d;padding-bottom:12px;margin-bottom:18px"><div style="font-size:11px;font-weight:700;letter-spacing:.6px;color:#52657a">DNPRI · DIRECCIÓN NACIONAL DE PROMOCIÓN DE INVERSIONES</div><h1 style="font-size:25px;margin:5px 0 2px;color:#12243b">Ficha País · ${esc(countryLabel)}</h1><div style="font-size:11px;color:#667085">Generada el ${today} · Información vigente y aportes aprobados</div></div>`+
+      `<div style="display:flex;gap:12px;margin-bottom:18px"><div style="flex:1;border:1px solid #d8dee9;border-radius:8px;padding:10px"><div style="font-size:10px;color:#667085">STOCK MUNDIAL DE IED SALIENTE</div><b style="font-size:17px">${esc(document.getElementById('fpOutStock').textContent)}</b><div style="font-size:10px;color:#667085">${esc(document.getElementById('fpOutRank').textContent)}</div></div><div style="flex:1;border:1px solid #d8dee9;border-radius:8px;padding:10px"><div style="font-size:10px;color:#667085">STOCK DEL PAÍS EN ARGENTINA</div><b style="font-size:17px">${esc(document.getElementById('fpArStock').textContent)}</b><div style="font-size:10px;color:#667085">${esc(document.getElementById('fpArRank').textContent)}</div></div></div>`+
+      sections.map(([title,id])=>`<section style="margin:0 0 16px;page-break-inside:avoid"><h2 style="font-size:15px;color:#173f6d;border-bottom:1px solid #d8dee9;padding-bottom:5px;margin:0 0 8px">${title}</h2><div>${cleanPdfSection(document.getElementById(id))}</div></section>`).join('')+
+      `<div style="border-top:1px solid #d8dee9;margin-top:20px;padding-top:8px;font-size:9px;color:#667085">DNPRI · Ficha País ${esc(countryLabel)} · Fuentes indicadas en cada apartado. Documento generado desde DNPRI-IED.</div>`;
+    document.body.appendChild(report);
+    pdfBtn.disabled=true;const old=pdfBtn.textContent;pdfBtn.textContent='Generando PDF…';
+    try{
+      await html2pdf().set({margin:[8,8,10,8],filename:`Ficha_Pais_${pdfSafeName(countryLabel)}_${new Date().toISOString().slice(0,10)}.pdf`,image:{type:'jpeg',quality:.98},html2canvas:{scale:2,useCORS:true,backgroundColor:'#ffffff'},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},pagebreak:{mode:['css','legacy']}}).from(report).save();
+    }catch(e){console.error(e);alert('No se pudo generar el PDF. Intentá nuevamente.');}
+    finally{report.remove();pdfBtn.disabled=false;pdfBtn.textContent=old;}
+  }
   async function showEditor(){if(!db){alert('No se pudo cargar el servicio de autenticación.');return}await syncAuth();if(currentProfile?.rol!=='administrador')return alert('Para proponer cambios, usá el botón “Editar este texto” dentro de cada apartado.');editorPanel.style.display=editorPanel.style.display==='block'?'none':'block';if(editorPanel.style.display==='block')loadPending()}
   function show(){modal.style.display='block';modal.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';render(sel.value);loadApproved(sel.value);syncAuth()}
   function hide(){modal.style.display='none';modal.setAttribute('aria-hidden','true');document.body.style.overflow=''}
-  open?.addEventListener('click',show);close?.addEventListener('click',hide);sel?.addEventListener('change',()=>{render(sel.value);loadApproved(sel.value)});modal?.addEventListener('click',e=>{if(e.target===modal)hide()});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&modal.style.display==='block')hide()});add?.addEventListener('click',showEditor);document.getElementById('fpLogin')?.addEventListener('click',doLogin);document.getElementById('fpForgot')?.addEventListener('click',forgot);document.getElementById('fpLogout')?.addEventListener('click',async()=>{await db.auth.signOut();currentUser=currentProfile=null;editorPanel.style.display=authPanel.style.display=userBar.style.display='none';setSiteAccess(false);siteMsg('Sesión cerrada.',true)});document.getElementById('fpSavePassword')?.addEventListener('click',saveNewPassword);
+  open?.addEventListener('click',show);close?.addEventListener('click',hide);pdfBtn?.addEventListener('click',downloadFichaPdf);sel?.addEventListener('change',()=>{render(sel.value);loadApproved(sel.value)});modal?.addEventListener('click',e=>{if(e.target===modal)hide()});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&modal.style.display==='block')hide()});add?.addEventListener('click',showEditor);document.getElementById('fpLogin')?.addEventListener('click',doLogin);document.getElementById('fpForgot')?.addEventListener('click',forgot);document.getElementById('fpLogout')?.addEventListener('click',async()=>{await db.auth.signOut();currentUser=currentProfile=null;editorPanel.style.display=authPanel.style.display=userBar.style.display='none';setSiteAccess(false);siteMsg('Sesión cerrada.',true)});document.getElementById('fpSavePassword')?.addEventListener('click',saveNewPassword);
   document.getElementById('siteLogin')?.addEventListener('click',siteLogin);
   document.getElementById('siteForgot')?.addEventListener('click',siteForgot);
   document.getElementById('sitePassword')?.addEventListener('keydown',e=>{if(e.key==='Enter')siteLogin()});
