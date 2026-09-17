@@ -1157,6 +1157,12 @@ per.addEventListener('change',update);document.getElementById('topn').addEventLi
 
 
 
+
+
+
+
+
+
 <div id="infoinveModal" class="infoinve-modal" aria-hidden="true">
   <div class="infoinve-card" role="dialog" aria-modal="true" aria-labelledby="infoinveTitle">
     <div class="infoinve-head">
@@ -1165,15 +1171,11 @@ per.addEventListener('change',update);document.getElementById('topn').addEventLi
     </div>
     <div class="infoinve-field">
       <label for="infoinvePais">País</label>
-      <select id="infoinvePais">
-        <option value="">Seleccionar país</option>
-      </select>
+      <select id="infoinvePais"><option value="">Seleccionar país</option></select>
     </div>
     <div class="infoinve-field">
       <label for="infoinvePeriodo">Mes</label>
-      <select id="infoinvePeriodo" disabled>
-        <option value="">Seleccionar mes</option>
-      </select>
+      <select id="infoinvePeriodo" disabled><option value="">Seleccionar mes</option></select>
     </div>
     <div class="infoinve-actions">
       <button id="infoinveDownload" class="infoinve-download" type="button" disabled>↓ Descargar INFOINVE</button>
@@ -1182,46 +1184,46 @@ per.addEventListener('change',update);document.getElementById('topn').addEventLi
   </div>
 </div>
 
-
 <script>
-const INFOINVE_CATALOGO = [
-  { pais: 'India', periodo: 'Septiembre 2026', archivo: 'INFOINVE_India_septiembre_2026.docx' }
-];
+(function(){
+  const INFOINVE_CATALOGO = [
+    { pais:"India", periodo:"Septiembre 2026", archivo:"INFOINVE_India_septiembre_2026.docx" }
+  ];
+  function initInfoinve(){
+    const modal=document.getElementById("infoinveModal");
+    const openBtn=document.getElementById("openInfoinve");
+    const closeBtn=document.getElementById("closeInfoinve");
+    const pais=document.getElementById("infoinvePais");
+    const periodo=document.getElementById("infoinvePeriodo");
+    const download=document.getElementById("infoinveDownload");
+    if(!modal||!openBtn||!pais||!periodo||!download) return;
 
-document.addEventListener('DOMContentLoaded', function(){
-  const modal = document.getElementById('infoinveModal');
-  const openBtn = document.getElementById('openInfoinve');
-  const closeBtn = document.getElementById('closeInfoinve');
-  const pais = document.getElementById('infoinvePais');
-  const periodo = document.getElementById('infoinvePeriodo');
-  const download = document.getElementById('infoinveDownload');
+    [...new Set(INFOINVE_CATALOGO.map(x=>x.pais))].sort((a,b)=>a.localeCompare(b,"es"))
+      .forEach(x=>pais.add(new Option(x,x)));
 
-  [...new Set(INFOINVE_CATALOGO.map(x => x.pais))].sort().forEach(p => {
-    pais.add(new Option(p,p));
-  });
+    const cerrar=()=>{modal.classList.remove("open");modal.setAttribute("aria-hidden","true");document.body.style.overflow="";};
+    openBtn.addEventListener("click",()=>{modal.classList.add("open");modal.setAttribute("aria-hidden","false");document.body.style.overflow="hidden";});
+    closeBtn?.addEventListener("click",cerrar);
+    modal.addEventListener("click",e=>{if(e.target===modal)cerrar();});
+    document.addEventListener("keydown",e=>{if(e.key==="Escape"&&modal.classList.contains("open"))cerrar();});
 
-  function closeModal(){ modal.classList.remove('open'); modal.setAttribute('aria-hidden','true'); }
-  openBtn?.addEventListener('click', () => { modal.classList.add('open'); modal.setAttribute('aria-hidden','false'); });
-  closeBtn?.addEventListener('click', closeModal);
-  modal?.addEventListener('click', e => { if(e.target === modal) closeModal(); });
-
-  pais?.addEventListener('change', () => {
-    periodo.innerHTML = '<option value="">Seleccionar mes</option>';
-    const rows = INFOINVE_CATALOGO.filter(x => x.pais === pais.value);
-    rows.forEach(x => periodo.add(new Option(x.periodo, x.archivo)));
-    periodo.disabled = rows.length === 0;
-    download.disabled = true;
-  });
-
-  periodo?.addEventListener('change', () => { download.disabled = !periodo.value; });
-  download?.addEventListener('click', () => {
-    if(!periodo.value) return;
-    const a=document.createElement('a');
-    a.href=periodo.value;
-    a.download=periodo.value.split('/').pop();
-    document.body.appendChild(a); a.click(); a.remove();
-  });
-});
+    pais.addEventListener("change",()=>{
+      periodo.innerHTML='<option value="">Seleccionar mes</option>';
+      INFOINVE_CATALOGO.filter(x=>x.pais===pais.value).forEach(x=>periodo.add(new Option(x.periodo,x.archivo)));
+      periodo.disabled=!pais.value;
+      download.disabled=true;
+    });
+    periodo.addEventListener("change",()=>download.disabled=!periodo.value);
+    download.addEventListener("click",()=>{
+      if(!periodo.value)return;
+      const a=document.createElement("a");
+      a.href=periodo.value;a.download=periodo.value;
+      document.body.appendChild(a);a.click();a.remove();
+    });
+  }
+  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",initInfoinve);
+  else initInfoinve();
+})();
 </script>
 
 </body></html>
