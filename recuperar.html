@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DNPRI | Nueva contraseña</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;background:linear-gradient(135deg,#07182d,#163f73);color:#172033;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}.card{width:min(440px,100%);background:#fff;border-radius:18px;padding:32px;box-shadow:0 24px 70px rgba(0,0,0,.28)}.brand{font-size:13px;font-weight:800;letter-spacing:1.5px;color:#1769aa;text-transform:uppercase}h1{font-size:25px;color:#0b1f3a;margin:8px 0}.sub{font-size:14px;color:#667085;line-height:1.45;margin:0 0 20px}label{display:block;font-size:12px;font-weight:700;color:#475467;text-transform:uppercase;margin:13px 0 6px}input{width:100%;padding:11px 12px;border:1px solid #cfd7e6;border-radius:9px;font:inherit}.btn{width:100%;margin-top:18px;padding:11px;border:0;border-radius:9px;background:#1769aa;color:#fff;font:inherit;font-weight:750;cursor:pointer}.btn:disabled{opacity:.55;cursor:wait}.msg{margin-top:12px;font-size:13px;line-height:1.4}.err{color:#b42318}.ok{color:#027a48}.hidden{display:none}.back{display:block;text-align:center;margin-top:14px;color:#1769aa;text-decoration:none;font-size:13px;font-weight:700}
+</style>
+</head>
+<body>
+<div class="card">
+ <div class="brand">DNPRI</div>
+ <h1>Establecer nueva contraseña</h1>
+ <p class="sub" id="status">Validando el enlace de recuperación…</p>
+ <div id="form" class="hidden">
+  <label for="p1">Nueva contraseña</label><input id="p1" type="password" autocomplete="new-password" minlength="8">
+  <label for="p2">Confirmar nueva contraseña</label><input id="p2" type="password" autocomplete="new-password" minlength="8">
+  <button id="save" class="btn" type="button">Guardar contraseña</button>
+ </div>
+ <div id="msg" class="msg"></div>
+ <a class="back" href="https://dnpri-ied.github.io/">Volver al acceso DNPRI</a>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(async function(){
+ const SUPABASE_URL='https://lrlioufcjzqbpeiigtxr.supabase.co';
+ const SUPABASE_PUBLISHABLE_KEY='sb_publishable_yiZ7cH1Ss8V5VL1tuYs38g_iN2zyKMb';
+ const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
+ const status=document.getElementById('status'), form=document.getElementById('form'), msg=document.getElementById('msg'), save=document.getElementById('save');
+ function showForm(){status.textContent='Ingresá y confirmá tu nueva contraseña. Debe tener al menos 8 caracteres.';form.classList.remove('hidden')}
+ function fail(t){status.textContent='No se pudo validar el enlace.';msg.className='msg err';msg.textContent=t}
+ // PKCE: si Supabase devuelve ?code=..., intercambiarlo por una sesión.
+ const qs=new URLSearchParams(location.search); const code=qs.get('code');
+ if(code){
+   const {error}=await db.auth.exchangeCodeForSession(code);
+   if(error){fail('El enlace puede haber vencido o ya haber sido utilizado. Solicitá un nuevo correo de recuperación.');return}
+   history.replaceState({},document.title,location.pathname); showForm();
+ } else {
+   // Flujo implícito: supabase-js recupera la sesión desde el hash.
+   const {data}=await db.auth.getSession();
+   if(data.session) showForm();
+   else {
+     let resolved=false;
+     const {data:listener}=db.auth.onAuthStateChange((event,session)=>{
+       if(!resolved && (event==='PASSWORD_RECOVERY'||session)){resolved=true;showForm()}
+     });
+     setTimeout(async()=>{if(resolved)return;const {data:d}=await db.auth.getSession();if(d.session){resolved=true;showForm()}else fail('El enlace puede haber vencido o ya haber sido utilizado. Solicitá un nuevo correo de recuperación.')},1200);
+   }
+ }
+ save.addEventListener('click',async()=>{
+   const p1=document.getElementById('p1').value,p2=document.getElementById('p2').value;
+   msg.className='msg err';msg.textContent='';
+   if(p1.length<8){msg.textContent='La contraseña debe tener al menos 8 caracteres.';return}
+   if(p1!==p2){msg.textContent='Las contraseñas no coinciden.';return}
+   save.disabled=true;save.textContent='Guardando…';
+   const {error}=await db.auth.updateUser({password:p1});
+   if(error){save.disabled=false;save.textContent='Guardar contraseña';msg.textContent=error.message;return}
+   msg.className='msg ok';msg.textContent='Contraseña actualizada correctamente. Redirigiendo al acceso DNPRI…';
+   await db.auth.signOut();
+   setTimeout(()=>location.href='https://dnpri-ied.github.io/',1200);
+ });
+})();
+</script>
+</body></html>
