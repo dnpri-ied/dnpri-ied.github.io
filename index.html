@@ -941,6 +941,21 @@ per.addEventListener('change',update);document.getElementById('topn').addEventLi
   const authPanel=document.getElementById('fpAuthPanel'), recoveryPanel=document.getElementById('fpRecoveryPanel'), editorPanel=document.getElementById('fpEditorPanel'), userBar=document.getElementById('fpUserBar');
   const SUPABASE_URL='https://lrlioufcjzqbpeiigtxr.supabase.co';
   const SUPABASE_PUBLISHABLE_KEY='sb_publishable_yiZ7cH1Ss8V5VL1tuYs38g_iN2zyKMb';
+
+  // IMPORTANTE: capturar la URL ANTES de crear el cliente Supabase.
+  // Supabase puede consumir/limpiar los parámetros de invitación o recuperación
+  // al inicializarse. Si los leemos después, la página puede perder la señal y
+  // volver al login normal antes de mostrar el formulario de nueva contraseña.
+  const initialHashRaw=location.hash||'';
+  const initialSearchRaw=location.search||'';
+  const initialAuthParams=new URLSearchParams(initialHashRaw.replace(/^#/,''));
+  const initialQueryParams=new URLSearchParams(initialSearchRaw);
+  const initialAuthType=(initialAuthParams.get('type')||initialQueryParams.get('type')||'').toLowerCase()||null;
+  const initialAuthCode=initialQueryParams.get('code')||initialAuthParams.get('code')||null;
+  const initialAccessToken=initialAuthParams.get('access_token')||initialQueryParams.get('access_token')||null;
+  const initialPasswordSetup=!!initialAuthCode || !!initialAccessToken || ['recovery','invite','signup'].includes(initialAuthType);
+  const initialSetupMode=initialAuthType==='invite'||initialAuthType==='signup'?'invite':'recovery';
+
   const db=window.supabase?.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
   const siteGate=document.getElementById('siteAuthGate');
   function setSiteAccess(ok){document.body.classList.toggle('auth-locked',!ok);if(ok)document.body.classList.remove('auth-setup')}
@@ -948,15 +963,7 @@ per.addEventListener('change',update);document.getElementById('topn').addEventLi
   let currentUser=null,currentProfile=null,approvedByCountry={},recoveryMode=false,passwordSetupMode=null;
   // Bloquea la navegación normal mientras el usuario está creando/restableciendo su contraseña.
   // Evita que eventos intermedios de Supabase vuelvan a mostrar el login.
-  let passwordSetupLock=false;
-  const initialAuthParams=new URLSearchParams((location.hash||'').replace(/^#/,''));
-  const initialQueryParams=new URLSearchParams(location.search||'');
-  const initialAuthType=initialAuthParams.get('type')||initialQueryParams.get('type')||null;
-  // Supabase puede devolver recuperaciones/invitaciones modernas mediante ?code=...
-  // sin incluir type=recovery. Conservamos esa señal antes de que supabase-js limpie la URL.
-  const initialAuthCode=initialQueryParams.get('code')||initialAuthParams.get('code')||null;
-  const initialPasswordSetup=!!initialAuthCode || initialAuthType==='recovery' || initialAuthType==='invite';
-  passwordSetupLock=initialPasswordSetup;
+  let passwordSetupLock=initialPasswordSetup;
 
   const aliases={
     "Germany":"Alemania","Angola":"Angola","Saudi Arabia":"Arabia Saudita","Algeria":"Argelia","Australia":"Australia","Austria":"Austria","Azerbaijan":"Azerbaiyán","Bahamas":"Bahamas","Bangladesh":"Bangladesh","Barbados":"Barbados","Belarus":"Bielorrusia","Belgium":"Bélgica","Bermuda":"Bermudas","Bolivia (Plurinational State of)":"Bolivia","Brazil":"Brasil","Bulgaria":"Bulgaria","Cambodia":"Camboya","Canada":"Canadá","Chile":"Chile","China":"China","Cyprus":"Chipre","Colombia":"Colombia","Costa Rica":"Costa Rica","Croatia":"Croacia","Denmark":"Dinamarca","Egypt":"Egipto","El Salvador":"El Salvador","United Arab Emirates":"Emiratos Árabes Unidos","Slovakia":"Eslovaquia","Slovenia":"Eslovenia","Spain":"España","United States":"Estados Unidos De América","Estonia":"Estonia","Russian Federation":"Federación De Rusia","Philippines":"Filipinas","Finland":"Finlandia","France":"Francia","Gabon":"Gabón","Greece":"Grecia","Guatemala":"Guatemala","Guyana":"Guyana","Honduras":"Honduras","Hungary":"Hungría","India":"India","Indonesia":"Indonesia","Iraq":"Iraq","Ireland":"Irlanda","Cayman Islands":"Islas Caimán","British Virgin Islands":"Islas Virgenes, Britanicas","Israel":"Israel","Italy":"Italia","Japan":"Japón","Kenya":"Kenya","Kuwait":"Kuwait","Lithuania":"Lituania","Luxembourg":"Luxemburgo","Malaysia":"Malasia","Malta":"Malta","Morocco":"Marruecos","Mauritius":"Mauricio","Mozambique":"Mozambique","Mexico":"México","Nicaragua":"Nicaragua","Nigeria":"Nigeria","Norway":"Noruega","New Zealand":"Nueva Zelandia","Oman":"Omán","Pakistan":"Pakistán","Panama":"Panamá","Paraguay":"Paraguay","Netherlands (Kingdom of the)":"Países Bajos","Peru":"Perú","Poland":"Polonia","Portugal":"Portugal","Qatar":"Qatar","United Kingdom":"Reino Unido De Gran Bretaña E Irlanda Del Norte","Dominican Republic":"Republica  Dominicana","Czechia":"Republica Checa","Republic of Korea":"Republica De Corea (Corea Del Sur)","Venezuela (Bolivarian Rep. of)":"República Bolivariana De Venezuela","Romania":"Rumania","Serbia":"Serbia","Singapore":"Singapur","Sri Lanka":"Sri Lanka","South Africa":"Sudáfrica","Sweden":"Suecia","Switzerland":"Suiza","Suriname":"Suriname","Thailand":"Tailandia","China, Taiwan Province of":"Taiwán (Provincia De China)","Trinidad and Tobago":"Trinidad Y Tabago","Turkiye":"Turquía","Tunisia":"Túnez","Ukraine":"Ucrania","Uruguay":"Uruguay","Viet Nam":"Viet Nam"
@@ -990,7 +997,7 @@ per.addEventListener('change',update);document.getElementById('topn').addEventLi
     if(!db){setSiteAccess(false);siteMsg('No se pudo cargar el servicio de autenticación.');return}
     // Durante recuperación/invitación, nunca reemplazar el formulario de contraseña por el login.
     if(passwordSetupLock || recoveryMode){
-      openPasswordSetup(passwordSetupMode || (initialAuthType==='invite'?'invite':'recovery'));
+      openPasswordSetup(passwordSetupMode || initialSetupMode);
       return;
     }
     const {data}=await db.auth.getSession();
@@ -1101,7 +1108,7 @@ per.addEventListener('change',update);document.getElementById('topn').addEventLi
       // Si la página se abrió desde recuperación/invitación, mantener el formulario visible
       // ante INITIAL_SESSION, SIGNED_IN y cualquier evento intermedio hasta guardar la clave.
       if(passwordSetupLock || initialPasswordSetup){
-        const mode=initialAuthType==='invite'?'invite':'recovery';
+        const mode=initialSetupMode;
         setTimeout(()=>openPasswordSetup(mode),0);
         return;
       }
@@ -1109,7 +1116,7 @@ per.addEventListener('change',update);document.getElementById('topn').addEventLi
     });
     // Si la URL corresponde a recuperación/invitación, mostrar el formulario desde el inicio
     // y mantenerlo estable mientras Supabase termina de establecer la sesión.
-    if(initialPasswordSetup) openPasswordSetup(initialAuthType==='invite'?'invite':'recovery');
+    if(initialPasswordSetup) openPasswordSetup(initialSetupMode);
     else syncAuth();
   }
   sel.value=Array.from(sel.options).some(o=>o.value==='India')?'India':sel.options[0]?.value;render(sel.value);
