@@ -286,6 +286,23 @@ body:not(.auth-locked) .site-auth-gate{display:none}
 .site-auth-link{width:100%;margin-top:8px;padding:9px;border:0;background:transparent;color:#1769aa;font:inherit;font-weight:700;cursor:pointer}
 .site-auth-msg{min-height:20px;margin-top:9px;font-size:13px;color:#b42318}
 </style>
+
+<style>
+.infoinve-modal{display:none;position:fixed;inset:0;z-index:10050;background:rgba(15,23,42,.58);padding:24px;align-items:center;justify-content:center}
+.infoinve-modal.open{display:flex}
+.infoinve-card{width:min(560px,96vw);background:#fff;border-radius:16px;box-shadow:0 24px 70px rgba(0,0,0,.25);padding:22px}
+.infoinve-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}
+.infoinve-head h2{margin:0;color:#17365d;font-size:22px}
+.infoinve-close{border:0;background:#eef2f6;border-radius:9px;width:36px;height:36px;font-size:20px;cursor:pointer}
+.infoinve-field{margin:14px 0}
+.infoinve-field label{display:block;font-weight:700;margin-bottom:6px;color:#26364a}
+.infoinve-field select{width:100%;padding:11px 12px;border:1px solid #cbd5e1;border-radius:9px;background:#fff;font-size:15px}
+.infoinve-actions{display:flex;justify-content:flex-end;margin-top:20px}
+.infoinve-download{border:0;border-radius:9px;padding:11px 16px;background:#0f4c81;color:#fff;font-weight:700;cursor:pointer}
+.infoinve-download:disabled{opacity:.45;cursor:not-allowed}
+.infoinve-note{font-size:13px;color:#64748b;margin-top:12px}
+</style>
+
 </head>
 <body class="auth-locked">
 <div id="siteAuthGate" class="site-auth-gate">
@@ -311,7 +328,7 @@ body:not(.auth-locked) .site-auth-gate{display:none}
   <div class="header-actions">
   <button id="openFichaPais" type="button" class="ficha-pais-btn"><span>Ficha País</span></button>
   <button id="openRigi" type="button" class="rigi-hero-btn"><span>Proyectos RIGI</span></button>
-  <button id="downloadInfoinveIndia" type="button" class="infoinve-download-btn" title="Descargar INFOINVE India – septiembre 2026"><span>↓ INFOINVE India</span></button>
+  <button id="openInfoinve" type="button" class="infoinve-download-btn"><span>INFOINVE</span></button>
 </div>
 </div>
 <nav class="main-nav"><a href="#dashboard">Dashboard</a><a href="#evolucion">Evolución</a><a href="#paises">Países</a><a href="#sectores">Sectores</a><a href="#composicion">Composición</a><a href="#unctad">UNCTAD</a><a href="#anuncios">Anuncios</a></nav>
@@ -1137,19 +1154,73 @@ per.addEventListener('change',update);document.getElementById('topn').addEventLi
 
 
 
+
+
+
+<div id="infoinveModal" class="infoinve-modal" aria-hidden="true">
+  <div class="infoinve-card" role="dialog" aria-modal="true" aria-labelledby="infoinveTitle">
+    <div class="infoinve-head">
+      <h2 id="infoinveTitle">INFOINVE</h2>
+      <button id="closeInfoinve" class="infoinve-close" type="button" aria-label="Cerrar">×</button>
+    </div>
+    <div class="infoinve-field">
+      <label for="infoinvePais">País</label>
+      <select id="infoinvePais">
+        <option value="">Seleccionar país</option>
+      </select>
+    </div>
+    <div class="infoinve-field">
+      <label for="infoinvePeriodo">Mes</label>
+      <select id="infoinvePeriodo" disabled>
+        <option value="">Seleccionar mes</option>
+      </select>
+    </div>
+    <div class="infoinve-actions">
+      <button id="infoinveDownload" class="infoinve-download" type="button" disabled>↓ Descargar INFOINVE</button>
+    </div>
+    <div class="infoinve-note">Se muestran únicamente los países y períodos con informes disponibles.</div>
+  </div>
+</div>
+
+
 <script>
+const INFOINVE_CATALOGO = [
+  { pais: 'India', periodo: 'Septiembre 2026', archivo: 'INFOINVE_India_septiembre_2026.docx' }
+];
+
 document.addEventListener('DOMContentLoaded', function(){
-  const btn = document.getElementById('downloadInfoinveIndia');
-  if(btn){
-    btn.addEventListener('click', function(){
-      const a = document.createElement('a');
-      a.href = 'INFOINVE_India_septiembre_2026.docx';
-      a.download = 'INFOINVE_India_septiembre_2026.docx';
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-    });
-  }
+  const modal = document.getElementById('infoinveModal');
+  const openBtn = document.getElementById('openInfoinve');
+  const closeBtn = document.getElementById('closeInfoinve');
+  const pais = document.getElementById('infoinvePais');
+  const periodo = document.getElementById('infoinvePeriodo');
+  const download = document.getElementById('infoinveDownload');
+
+  [...new Set(INFOINVE_CATALOGO.map(x => x.pais))].sort().forEach(p => {
+    pais.add(new Option(p,p));
+  });
+
+  function closeModal(){ modal.classList.remove('open'); modal.setAttribute('aria-hidden','true'); }
+  openBtn?.addEventListener('click', () => { modal.classList.add('open'); modal.setAttribute('aria-hidden','false'); });
+  closeBtn?.addEventListener('click', closeModal);
+  modal?.addEventListener('click', e => { if(e.target === modal) closeModal(); });
+
+  pais?.addEventListener('change', () => {
+    periodo.innerHTML = '<option value="">Seleccionar mes</option>';
+    const rows = INFOINVE_CATALOGO.filter(x => x.pais === pais.value);
+    rows.forEach(x => periodo.add(new Option(x.periodo, x.archivo)));
+    periodo.disabled = rows.length === 0;
+    download.disabled = true;
+  });
+
+  periodo?.addEventListener('change', () => { download.disabled = !periodo.value; });
+  download?.addEventListener('click', () => {
+    if(!periodo.value) return;
+    const a=document.createElement('a');
+    a.href=periodo.value;
+    a.download=periodo.value.split('/').pop();
+    document.body.appendChild(a); a.click(); a.remove();
+  });
 });
 </script>
 
