@@ -246,13 +246,31 @@ header .c .header-actions{
   display:flex!important;align-items:center!important;gap:12px!important;width:auto!important;
 }
 header .c .header-actions .ficha-pais-btn,
-header .c .header-actions .rigi-hero-btn{
+header .c .header-actions .rigi-hero-btn,
+header .c .header-actions .infoinve-download-btn{
   position:static!important;top:auto!important;right:auto!important;left:auto!important;
   margin:0!important;visibility:visible!important;opacity:1!important;transform:none!important;
 }
 @media(max-width:850px){
  header .c .header-actions{position:static!important;margin-top:14px!important;flex-wrap:wrap!important;}
 }
+
+.infoinve-download-btn{
+  position:static!important;
+  margin:0!important;
+  visibility:visible!important;
+  opacity:1!important;
+  transform:none!important;
+  border:0;
+  border-radius:9px;
+  padding:10px 14px;
+  background:#0f4c81;
+  color:#fff;
+  font-weight:700;
+  cursor:pointer;
+  white-space:nowrap;
+}
+.infoinve-download-btn:hover{filter:brightness(.95)}
 </style>
 
 <style>
@@ -293,6 +311,7 @@ body:not(.auth-locked) .site-auth-gate{display:none}
   <div class="header-actions">
   <button id="openFichaPais" type="button" class="ficha-pais-btn"><span>Ficha País</span></button>
   <button id="openRigi" type="button" class="rigi-hero-btn"><span>Proyectos RIGI</span></button>
+  <button id="downloadInfoinveIndia" type="button" class="infoinve-download-btn" title="Descargar INFOINVE India – septiembre 2026"><span>↓ INFOINVE India</span></button>
 </div>
 </div>
 <nav class="main-nav"><a href="#dashboard">Dashboard</a><a href="#evolucion">Evolución</a><a href="#paises">Países</a><a href="#sectores">Sectores</a><a href="#composicion">Composición</a><a href="#unctad">UNCTAD</a><a href="#anuncios">Anuncios</a></nav>
@@ -1116,5 +1135,22 @@ per.addEventListener('change',update);document.getElementById('topn').addEventLi
 })();
 </script>
 
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  const btn = document.getElementById('downloadInfoinveIndia');
+  if(btn){
+    btn.addEventListener('click', function(){
+      const a = document.createElement('a');
+      a.href = 'INFOINVE_India_septiembre_2026.docx';
+      a.download = 'INFOINVE_India_septiembre_2026.docx';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    });
+  }
+});
+</script>
 
 </body></html>
