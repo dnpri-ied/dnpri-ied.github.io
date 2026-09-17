@@ -953,7 +953,8 @@ per.addEventListener('change',update);document.getElementById('topn').addEventLi
   const initialAuthType=(initialAuthParams.get('type')||initialQueryParams.get('type')||'').toLowerCase()||null;
   const initialAuthCode=initialQueryParams.get('code')||initialAuthParams.get('code')||null;
   const initialAccessToken=initialAuthParams.get('access_token')||initialQueryParams.get('access_token')||null;
-  const initialPasswordSetup=!!initialAuthCode || !!initialAccessToken || ['recovery','invite','signup'].includes(initialAuthType);
+  const forcedRecovery=initialQueryParams.get('dnpri_recovery')==='1';
+  const initialPasswordSetup=forcedRecovery || !!initialAuthCode || !!initialAccessToken || ['recovery','invite','signup'].includes(initialAuthType);
   const initialSetupMode=initialAuthType==='invite'||initialAuthType==='signup'?'invite':'recovery';
 
   const db=window.supabase?.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
@@ -1024,7 +1025,7 @@ per.addEventListener('change',update);document.getElementById('topn').addEventLi
   async function siteForgot(){
     const email=document.getElementById('siteEmail').value.trim();
     if(!email)return siteMsg('Ingresá tu correo primero.');
-    const {error}=await db.auth.resetPasswordForEmail(email,{redirectTo:'https://dnpri-ied.github.io/'});
+    const {error}=await db.auth.resetPasswordForEmail(email,{redirectTo:'https://dnpri-ied.github.io/?dnpri_recovery=1'});
     siteMsg(error?error.message:'Se envió el correo de recuperación.',!error);
   }
   async function doLogin(){const email=document.getElementById('fpEmail').value.trim(),password=document.getElementById('fpPassword').value;if(!email||!password)return msg(document.getElementById('fpAuthMsg'),'Ingresá correo y contraseña.',false);const {data,error}=await db.auth.signInWithPassword({email,password});if(error)return msg(document.getElementById('fpAuthMsg'),error.message,false);const p=await profileFor(data.user);if(!p){await db.auth.signOut();return msg(document.getElementById('fpAuthMsg'),'La cuenta no está autorizada para DNPRI.',false)}currentUser=data.user;currentProfile=p;msg(document.getElementById('fpAuthMsg'),'Acceso correcto.');await syncAuth();editorPanel.style.display='block'}
@@ -1058,7 +1059,7 @@ per.addEventListener('change',update);document.getElementById('topn').addEventLi
     await syncAuth();
     alert(wasInvite?'Alta completada. Tu contraseña quedó creada y ya podés utilizar DNPRI-IED.':'Contraseña actualizada correctamente. Ya podés usarla para iniciar sesión en DNPRI-IED.');
   }
-  async function forgot(){const email=document.getElementById('fpEmail').value.trim();if(!email)return msg(document.getElementById('fpAuthMsg'),'Ingresá tu correo primero.',false);const {error}=await db.auth.resetPasswordForEmail(email,{redirectTo:'https://dnpri-ied.github.io/'});msg(document.getElementById('fpAuthMsg'),error?error.message:'Se envió el correo de recuperación.',!error)}
+  async function forgot(){const email=document.getElementById('fpEmail').value.trim();if(!email)return msg(document.getElementById('fpAuthMsg'),'Ingresá tu correo primero.',false);const {error}=await db.auth.resetPasswordForEmail(email,{redirectTo:'https://dnpri-ied.github.io/?dnpri_recovery=1'});msg(document.getElementById('fpAuthMsg'),error?error.message:'Se envió el correo de recuperación.',!error)}
   function currentTextFor(country,apartado){const old=sel.value;sel.value=country;const ov=latestFullEdit(country,apartado);let html=ov?esc(ov.descripcion).replace(/\n/g,'<br>'):baseSectionHTML(country,apartado);sel.value=old;const tmp=document.createElement('div');tmp.innerHTML=html;return tmp.innerText.trim()}
   async function loadPending(){if(currentProfile?.rol!=='administrador')return;const box=document.getElementById('fpPendingList');box.innerHTML='Cargando…';const {data,error}=await db.from('aportes_ficha_pais').select('*').eq('estado','pendiente').order('creado_en',{ascending:true});if(error){box.textContent=error.message;return}box.innerHTML=(data||[]).length?(data||[]).map(x=>{const actual=currentTextFor(x.pais,x.apartado),direct=isFullEdit(x);return `<div class="fp-review-card" data-id="${x.id}"><span class="fp-status-pill">Pendiente</span><p><b>${esc(x.pais)} · Apartado ${x.apartado}${direct?' · Edición directa':' · '+esc(x.titulo)}</b></p>${direct?`<p><b>Texto actualmente publicado:</b></p><div class="fp-current">${esc(actual)}</div><p><b>Texto propuesto:</b></p><div class="fp-proposed">${esc(x.descripcion)}</div>`:`<p><b>Contenido propuesto:</b><br>${esc(x.descripcion).replace(/\n/g,'<br>')}</p>`}<p style="color:#667085"><b>Editor:</b> ${esc(x.creado_por_email)}${x.fuente?' · <b>Fuente:</b> '+esc(x.fuente):''}${x.url_fuente?' · <a href="'+esc(x.url_fuente)+'" target="_blank" rel="noopener">Ver fuente</a>':''}</p><div class="fp-actions"><button class="fp-action fp-approve" data-id="${x.id}">Aprobar</button><button class="fp-action danger fp-reject" data-id="${x.id}">Rechazar</button></div></div>`}).join(''):'No hay propuestas pendientes.';box.querySelectorAll('.fp-approve').forEach(b=>b.onclick=()=>review(+b.dataset.id,'aprobado'));box.querySelectorAll('.fp-reject').forEach(b=>b.onclick=()=>review(+b.dataset.id,'rechazado'))}
   async function review(id,state){const {error}=await db.from('aportes_ficha_pais').update({estado:state,revisado_por:currentUser.id,revisado_en:new Date().toISOString()}).eq('id',id);if(error)return alert(error.message);await loadPending();approvedByCountry[sel.value]=[];await loadApproved(sel.value)}
