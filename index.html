@@ -7,6 +7,7 @@
 <script src="datos_bcra.js"></script>
 <script src="datos_unctad.js"></script>
 <script src="anuncios_inversion.js"></script>
+<script src="prensa_destacada.js"></script>
 <script src="datos_rigi.js"></script>
 <script src="datos_inversores.js"></script>
 <style>
@@ -428,7 +429,9 @@ body:not(.auth-locked) .site-auth-gate{display:none}
 </div></div></div>
 
 <section id="anuncios"><div class="title"><h3>Anuncios Destacados en la Prensa</h3>
-<p>Hasta cinco mayores anuncios identificados por país durante 2022–2026, ordenados por monto anunciado.</p></div>
+<p>Radar económico actualizado automáticamente cada semana, más los principales anuncios de inversión por país.</p></div>
+<div class="tools" style="margin-top:0"><div><b>Radar semanal</b><div class="source" id="pressUpdated">Última actualización: —</div></div><div class="source">Bloomberg · Ámbito Financiero · The Economist · Reuters · Financial Times</div></div>
+<div id="presscards" class="ann-grid" style="margin-top:16px;margin-bottom:24px"></div>
 <div class="tools" style="margin-top:0"><div class="field" style="min-width:320px"><label>País</label><select id="paisann"></select></div>
 <div class="source">Fuentes: prensa, compañías y organismos oficiales</div></div>
 <div id="anncards" class="ann-grid" style="margin-top:16px"></div>
@@ -475,12 +478,21 @@ per.addEventListener('change',update);document.getElementById('topn').addEventLi
 </script><script>
 (()=>{
  const U=window.DATOS_UNCTAD||{series:{},meta:{}}, A=window.ANUNCIOS_INVERSION||{datos:[]};
+ const P=window.PRENSA_DESTACADA||{datos:[],meta:{}};
  const pu=document.getElementById('paisunctad'), pa=document.getElementById('paisann');
  if(!pu||!pa)return;
  const countries=[...new Set([...(Object.keys(U.series||{})),...A.datos.map(x=>x.pais)])].sort((a,b)=>a.localeCompare(b,'es'));
  countries.forEach(c=>{pu.add(new Option(c,c));pa.add(new Option(c,c));});
  let uf,us;
  const nf=new Intl.NumberFormat('es-AR',{maximumFractionDigits:1});
+ const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ function renderPress(){
+   const box=document.getElementById('presscards'), updated=document.getElementById('pressUpdated');
+   if(!box)return;
+   updated.textContent=P.meta.actualizado?`Última actualización: ${P.meta.actualizado} · Frecuencia semanal`:'Actualización semanal pendiente';
+   box.innerHTML=P.datos.length?'':'<div class="card empty">No hay novedades disponibles esta semana. Los anuncios verificados permanecen debajo.</div>';
+   P.datos.forEach(r=>box.insertAdjacentHTML('beforeend',`<article class="ann"><div class="ml">${esc(r.fuente)} · ${esc(r.fecha)}</div><h4>${esc(r.titulo)}</h4><a href="${esc(r.url)}" target="_blank" rel="noopener noreferrer">Leer noticia</a></article>`));
+ }
  function renderU(){
    const c=pu.value, rows=(U.series&&U.series[c])||[];
    const tb=document.getElementById('tu'), note=document.getElementById('unote');
@@ -500,7 +512,7 @@ per.addEventListener('change',update);document.getElementById('topn').addEventLi
  }
  pu.addEventListener('change',renderU); pa.addEventListener('change',renderA);
  const preferred=countries.find(c=>c.includes('Estados Unidos'))||countries[0];
- if(preferred){pu.value=preferred;pa.value=preferred} renderU();renderA();
+ if(preferred){pu.value=preferred;pa.value=preferred} renderU();renderA();renderPress();
 })();
 
 
