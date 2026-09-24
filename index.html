@@ -8,6 +8,7 @@
 <script src="datos_unctad.js"></script>
 <script src="anuncios_inversion.js"></script>
 <script src="datos_rigi.js"></script>
+<script src="datos_inversores.js"></script>
 <style>
 :root{--n:#0b1f3a;--b:#163f73;--bg:#f5f7fb;--tx:#172033;--mu:#667085;--bd:#e4e7ec;--g:#027a48;--r:#b42318}
 *{box-sizing:border-box}body{margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--tx)}
@@ -303,6 +304,17 @@ body:not(.auth-locked) .site-auth-gate{display:none}
 .infoinve-note{font-size:13px;color:#64748b;margin-top:12px}
 </style>
 
+<style>
+.investor-section{scroll-margin-top:18px}.investor-panel{position:relative;overflow:hidden;background:linear-gradient(135deg,#0b1f3a 0%,#163f73 72%,#1d578f 100%);border-radius:20px;padding:25px;color:#fff;box-shadow:0 16px 38px rgba(11,31,58,.18)}
+.investor-panel:after{content:"";position:absolute;width:260px;height:260px;border-radius:50%;right:-100px;top:-150px;background:rgba(255,255,255,.07)}
+.investor-kicker{font-size:11px;font-weight:800;letter-spacing:1.4px;text-transform:uppercase;color:#9fc5ef}.investor-heading{display:flex;justify-content:space-between;gap:24px;align-items:end;position:relative;z-index:1}.investor-heading h3{font-size:28px;margin:7px 0}.investor-heading p{color:#d7e4f1;margin:0;max-width:680px;font-size:14px;line-height:1.55}
+.investor-filters{display:flex;gap:14px;margin-top:22px;position:relative;z-index:1}.investor-filter{flex:1}.investor-filter label{color:#bcd2e8}.investor-filter select{width:100%;margin-top:7px;padding:12px 14px;border:1px solid rgba(255,255,255,.28);font-size:15px;font-weight:650;color:#172033}
+.investor-summary{display:flex;align-items:center;gap:12px;margin:18px 0 12px}.investor-count{display:inline-flex;align-items:center;justify-content:center;min-width:34px;height:34px;background:#e6a23c;color:#0b1f3a;border-radius:10px;font-weight:900}.investor-summary h4{margin:0;font-size:18px}.investor-summary span{color:var(--mu);font-size:12px}
+.investor-list{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}.investor-card{background:#fff;border:1px solid var(--bd);border-radius:15px;padding:16px;display:flex;flex-direction:column;min-height:250px;transition:transform .18s ease,box-shadow .18s ease}.investor-card:hover{transform:translateY(-3px);box-shadow:0 12px 28px rgba(16,24,40,.12)}
+.investor-rank{display:flex;justify-content:space-between;align-items:center}.investor-logo{display:grid;place-items:center;width:40px;height:40px;border-radius:11px;background:#eaf2fb;color:#163f73;font-size:12px;font-weight:900}.investor-number{font-size:11px;font-weight:800;color:#98a2b3}.investor-card h5{font-size:16px;margin:14px 0 5px;line-height:1.25}.investor-tag{font-size:11px;color:#9b5c05;font-weight:800;text-transform:uppercase;letter-spacing:.3px}.investor-card p{font-size:12px;line-height:1.5;color:var(--mu);margin:10px 0}.investor-presence{font-size:11px;color:#475467;margin-top:auto;padding-top:10px;border-top:1px solid #eef0f3}.investor-card a{display:inline-block;color:#1769aa;font-size:12px;font-weight:800;text-decoration:none;margin-top:11px}.investor-method{font-size:11px;color:#667085;margin:13px 2px 0;line-height:1.5}
+@media(max-width:1000px){.investor-list{grid-template-columns:repeat(2,1fr)}}@media(max-width:650px){.investor-heading{display:block}.investor-filters{flex-direction:column}.investor-list{grid-template-columns:1fr}.investor-card{min-height:auto}.investor-panel{padding:20px}.investor-heading h3{font-size:24px}}
+</style>
+
 </head>
 <body class="auth-locked">
 <div id="siteAuthGate" class="site-auth-gate">
@@ -331,7 +343,7 @@ body:not(.auth-locked) .site-auth-gate{display:none}
   <button id="openInfoinve" type="button" class="infoinve-download-btn"><span>INFOINVE</span></button>
 </div>
 </div>
-<nav class="main-nav"><a href="#dashboard">Dashboard</a><a href="#evolucion">Evolución</a><a href="#paises">Países</a><a href="#sectores">Sectores</a><a href="#composicion">Composición</a><a href="#unctad">UNCTAD</a><a href="#anuncios">Anuncios</a></nav>
+<nav class="main-nav"><a href="#dashboard">Dashboard</a><a href="#evolucion">Evolución</a><a href="#paises">Países</a><a href="#sectores">Sectores</a><a href="#composicion">Composición</a><a href="#unctad">UNCTAD</a><a href="#inversores">Principales inversores</a><a href="#anuncios">Anuncios</a></nav>
 <div class="hero"><h2>Inversión extranjera directa en Argentina</h2><p>Consulta interactiva de flujos, posición pasiva bruta, países inversores y sectores receptores con información oficial del Banco Central de la República Argentina.</p></div></div></header>
 <main><div class="c">
 <div id="err" class="error">No se pudo cargar <b>datos_bcra.js</b>. Verificá que esté junto a index.html.</div>
@@ -358,6 +370,16 @@ body:not(.auth-locked) .site-auth-gate{display:none}
 <div class="card"><div class="ml">Stock de IED en el exterior</div><div class="chart"><canvas id="cuStock"></canvas></div></div></div>
 <div class="tablecard" style="margin-top:16px"><div class="scroll"><table><thead><tr><th>Año</th><th class="num">Outflow</th><th class="num">Outward stock</th></tr></thead><tbody id="tu"></tbody></table></div>
 <div id="unote" class="note" style="margin-top:12px"></div></div></section>
+
+<section id="inversores" class="investor-section"><div class="title"><h3>Principales inversores internacionales</h3><p>Identificá las compañías con mayor presencia inversora global según su país de origen y sector.</p></div>
+<div class="investor-panel">
+  <div class="investor-heading"><div><div class="investor-kicker">Mapa de oportunidades</div><h3>¿Quiénes invierten en el mundo?</h3><p>Combiná país y sector para acceder a una selección ejecutiva de cinco empresas con actividad de inversión extranjera.</p></div></div>
+  <div class="investor-filters"><div class="investor-filter"><label for="investorCountry">País de origen</label><select id="investorCountry"></select></div><div class="investor-filter"><label for="investorSector">Sector</label><select id="investorSector"></select></div></div>
+</div>
+<div class="investor-summary"><div class="investor-count">5</div><div><h4 id="investorResultTitle">Empresas destacadas</h4><span id="investorUpdated"></span></div></div>
+<div id="investorList" class="investor-list" aria-live="polite"></div>
+<div id="investorMethod" class="investor-method"></div>
+</section>
 
 <section id="anuncios"><div class="title"><h3>Principales anuncios de inversión en Argentina</h3>
 <p>Hasta cinco mayores anuncios identificados por país durante 2022–2026, ordenados por monto anunciado.</p></div>
@@ -436,6 +458,31 @@ per.addEventListener('change',update);document.getElementById('topn').addEventLi
 })();
 
 
+</script>
+
+<script>
+(()=>{
+ const source=window.PRINCIPALES_INVERSORES;
+ const country=document.getElementById('investorCountry'),sector=document.getElementById('investorSector');
+ const list=document.getElementById('investorList'),title=document.getElementById('investorResultTitle');
+ if(!source||!country||!sector||!list)return;
+ const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ const countries=[...new Set(source.datos.map(x=>x.pais))].sort((a,b)=>a.localeCompare(b,'es'));
+ countries.forEach(x=>country.add(new Option(x,x)));
+ function updateSectors(){
+   const previous=sector.value,available=source.datos.filter(x=>x.pais===country.value).map(x=>x.sector).sort((a,b)=>a.localeCompare(b,'es'));
+   sector.innerHTML='';available.forEach(x=>sector.add(new Option(x,x)));if(available.includes(previous))sector.value=previous;render();
+ }
+ function render(){
+   const selection=source.datos.find(x=>x.pais===country.value&&x.sector===sector.value);
+   title.textContent=selection?`Top 5 · ${selection.pais} en ${selection.sector}`:'Sin resultados para esta combinación';
+   document.getElementById('investorUpdated').textContent=`Actualizado: ${source.actualizado}`;
+   document.getElementById('investorMethod').innerHTML=`<b>Nota metodológica:</b> ${esc(source.metodologia)} Fuentes: perfiles y sitios corporativos enlazados en cada ficha.`;
+   list.innerHTML=selection?selection.empresas.map((x,i)=>`<article class="investor-card"><div class="investor-rank"><div class="investor-logo" aria-hidden="true">${esc(x.sigla)}</div><div class="investor-number">0${i+1}</div></div><h5>${esc(x.nombre)}</h5><div class="investor-tag">${esc(x.especialidad)}</div><p>${esc(x.descripcion)}</p><div class="investor-presence"><b>Presencia:</b> ${esc(x.presencia)}</div><a href="${esc(x.url)}" target="_blank" rel="noopener">Ver perfil corporativo →</a></article>`).join(''):'<div class="card empty">No hay empresas cargadas para esta combinación.</div>';
+ }
+ country.addEventListener('change',updateSectors);sector.addEventListener('change',render);
+ country.value=countries.includes('China')?'China':countries[0];updateSectors();sector.value='Minería';render();
+})();
 </script>
 
 <div id="rigiModal" aria-hidden="true" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.55);padding:24px;overflow:auto">
