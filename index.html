@@ -272,6 +272,8 @@ header .c .header-actions .infoinve-download-btn{
   white-space:nowrap;
 }
 .infoinve-download-btn:hover{filter:brightness(.95)}
+.prospecto-btn{background:#e6a23c!important;color:#0b1f3a!important;border-color:#f5c46f!important}
+.prospecto-btn:hover{filter:brightness(1.06)}
 </style>
 
 <style>
@@ -306,13 +308,16 @@ body:not(.auth-locked) .site-auth-gate{display:none}
 
 <style>
 .investor-section{scroll-margin-top:18px}.investor-panel{position:relative;overflow:hidden;background:linear-gradient(135deg,#0b1f3a 0%,#163f73 72%,#1d578f 100%);border-radius:20px;padding:25px;color:#fff;box-shadow:0 16px 38px rgba(11,31,58,.18)}
+.investor-modal{display:none;position:fixed;inset:0;z-index:10060;background:rgba(5,18,38,.72);padding:24px;overflow:auto}
+.investor-modal.open{display:block}.investor-shell{width:min(1180px,100%);margin:20px auto;background:#f8fafc;border-radius:20px;box-shadow:0 24px 70px rgba(0,0,0,.32);overflow:hidden}
+.investor-modal-head{display:flex;justify-content:space-between;gap:20px;align-items:flex-start;background:linear-gradient(135deg,#0b1f3a,#163f73);color:#fff;padding:25px 28px}.investor-modal-head h2{margin:4px 0 6px;font-size:28px}.investor-modal-head p{margin:0;color:#d7e4f1;font-size:14px}.investor-close{border:0;background:rgba(255,255,255,.12);color:#fff;border-radius:10px;width:40px;height:40px;font-size:26px;cursor:pointer}.investor-modal-body{padding:24px 28px 28px}
 .investor-panel:after{content:"";position:absolute;width:260px;height:260px;border-radius:50%;right:-100px;top:-150px;background:rgba(255,255,255,.07)}
 .investor-kicker{font-size:11px;font-weight:800;letter-spacing:1.4px;text-transform:uppercase;color:#9fc5ef}.investor-heading{display:flex;justify-content:space-between;gap:24px;align-items:end;position:relative;z-index:1}.investor-heading h3{font-size:28px;margin:7px 0}.investor-heading p{color:#d7e4f1;margin:0;max-width:680px;font-size:14px;line-height:1.55}
-.investor-filters{display:flex;gap:14px;margin-top:22px;position:relative;z-index:1}.investor-filter{flex:1}.investor-filter label{color:#bcd2e8}.investor-filter select{width:100%;margin-top:7px;padding:12px 14px;border:1px solid rgba(255,255,255,.28);font-size:15px;font-weight:650;color:#172033}
+.investor-filters{display:flex;gap:14px;margin-top:22px;position:relative;z-index:1;align-items:flex-end}.investor-filter{flex:1}.investor-filter label{color:#bcd2e8}.investor-filter select{width:100%;margin-top:7px;padding:12px 14px;border:1px solid rgba(255,255,255,.28);font-size:15px;font-weight:650;color:#172033}.investor-search{padding:12px 24px;border:0;border-radius:10px;background:#e6a23c;color:#0b1f3a;font:inherit;font-weight:850;cursor:pointer}.investor-search:hover{filter:brightness(1.07)}
 .investor-summary{display:flex;align-items:center;gap:12px;margin:18px 0 12px}.investor-count{display:inline-flex;align-items:center;justify-content:center;min-width:34px;height:34px;background:#e6a23c;color:#0b1f3a;border-radius:10px;font-weight:900}.investor-summary h4{margin:0;font-size:18px}.investor-summary span{color:var(--mu);font-size:12px}
 .investor-list{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}.investor-card{background:#fff;border:1px solid var(--bd);border-radius:15px;padding:16px;display:flex;flex-direction:column;min-height:250px;transition:transform .18s ease,box-shadow .18s ease}.investor-card:hover{transform:translateY(-3px);box-shadow:0 12px 28px rgba(16,24,40,.12)}
 .investor-rank{display:flex;justify-content:space-between;align-items:center}.investor-logo{display:grid;place-items:center;width:40px;height:40px;border-radius:11px;background:#eaf2fb;color:#163f73;font-size:12px;font-weight:900}.investor-number{font-size:11px;font-weight:800;color:#98a2b3}.investor-card h5{font-size:16px;margin:14px 0 5px;line-height:1.25}.investor-tag{font-size:11px;color:#9b5c05;font-weight:800;text-transform:uppercase;letter-spacing:.3px}.investor-card p{font-size:12px;line-height:1.5;color:var(--mu);margin:10px 0}.investor-presence{font-size:11px;color:#475467;margin-top:auto;padding-top:10px;border-top:1px solid #eef0f3}.investor-card a{display:inline-block;color:#1769aa;font-size:12px;font-weight:800;text-decoration:none;margin-top:11px}.investor-method{font-size:11px;color:#667085;margin:13px 2px 0;line-height:1.5}
-@media(max-width:1000px){.investor-list{grid-template-columns:repeat(2,1fr)}}@media(max-width:650px){.investor-heading{display:block}.investor-filters{flex-direction:column}.investor-list{grid-template-columns:1fr}.investor-card{min-height:auto}.investor-panel{padding:20px}.investor-heading h3{font-size:24px}}
+@media(max-width:1000px){.investor-list{grid-template-columns:repeat(2,1fr)}}@media(max-width:650px){.investor-heading{display:block}.investor-filters{flex-direction:column;align-items:stretch}.investor-list{grid-template-columns:1fr}.investor-card{min-height:auto}.investor-panel{padding:20px}.investor-heading h3{font-size:24px}.investor-modal{padding:10px}.investor-modal-body,.investor-modal-head{padding:20px}}
 </style>
 
 </head>
@@ -338,12 +343,13 @@ body:not(.auth-locked) .site-auth-gate{display:none}
     <div class="sub">Sistema de información y análisis de inversión extranjera directa</div>
   </div>
   <div class="header-actions">
+  <button id="openProspecto" type="button" class="infoinve-download-btn prospecto-btn"><span>Prospecto Inversores</span></button>
   <button id="openFichaPais" type="button" class="ficha-pais-btn"><span>Ficha País</span></button>
   <button id="openRigi" type="button" class="rigi-hero-btn"><span>Proyectos RIGI</span></button>
   <button id="openInfoinve" type="button" class="infoinve-download-btn"><span>INFOINVE</span></button>
 </div>
 </div>
-<nav class="main-nav"><a href="#dashboard">Dashboard</a><a href="#evolucion">Evolución</a><a href="#paises">Países</a><a href="#sectores">Sectores</a><a href="#composicion">Composición</a><a href="#unctad">UNCTAD</a><a href="#inversores">Principales inversores</a><a href="#anuncios">Anuncios</a></nav>
+<nav class="main-nav"><a href="#dashboard">Dashboard</a><a href="#evolucion">Evolución</a><a href="#paises">Países</a><a href="#sectores">Sectores</a><a href="#composicion">Composición</a><a href="#unctad">UNCTAD</a><a href="#anuncios">Anuncios</a></nav>
 <div class="hero"><h2>Inversión extranjera directa en Argentina</h2><p>Consulta interactiva de flujos, posición pasiva bruta, países inversores y sectores receptores con información oficial del Banco Central de la República Argentina.</p></div></div></header>
 <main><div class="c">
 <div id="err" class="error">No se pudo cargar <b>datos_bcra.js</b>. Verificá que esté junto a index.html.</div>
@@ -371,15 +377,15 @@ body:not(.auth-locked) .site-auth-gate{display:none}
 <div class="tablecard" style="margin-top:16px"><div class="scroll"><table><thead><tr><th>Año</th><th class="num">Outflow</th><th class="num">Outward stock</th></tr></thead><tbody id="tu"></tbody></table></div>
 <div id="unote" class="note" style="margin-top:12px"></div></div></section>
 
-<section id="inversores" class="investor-section"><div class="title"><h3>Principales inversores internacionales</h3><p>Identificá las compañías con mayor presencia inversora global según su país de origen y sector.</p></div>
+<div id="prospectoModal" class="investor-modal" aria-hidden="true"><div class="investor-shell" role="dialog" aria-modal="true" aria-labelledby="prospectoTitle"><div class="investor-modal-head"><div><div class="investor-kicker">Mapa de oportunidades</div><h2 id="prospectoTitle">Prospecto Inversores</h2><p>Explorá empresas con perfil de inversión extranjera por país de origen y actividad económica.</p></div><button id="closeProspecto" class="investor-close" type="button" aria-label="Cerrar">×</button></div><div class="investor-modal-body">
 <div class="investor-panel">
-  <div class="investor-heading"><div><div class="investor-kicker">Mapa de oportunidades</div><h3>¿Quiénes invierten en el mundo?</h3><p>Combiná país y sector para acceder a una selección ejecutiva de cinco empresas con actividad de inversión extranjera.</p></div></div>
-  <div class="investor-filters"><div class="investor-filter"><label for="investorCountry">País de origen</label><select id="investorCountry"></select></div><div class="investor-filter"><label for="investorSector">Sector</label><select id="investorSector"></select></div></div>
+  <div class="investor-heading"><div><h3>¿Quiénes invierten en el mundo?</h3><p>Seleccioná cualquier país registrado por el BCRA y uno de sus sectores económicos, y luego presioná Buscar.</p></div></div>
+  <div class="investor-filters"><div class="investor-filter"><label for="investorCountry">País</label><select id="investorCountry"><option value="">Seleccionar país</option></select></div><div class="investor-filter"><label for="investorSector">Sector</label><select id="investorSector"><option value="">Seleccionar sector</option></select></div><button id="investorSearch" class="investor-search" type="button">Buscar</button></div>
 </div>
-<div class="investor-summary"><div class="investor-count">5</div><div><h4 id="investorResultTitle">Empresas destacadas</h4><span id="investorUpdated"></span></div></div>
+<div class="investor-summary"><div id="investorCount" class="investor-count">5</div><div><h4 id="investorResultTitle">Seleccioná país y sector</h4><span id="investorUpdated">Los resultados se mostrarán al buscar.</span></div></div>
 <div id="investorList" class="investor-list" aria-live="polite"></div>
 <div id="investorMethod" class="investor-method"></div>
-</section>
+</div></div></div>
 
 <section id="anuncios"><div class="title"><h3>Principales anuncios de inversión en Argentina</h3>
 <p>Hasta cinco mayores anuncios identificados por país durante 2022–2026, ordenados por monto anunciado.</p></div>
@@ -467,21 +473,29 @@ per.addEventListener('change',update);document.getElementById('topn').addEventLi
  const list=document.getElementById('investorList'),title=document.getElementById('investorResultTitle');
  if(!source||!country||!sector||!list)return;
  const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
- const countries=[...new Set(source.datos.map(x=>x.pais))].sort((a,b)=>a.localeCompare(b,'es'));
+ const modal=document.getElementById('prospectoModal'),open=document.getElementById('openProspecto'),close=document.getElementById('closeProspecto'),search=document.getElementById('investorSearch'),count=document.getElementById('investorCount');
+ const bcra=window.DATOS_BCRA||{};
+ const countries=Object.keys(bcra.pie_paises_2026T1||{}).filter(x=>x!=='Sin Clasificar').sort((a,b)=>a.localeCompare(b,'es'));
+ const latest=bcra.meta?.ultimo;
+ const sectors=[...new Set((bcra.sectores||[]).filter(x=>x[0]===latest).map(x=>x[1]))].sort((a,b)=>a.localeCompare(b,'es'));
  countries.forEach(x=>country.add(new Option(x,x)));
- function updateSectors(){
-   const previous=sector.value,available=source.datos.filter(x=>x.pais===country.value).map(x=>x.sector).sort((a,b)=>a.localeCompare(b,'es'));
-   sector.innerHTML='';available.forEach(x=>sector.add(new Option(x,x)));if(available.includes(previous))sector.value=previous;render();
- }
+ sectors.forEach(x=>sector.add(new Option(x,x)));
+ const countryAliases={'Estados Unidos De América':'Estados Unidos'};
+ const sectorAliases={'Explotación de minas y canteras':'Minería','Suministro de electricidad, gas, vapor y aire acondicionado':'Energía','Información y comunicaciones':'Tecnología','Industria manufacturera':'Automotriz'};
  function render(){
-   const selection=source.datos.find(x=>x.pais===country.value&&x.sector===sector.value);
+   if(!country.value||!sector.value){title.textContent='Completá ambos campos';count.textContent='0';list.innerHTML='<div class="card empty">Seleccioná un país y un sector económico antes de buscar.</div>';return}
+   const selectedCountry=countryAliases[country.value]||country.value,selectedSector=sectorAliases[sector.value]||sector.value;
+   const selection=source.datos.find(x=>x.pais===selectedCountry&&x.sector===selectedSector);
    title.textContent=selection?`Top 5 · ${selection.pais} en ${selection.sector}`:'Sin resultados para esta combinación';
+   count.textContent=selection?selection.empresas.length:'0';
    document.getElementById('investorUpdated').textContent=`Actualizado: ${source.actualizado}`;
    document.getElementById('investorMethod').innerHTML=`<b>Nota metodológica:</b> ${esc(source.metodologia)} Fuentes: perfiles y sitios corporativos enlazados en cada ficha.`;
-   list.innerHTML=selection?selection.empresas.map((x,i)=>`<article class="investor-card"><div class="investor-rank"><div class="investor-logo" aria-hidden="true">${esc(x.sigla)}</div><div class="investor-number">0${i+1}</div></div><h5>${esc(x.nombre)}</h5><div class="investor-tag">${esc(x.especialidad)}</div><p>${esc(x.descripcion)}</p><div class="investor-presence"><b>Presencia:</b> ${esc(x.presencia)}</div><a href="${esc(x.url)}" target="_blank" rel="noopener">Ver perfil corporativo →</a></article>`).join(''):'<div class="card empty">No hay empresas cargadas para esta combinación.</div>';
+   list.innerHTML=selection?selection.empresas.slice(0,5).map((x,i)=>`<article class="investor-card"><div class="investor-rank"><div class="investor-logo" aria-hidden="true">${esc(x.sigla)}</div><div class="investor-number">0${i+1}</div></div><h5>${esc(x.nombre)}</h5><div class="investor-tag">${esc(x.especialidad)}</div><p>${esc(x.descripcion)}</p><div class="investor-presence"><b>Presencia internacional:</b> ${esc(x.presencia)}</div><a href="${esc(x.url)}" target="_blank" rel="noopener">Ver perfil corporativo →</a></article>`).join(''):'<div class="card empty">Todavía no hay cinco empresas verificadas para esta combinación. La selección editorial se ampliará sin completar resultados con información no validada.</div>';
  }
- country.addEventListener('change',updateSectors);sector.addEventListener('change',render);
- country.value=countries.includes('China')?'China':countries[0];updateSectors();sector.value='Minería';render();
+ function show(){modal.classList.add('open');modal.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';country.focus()}
+ function hide(){modal.classList.remove('open');modal.setAttribute('aria-hidden','true');document.body.style.overflow=''}
+ open?.addEventListener('click',show);close?.addEventListener('click',hide);search?.addEventListener('click',render);
+ modal?.addEventListener('click',e=>{if(e.target===modal)hide()});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&modal.classList.contains('open'))hide()});
 })();
 </script>
 
