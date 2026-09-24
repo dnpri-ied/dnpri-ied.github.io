@@ -1,7 +1,7 @@
 window.PRINCIPALES_INVERSORES = {
-  actualizado: "Septiembre 2026",
+  actualizado: "24 de septiembre de 2026",
   clasificacion: "Sectores económicos Orbis (NACE Rev. 2)",
-  metodologia: "Selección editorial de compañías con casa matriz en los principales países inversores identificados por el BCRA. Se priorizan escala internacional, activos productivos y presencia comprobable en varios países. La selección es orientativa, no constituye un ranking financiero ni implica que todas las compañías tengan inversiones en Argentina.",
+  metodologia: "Selección editorial de compañías con casa matriz en los principales países inversores identificados por el BCRA. Se priorizan escala internacional, activos productivos y presencia comprobable en varios países. Para cada combinación disponible se muestran hasta cinco compañías, ordenadas editorialmente según el alcance de su presencia fuera del país de origen. La selección es orientativa, no constituye un ranking financiero ni implica que todas las compañías tengan inversiones en Argentina.",
   sectores: [
     "Agricultura, ganadería, silvicultura y pesca",
     "Industrias extractivas",
@@ -25,12 +25,16 @@ window.PRINCIPALES_INVERSORES = {
     {pais:"España",sector:"Actividades financieras y de seguros",empresas:[
       {nombre:"Banco Santander",sigla:"BS",especialidad:"Banca universal",presencia:"Europa y América",descripcion:"Grupo financiero con bancos y plataformas digitales en mercados europeos y americanos.",url:"https://www.santander.com/en/about-us"},
       {nombre:"BBVA",sigla:"BB",especialidad:"Banca y servicios financieros",presencia:"Europa, América y Turquía",descripcion:"Grupo bancario internacional con presencia relevante en España, México, Turquía y Sudamérica.",url:"https://www.bbva.com/en/corporate-information/"},
-      {nombre:"MAPFRE",sigla:"MA",especialidad:"Seguros y reaseguros",presencia:"Más de 30 países",descripcion:"Aseguradora multinacional con actividad directa y de reaseguros en varios continentes.",url:"https://www.mapfre.com/en/about-us/"}
+      {nombre:"MAPFRE",sigla:"MA",especialidad:"Seguros y reaseguros",presencia:"Más de 30 países",descripcion:"Aseguradora multinacional con actividad directa y de reaseguros en varios continentes.",url:"https://www.mapfre.com/en/about-us/"},
+      {nombre:"Banco Sabadell",sigla:"SB",especialidad:"Banca comercial",presencia:"España, Reino Unido y México",descripcion:"Grupo bancario con actividad internacional mediante TSB y su negocio corporativo en México.",url:"https://www.grupbancsabadell.com/corp/en/about-the-group.html"},
+      {nombre:"CaixaBank",sigla:"CB",especialidad:"Banca y servicios financieros",presencia:"Red internacional en Europa, América, Asia y África",descripcion:"Entidad financiera con sucursales y oficinas de representación para acompañar la expansión internacional de empresas.",url:"https://www.caixabank.com/about-us.html"}
     ]},
     {pais:"España",sector:"Construcción",empresas:[
       {nombre:"ACS",sigla:"AC",especialidad:"Infraestructura",presencia:"América, Europa y Asia-Pacífico",descripcion:"Desarrolla infraestructura, ingeniería y servicios mediante una cartera internacional.",url:"https://www.grupoacs.com/about-acs/"},
       {nombre:"Ferrovial",sigla:"FE",especialidad:"Autopistas y aeropuertos",presencia:"Europa, América y Australia",descripcion:"Opera y desarrolla infraestructura de transporte en mercados internacionales.",url:"https://www.ferrovial.com/en/company/"},
-      {nombre:"Acciona",sigla:"ACC",especialidad:"Infraestructura sostenible",presencia:"Más de 40 países",descripcion:"Invierte y opera proyectos de infraestructura, agua y energía renovable.",url:"https://www.acciona.com/about-us/"}
+      {nombre:"Acciona",sigla:"ACC",especialidad:"Infraestructura sostenible",presencia:"Más de 40 países",descripcion:"Invierte y opera proyectos de infraestructura, agua y energía renovable.",url:"https://www.acciona.com/about-us/"},
+      {nombre:"Sacyr",sigla:"SC",especialidad:"Concesiones e infraestructura",presencia:"Europa, América y Oceanía",descripcion:"Desarrolla y opera concesiones de transporte, infraestructura y servicios en mercados internacionales.",url:"https://sacyr.com/en/about-us"},
+      {nombre:"OHLA",sigla:"OH",especialidad:"Construcción e infraestructura",presencia:"Europa, América y Asia",descripcion:"Grupo de infraestructura con proyectos de ingeniería civil, edificación y concesiones fuera de España.",url:"https://ohla-group.com/en/about-us/"}
     ]},
     {pais:"Países Bajos",sector:"Industria manufacturera",empresas:[
       {nombre:"ASML",sigla:"AS",especialidad:"Equipos para semiconductores",presencia:"Europa, Asia y Estados Unidos",descripcion:"Proveedor global de sistemas de litografía para la industria de semiconductores.",url:"https://www.asml.com/en/company/about-asml"},
@@ -50,7 +54,8 @@ window.PRINCIPALES_INVERSORES = {
       {nombre:"Nestlé",sigla:"NE",especialidad:"Alimentos y bebidas",presencia:"Productos comercializados en 185 países",descripcion:"Grupo global de alimentos con fábricas, centros de I+D y marcas internacionales.",url:"https://www.nestle.com/aboutus"},
       {nombre:"Roche",sigla:"RO",especialidad:"Farmacéutica y diagnóstico",presencia:"Más de 100 países",descripcion:"Compañía de salud con investigación, producción y comercialización internacional.",url:"https://www.roche.com/about"},
       {nombre:"Novartis",sigla:"NO",especialidad:"Medicamentos innovadores",presencia:"Operaciones globales",descripcion:"Grupo farmacéutico con investigación clínica y actividad comercial multinacional.",url:"https://www.novartis.com/about"},
-      {nombre:"ABB",sigla:"AB",especialidad:"Electrificación y automatización",presencia:"Más de 100 países",descripcion:"Proveedor tecnológico industrial con fabricación, ingeniería y servicios globales.",url:"https://global.abb/group/en/about"}
+      {nombre:"ABB",sigla:"AB",especialidad:"Electrificación y automatización",presencia:"Más de 100 países",descripcion:"Proveedor tecnológico industrial con fabricación, ingeniería y servicios globales.",url:"https://global.abb/group/en/about"},
+      {nombre:"Lindt & Sprüngli",sigla:"LS",especialidad:"Alimentos y chocolate",presencia:"Producción en Europa y Estados Unidos; ventas globales",descripcion:"Fabricante suizo de chocolate premium con plantas, filiales y marcas en numerosos mercados.",url:"https://www.lindt-spruengli.com/about-us"}
     ]},
     {pais:"Suiza",sector:"Industrias extractivas",empresas:[
       {nombre:"Glencore",sigla:"GL",especialidad:"Minería y materias primas",presencia:"Más de 35 países",descripcion:"Opera activos mineros y redes de comercialización de materias primas a escala global.",url:"https://www.glencore.com/who-we-are"}
@@ -59,13 +64,15 @@ window.PRINCIPALES_INVERSORES = {
       {nombre:"Rio Tinto",sigla:"RT",especialidad:"Minería y metales",presencia:"Operaciones en 35 países",descripcion:"Grupo minero global con activos de hierro, cobre, aluminio y minerales críticos.",url:"https://www.riotinto.com/about"},
       {nombre:"BP",sigla:"BP",especialidad:"Energía integrada",presencia:"Operaciones en más de 60 países",descripcion:"Compañía energética con activos internacionales de hidrocarburos y energías de transición.",url:"https://www.bp.com/en/global/corporate/who-we-are.html"},
       {nombre:"Shell",sigla:"SH",especialidad:"Energía integrada",presencia:"Más de 70 países",descripcion:"Grupo energético con exploración, producción, refinación, GNL y soluciones bajas en carbono.",url:"https://www.shell.com/who-we-are.html"},
-      {nombre:"Anglo American",sigla:"AA",especialidad:"Minerales y metales",presencia:"África, América, Europa y Australia",descripcion:"Productor internacional de cobre, mineral de hierro y otros minerales.",url:"https://www.angloamerican.com/about-us"}
+      {nombre:"Anglo American",sigla:"AA",especialidad:"Minerales y metales",presencia:"África, América, Europa y Australia",descripcion:"Productor internacional de cobre, mineral de hierro y otros minerales.",url:"https://www.angloamerican.com/about-us"},
+      {nombre:"Antofagasta plc",sigla:"AN",especialidad:"Cobre",presencia:"Operaciones en Chile y exploración internacional",descripcion:"Grupo minero con sede corporativa en Londres y una cartera internacional de exploración de cobre.",url:"https://www.antofagasta.co.uk/about-us/"}
     ]},
     {pais:"Francia",sector:"Suministro de energía eléctrica, gas, vapor y aire acondicionado",empresas:[
       {nombre:"TotalEnergies",sigla:"TE",especialidad:"Energía integrada",presencia:"Más de 120 países",descripcion:"Inversiones globales en petróleo, gas, electricidad y energías renovables.",url:"https://totalenergies.com/company/identity"},
       {nombre:"EDF",sigla:"ED",especialidad:"Electricidad baja en carbono",presencia:"Europa, América, Asia y África",descripcion:"Generación y servicios eléctricos internacionales, con foco nuclear y renovable.",url:"https://www.edf.fr/en/the-edf-group"},
       {nombre:"Engie",sigla:"EN",especialidad:"Renovables e infraestructura",presencia:"31 países",descripcion:"Grupo global de energía y servicios enfocado en descarbonización e infraestructura.",url:"https://www.engie.com/en/group"},
-      {nombre:"Voltalia",sigla:"VO",especialidad:"Energías renovables",presencia:"20 países",descripcion:"Productor y proveedor de servicios de energía solar, eólica, hidroeléctrica y biomasa.",url:"https://www.voltalia.com/about-us"}
+      {nombre:"Voltalia",sigla:"VO",especialidad:"Energías renovables",presencia:"20 países",descripcion:"Productor y proveedor de servicios de energía solar, eólica, hidroeléctrica y biomasa.",url:"https://www.voltalia.com/about-us"},
+      {nombre:"Veolia",sigla:"VE",especialidad:"Servicios de energía y ambiente",presencia:"Cinco continentes",descripcion:"Gestiona redes y servicios de energía, agua y residuos para ciudades e industrias en todo el mundo.",url:"https://www.veolia.com/en/veolia-group/profile"}
     ]},
     {pais:"Uruguay",sector:"Información y comunicaciones",empresas:[
       {nombre:"dLocal",sigla:"DL",especialidad:"Pagos digitales",presencia:"Más de 40 mercados emergentes",descripcion:"Plataforma tecnológica uruguaya que conecta empresas globales con medios de pago locales.",url:"https://www.dlocal.com/about-us/"},
@@ -78,12 +85,15 @@ window.PRINCIPALES_INVERSORES = {
       {nombre:"Grupo Bimbo",sigla:"GB",especialidad:"Alimentos",presencia:"Más de 30 países",descripcion:"Grupo panificador con producción y distribución en América, Europa, Asia y África.",url:"https://www.grupobimbo.com/en/our-group"},
       {nombre:"Cemex",sigla:"CX",especialidad:"Materiales de construcción",presencia:"América, Europa, África y Asia",descripcion:"Productor internacional de cemento, hormigón y agregados.",url:"https://www.cemex.com/about-us"},
       {nombre:"Nemak",sigla:"NM",especialidad:"Autopartes",presencia:"Plantas en América, Europa y Asia",descripcion:"Fabricante de componentes de aluminio para movilidad y electrificación.",url:"https://www.nemak.com/about-us/"},
-      {nombre:"Gruma",sigla:"GR",especialidad:"Alimentos",presencia:"América, Europa, Asia y Oceanía",descripcion:"Productor internacional de harina de maíz y tortillas con plantas en diversos países.",url:"https://www.gruma.com/en/about-us/"}
+      {nombre:"Gruma",sigla:"GR",especialidad:"Alimentos",presencia:"América, Europa, Asia y Oceanía",descripcion:"Productor internacional de harina de maíz y tortillas con plantas en diversos países.",url:"https://www.gruma.com/en/about-us/"},
+      {nombre:"Orbia",sigla:"OR",especialidad:"Materiales y soluciones industriales",presencia:"Más de 50 países",descripcion:"Grupo mexicano de soluciones para construcción, agricultura, polímeros y conectividad con operaciones globales.",url:"https://www.orbia.com/about-us/"}
     ]},
     {pais:"Chile",sector:"Comercio mayorista y minorista",empresas:[
       {nombre:"Cencosud",sigla:"CE",especialidad:"Retail",presencia:"Argentina, Brasil, Chile, Colombia, Perú y Estados Unidos",descripcion:"Opera supermercados, centros comerciales y tiendas para el hogar en América.",url:"https://www.cencosud.com/en/our-company"},
       {nombre:"Falabella",sigla:"FA",especialidad:"Retail y servicios financieros",presencia:"Chile, Perú, Colombia y México",descripcion:"Ecosistema regional de tiendas, mejoramiento del hogar, centros comerciales y banca.",url:"https://investors.grupofalabella.com/english/company-overview/default.aspx"},
-      {nombre:"Empresas Copec",sigla:"CO",especialidad:"Energía y recursos",presencia:"América y Europa",descripcion:"Grupo con inversiones internacionales en combustibles, forestal y recursos naturales.",url:"https://www.empresascopec.cl/en/about-us/"}
+      {nombre:"Empresas Copec",sigla:"CO",especialidad:"Energía y recursos",presencia:"América y Europa",descripcion:"Grupo con inversiones internacionales en combustibles, forestal y recursos naturales.",url:"https://www.empresascopec.cl/en/about-us/"},
+      {nombre:"Ripley Corp",sigla:"RI",especialidad:"Retail y servicios financieros",presencia:"Chile y Perú",descripcion:"Opera tiendas por departamento, centros comerciales y servicios financieros en mercados sudamericanos.",url:"https://www.ripley.cl/minisitios/inversionistas/"},
+      {nombre:"SMU",sigla:"SM",especialidad:"Supermercados",presencia:"Chile y Perú",descripcion:"Grupo supermercadista con formatos minoristas y mayoristas en Chile y Perú.",url:"https://www.smu.cl/"}
     ]},
     {pais:"Canadá",sector:"Industrias extractivas",empresas:[
       {nombre:"Barrick Gold",sigla:"BG",especialidad:"Oro y cobre",presencia:"América, África, Asia y Oceanía",descripcion:"Productor global con minas y proyectos de gran escala en múltiples continentes.",url:"https://www.barrick.com/English/operations/default.aspx"},
@@ -121,7 +131,8 @@ window.PRINCIPALES_INVERSORES = {
       {nombre:"BHP",sigla:"BH",especialidad:"Minería y recursos",presencia:"Australia y América",descripcion:"Compañía global de recursos con activos de cobre, hierro, carbón metalúrgico y potasa.",url:"https://www.bhp.com/about"},
       {nombre:"Fortescue",sigla:"FO",especialidad:"Hierro y energía",presencia:"Proyectos en Australia, América, África y Asia",descripcion:"Grupo de recursos que expande internacionalmente su cartera minera y de energía verde.",url:"https://www.fortescue.com/about-fortescue"},
       {nombre:"South32",sigla:"S3",especialidad:"Metales y minerales",presencia:"Australia, África y América",descripcion:"Productor diversificado de minerales con operaciones en varias jurisdicciones.",url:"https://www.south32.net/who-we-are"},
-      {nombre:"Woodside Energy",sigla:"WO",especialidad:"Petróleo y gas",presencia:"Australia, América y África",descripcion:"Compañía energética con activos de GNL y producción internacional.",url:"https://www.woodside.com/who-we-are"}
+      {nombre:"Woodside Energy",sigla:"WO",especialidad:"Petróleo y gas",presencia:"Australia, América y África",descripcion:"Compañía energética con activos de GNL y producción internacional.",url:"https://www.woodside.com/who-we-are"},
+      {nombre:"Santos",sigla:"ST",especialidad:"Petróleo y gas",presencia:"Australia, Papúa Nueva Guinea y Timor-Leste",descripcion:"Productor energético australiano con operaciones de gas natural y GNL en Asia-Pacífico.",url:"https://www.santos.com/about-us/"}
     ]},
     {pais:"Japón",sector:"Industria manufacturera",empresas:[
       {nombre:"Toyota Motor",sigla:"TO",especialidad:"Vehículos y movilidad",presencia:"Producción global",descripcion:"Fabricante global con plantas, proveedores y servicios de movilidad internacionales.",url:"https://global.toyota/en/company/profile/overview/"},
@@ -133,18 +144,23 @@ window.PRINCIPALES_INVERSORES = {
     {pais:"Italia",sector:"Industria manufacturera",empresas:[
       {nombre:"Ferrero",sigla:"FE",especialidad:"Alimentos",presencia:"Más de 50 países",descripcion:"Grupo de alimentos con plantas y marcas comercializadas internacionalmente.",url:"https://www.ferrero.com/int/en/about-us"},
       {nombre:"Pirelli",sigla:"PI",especialidad:"Neumáticos",presencia:"Plantas en 12 países y presencia comercial global",descripcion:"Fabricante de neumáticos de alto valor con una red industrial internacional.",url:"https://corporate.pirelli.com/corporate/en-ww/aboutus/profile"},
-      {nombre:"CNH Industrial",sigla:"CN",especialidad:"Maquinaria agrícola",presencia:"Plantas y centros de I+D globales",descripcion:"Fabricante de equipos agrícolas y de construcción con huella internacional.",url:"https://www.cnh.com/about-us"}
+      {nombre:"CNH Industrial",sigla:"CN",especialidad:"Maquinaria agrícola",presencia:"Plantas y centros de I+D globales",descripcion:"Fabricante de equipos agrícolas y de construcción con huella internacional.",url:"https://www.cnh.com/about-us"},
+      {nombre:"Leonardo",sigla:"LE",especialidad:"Aeroespacio y defensa",presencia:"Operaciones industriales en Europa, América y Asia",descripcion:"Grupo tecnológico italiano con plantas, filiales y alianzas aeroespaciales internacionales.",url:"https://www.leonardo.com/en/about-us"},
+      {nombre:"Iveco Group",sigla:"IG",especialidad:"Vehículos comerciales",presencia:"Operaciones en Europa, América, Asia, África y Oceanía",descripcion:"Fabricante de camiones, buses y sistemas de propulsión con red industrial y comercial global.",url:"https://www.ivecogroup.com/group/about_us"}
     ]},
     {pais:"República de Corea",sector:"Industria manufacturera",empresas:[
       {nombre:"Samsung Electronics",sigla:"SA",especialidad:"Electrónica y semiconductores",presencia:"Operaciones globales",descripcion:"Grupo tecnológico con plantas, centros de I+D y redes comerciales internacionales.",url:"https://www.samsung.com/global/ir/company-information/business-area/"},
       {nombre:"Hyundai Motor",sigla:"HY",especialidad:"Automóviles",presencia:"Plantas y ventas en múltiples continentes",descripcion:"Fabricante de movilidad con una amplia red productiva internacional.",url:"https://www.hyundai.com/worldwide/en/company"},
       {nombre:"LG Electronics",sigla:"LG",especialidad:"Electrónica",presencia:"Más de 100 localizaciones",descripcion:"Produce y comercializa electrónica de consumo y soluciones empresariales globalmente.",url:"https://www.lg.com/global/corporate-info/overview"},
-      {nombre:"POSCO Holdings",sigla:"PO",especialidad:"Acero y materiales",presencia:"Asia, América, Europa y Oceanía",descripcion:"Grupo industrial con inversiones internacionales en acero, baterías y materiales.",url:"https://www.posco-inc.com:4453/poscoinc/v4/eng/company/s91e1000000c.jsp"}
+      {nombre:"POSCO Holdings",sigla:"PO",especialidad:"Acero y materiales",presencia:"Asia, América, Europa y Oceanía",descripcion:"Grupo industrial con inversiones internacionales en acero, baterías y materiales.",url:"https://www.posco-inc.com:4453/poscoinc/v4/eng/company/s91e1000000c.jsp"},
+      {nombre:"SK hynix",sigla:"SK",especialidad:"Semiconductores",presencia:"Centros productivos y comerciales en Asia, América y Europa",descripcion:"Fabricante surcoreano de memorias y semiconductores con una red internacional de producción e I+D.",url:"https://www.skhynix.com/company/UI-FR-CP01/"}
     ]},
     {pais:"Dinamarca",sector:"Industria manufacturera",empresas:[
       {nombre:"Novo Nordisk",sigla:"NN",especialidad:"Farmacéutica",presencia:"Afiliadas en 80 países",descripcion:"Compañía de salud con producción, investigación y comercialización internacional.",url:"https://www.novonordisk.com/about.html"},
       {nombre:"Vestas",sigla:"VE",especialidad:"Tecnología eólica",presencia:"Turbinas instaladas en más de 85 países",descripcion:"Diseña, fabrica, instala y mantiene aerogeneradores a escala mundial.",url:"https://www.vestas.com/en/about"},
-      {nombre:"Carlsberg Group",sigla:"CA",especialidad:"Bebidas",presencia:"Más de 125 mercados",descripcion:"Grupo cervecero con marcas, plantas y alianzas comerciales internacionales.",url:"https://www.carlsberggroup.com/who-we-are/about-the-carlsberg-group/"}
+      {nombre:"Carlsberg Group",sigla:"CA",especialidad:"Bebidas",presencia:"Más de 125 mercados",descripcion:"Grupo cervecero con marcas, plantas y alianzas comerciales internacionales.",url:"https://www.carlsberggroup.com/who-we-are/about-the-carlsberg-group/"},
+      {nombre:"Danfoss",sigla:"DA",especialidad:"Tecnología industrial",presencia:"Más de 100 países",descripcion:"Produce soluciones de eficiencia energética, refrigeración y electrificación mediante una red global.",url:"https://www.danfoss.com/en/about-danfoss/company/"},
+      {nombre:"LEGO Group",sigla:"LE",especialidad:"Juguetes",presencia:"Oficinas y producción en Europa, América y Asia",descripcion:"Compañía danesa con fábricas, centros de distribución y mercados de venta internacionales.",url:"https://www.lego.com/en-us/aboutus/lego-group"}
     ]},
     {pais:"Dinamarca",sector:"Transporte y almacenamiento",empresas:[
       {nombre:"A.P. Moller - Maersk",sigla:"MA",especialidad:"Logística integrada",presencia:"Más de 130 países",descripcion:"Opera transporte marítimo, terminales y soluciones logísticas globales.",url:"https://www.maersk.com/about"},
@@ -154,10 +170,15 @@ window.PRINCIPALES_INVERSORES = {
       {nombre:"Volvo Group",sigla:"VO",especialidad:"Vehículos comerciales",presencia:"Producción en 18 países y ventas globales",descripcion:"Fabricante de camiones, buses y maquinaria con una red industrial internacional.",url:"https://www.volvogroup.com/en/about-us.html"},
       {nombre:"Atlas Copco",sigla:"AC",especialidad:"Equipos industriales",presencia:"Clientes en más de 180 países",descripcion:"Proveedor de compresores, soluciones de vacío y herramientas industriales.",url:"https://www.atlascopcogroup.com/en/about-us"},
       {nombre:"Sandvik",sigla:"SA",especialidad:"Ingeniería y minería",presencia:"Más de 150 países",descripcion:"Grupo de ingeniería con equipos mineros, mecanizado y materiales avanzados.",url:"https://www.home.sandvik/en/about-us/"},
-      {nombre:"Electrolux Group",sigla:"EL",especialidad:"Electrodomésticos",presencia:"Ventas en alrededor de 120 mercados",descripcion:"Fabricante global de electrodomésticos con marcas y operaciones internacionales.",url:"https://www.electroluxgroup.com/en/about-us-215/"}
+      {nombre:"Electrolux Group",sigla:"EL",especialidad:"Electrodomésticos",presencia:"Ventas en alrededor de 120 mercados",descripcion:"Fabricante global de electrodomésticos con marcas y operaciones internacionales.",url:"https://www.electroluxgroup.com/en/about-us-215/"},
+      {nombre:"SKF",sigla:"SKF",especialidad:"Rodamientos y tecnología industrial",presencia:"Más de 130 países",descripcion:"Grupo industrial sueco con plantas, centros tecnológicos y una red comercial internacional.",url:"https://www.skf.com/group/organisation/about-skf"}
     ]},
     {pais:"Suecia",sector:"Información y comunicaciones",empresas:[
-      {nombre:"Ericsson",sigla:"ER",especialidad:"Telecomunicaciones",presencia:"Clientes en más de 180 países",descripcion:"Proveedor global de infraestructura, software y servicios para redes móviles.",url:"https://www.ericsson.com/en/about-us/company-facts"}
+      {nombre:"Ericsson",sigla:"ER",especialidad:"Telecomunicaciones",presencia:"Clientes en más de 180 países",descripcion:"Proveedor global de infraestructura, software y servicios para redes móviles.",url:"https://www.ericsson.com/en/about-us/company-facts"},
+      {nombre:"Spotify",sigla:"SP",especialidad:"Audio digital",presencia:"Disponible en más de 180 mercados",descripcion:"Plataforma sueca de streaming de audio con usuarios, creadores y operaciones a escala global.",url:"https://newsroom.spotify.com/company-info/"},
+      {nombre:"Telia Company",sigla:"TE",especialidad:"Telecomunicaciones",presencia:"Países nórdicos y bálticos",descripcion:"Operador sueco de conectividad fija, móvil y servicios digitales en el norte de Europa.",url:"https://www.teliacompany.com/en/about-the-company"},
+      {nombre:"Sinch",sigla:"SI",especialidad:"Comunicaciones en la nube",presencia:"América, Europa y Asia-Pacífico",descripcion:"Plataforma tecnológica sueca que conecta empresas y consumidores mediante mensajería, voz y correo.",url:"https://sinch.com/about-us/"},
+      {nombre:"Truecaller",sigla:"TC",especialidad:"Comunicaciones móviles",presencia:"Usuarios en múltiples mercados globales",descripcion:"Plataforma sueca de identificación de llamadas y protección contra fraude con alcance internacional.",url:"https://www.truecaller.com/about"}
     ]}
   ]
 };
