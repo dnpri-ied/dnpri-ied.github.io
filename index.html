@@ -274,6 +274,47 @@ header .c .header-actions .infoinve-download-btn{
 .infoinve-download-btn:hover{filter:brightness(.95)}
 .prospecto-btn{background:#e6a23c!important;color:#0b1f3a!important;border-color:#f5c46f!important}
 .prospecto-btn:hover{filter:brightness(1.06)}
+
+/* Navegación principal: accesos directos con una jerarquía visual unificada */
+header .c .header-actions{gap:10px!important}
+header .c .header-actions .header-action-btn{
+  position:static!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  min-height:44px!important;
+  margin:0!important;
+  padding:11px 17px!important;
+  border:1px solid rgba(255,255,255,.38)!important;
+  border-radius:10px!important;
+  background:rgba(255,255,255,.1)!important;
+  color:#fff!important;
+  font:inherit!important;
+  font-size:13px!important;
+  font-weight:750!important;
+  letter-spacing:.1px!important;
+  line-height:1.2!important;
+  white-space:nowrap!important;
+  cursor:pointer!important;
+  box-shadow:0 5px 16px rgba(0,0,0,.14)!important;
+  backdrop-filter:blur(8px);
+  transition:background .18s ease,border-color .18s ease,transform .18s ease,box-shadow .18s ease!important;
+}
+header .c .header-actions .header-action-btn:hover{
+  background:rgba(255,255,255,.18)!important;
+  border-color:rgba(255,255,255,.7)!important;
+  filter:none!important;
+  transform:translateY(-2px)!important;
+  box-shadow:0 8px 20px rgba(0,0,0,.2)!important;
+}
+header .c .header-actions .header-action-btn:focus-visible{outline:3px solid rgba(255,255,255,.55);outline-offset:3px}
+@media(max-width:1050px){
+  header .c .header-actions{position:static!important;margin-top:20px!important;flex-wrap:wrap!important}
+}
+@media(max-width:560px){
+  header .c .header-actions{display:grid!important;grid-template-columns:1fr 1fr;width:100%!important}
+  header .c .header-actions .header-action-btn{width:100%!important;white-space:normal!important}
+}
 </style>
 
 <style>
@@ -343,13 +384,12 @@ body:not(.auth-locked) .site-auth-gate{display:none}
     <div class="sub">Sistema de información y análisis de inversión extranjera directa</div>
   </div>
   <div class="header-actions">
-  <button id="openProspecto" type="button" class="infoinve-download-btn prospecto-btn"><span>Prospecto Inversores</span></button>
-  <button id="openFichaPais" type="button" class="ficha-pais-btn"><span>Ficha País</span></button>
-  <button id="openRigi" type="button" class="rigi-hero-btn"><span>Proyectos RIGI</span></button>
-  <button id="openInfoinve" type="button" class="infoinve-download-btn"><span>INFOINVE</span></button>
+  <button id="openRigi" type="button" class="rigi-hero-btn header-action-btn"><span>Proyectos RIGI</span></button>
+  <button id="openFichaPais" type="button" class="ficha-pais-btn header-action-btn"><span>Ficha País</span></button>
+  <button id="openInfoinve" type="button" class="infoinve-download-btn header-action-btn"><span>INFOINVE</span></button>
+  <button id="openProspecto" type="button" class="infoinve-download-btn prospecto-btn header-action-btn"><span>Prospectos Inversores</span></button>
 </div>
 </div>
-<nav class="main-nav"><a href="#dashboard">Dashboard</a><a href="#evolucion">Evolución</a><a href="#paises">Países</a><a href="#sectores">Sectores</a><a href="#composicion">Composición</a><a href="#unctad">UNCTAD</a><a href="#anuncios">Anuncios</a></nav>
 <div class="hero"><h2>Inversión extranjera directa en Argentina</h2><p>Consulta interactiva de flujos, posición pasiva bruta, países inversores y sectores receptores con información oficial del Banco Central de la República Argentina.</p></div></div></header>
 <main><div class="c">
 <div id="err" class="error">No se pudo cargar <b>datos_bcra.js</b>. Verificá que esté junto a index.html.</div>
