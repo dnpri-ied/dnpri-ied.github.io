@@ -335,17 +335,26 @@ body:not(.auth-locked) .site-auth-gate{display:none}
 <style>
 .infoinve-modal{display:none;position:fixed;inset:0;z-index:10050;background:rgba(15,23,42,.58);padding:24px;align-items:center;justify-content:center}
 .infoinve-modal.open{display:flex}
-.infoinve-card{width:min(560px,96vw);background:#fff;border-radius:16px;box-shadow:0 24px 70px rgba(0,0,0,.25);padding:22px}
+.infoinve-card{width:min(860px,96vw);max-height:calc(100vh - 48px);overflow:auto;background:#fff;border-radius:16px;box-shadow:0 24px 70px rgba(0,0,0,.25);padding:22px}
 .infoinve-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}
 .infoinve-head h2{margin:0;color:#17365d;font-size:22px}
 .infoinve-close{border:0;background:#eef2f6;border-radius:9px;width:36px;height:36px;font-size:20px;cursor:pointer}
 .infoinve-field{margin:14px 0}
 .infoinve-field label{display:block;font-weight:700;margin-bottom:6px;color:#26364a}
 .infoinve-field select{width:100%;padding:11px 12px;border:1px solid #cbd5e1;border-radius:9px;background:#fff;font-size:15px}
-.infoinve-actions{display:flex;justify-content:flex-end;margin-top:20px}
+.infoinve-filters{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.infoinve-actions{display:flex;justify-content:flex-end;align-items:center;gap:10px;margin-top:16px;flex-wrap:wrap}
 .infoinve-download{border:0;border-radius:9px;padding:11px 16px;background:#0f4c81;color:#fff;font-weight:700;cursor:pointer}
 .infoinve-download:disabled{opacity:.45;cursor:not-allowed}
+.infoinve-word{display:none;color:#0f4c81;font-size:13px;font-weight:700;text-decoration:none;padding:10px 4px}
+.infoinve-word.visible{display:inline-block}
 .infoinve-note{font-size:13px;color:#64748b;margin-top:12px}
+.infoinve-status{display:none;margin-top:16px;padding:11px 13px;border-radius:9px;background:#f1f5f9;color:#475569;font-size:13px}
+.infoinve-status.visible{display:block}
+.infoinve-preview{display:none;margin-top:16px;border:1px solid #dbe3ec;border-radius:12px;overflow:hidden;background:#f8fafc}
+.infoinve-preview.visible{display:block}.infoinve-preview iframe{display:block;width:100%;height:min(52vh,520px);border:0;background:#fff}
+.infoinve-preview-head{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 13px;color:#17365d;font-size:13px;font-weight:750;border-bottom:1px solid #dbe3ec}
+@media(max-width:700px){.infoinve-modal{padding:10px}.infoinve-card{max-height:calc(100vh - 20px);padding:18px}.infoinve-filters{grid-template-columns:1fr;gap:0}.infoinve-preview iframe{height:46vh}.infoinve-actions{align-items:stretch}.infoinve-download{width:100%}.infoinve-word{text-align:center;width:100%}}
 </style>
 
 <style>
@@ -1284,55 +1293,108 @@ per.addEventListener('change',update);document.getElementById('topn').addEventLi
       <h2 id="infoinveTitle">INFOINVE</h2>
       <button id="closeInfoinve" class="infoinve-close" type="button" aria-label="Cerrar">×</button>
     </div>
-    <div class="infoinve-field">
-      <label for="infoinvePais">País</label>
-      <select id="infoinvePais"><option value="">Seleccionar país</option></select>
+    <div class="infoinve-filters">
+      <div class="infoinve-field">
+        <label for="infoinveAnio">Año</label>
+        <select id="infoinveAnio"><option value="">Seleccionar año</option></select>
+      </div>
+      <div class="infoinve-field">
+        <label for="infoinvePais">País</label>
+        <select id="infoinvePais" disabled><option value="">Seleccionar país</option></select>
+      </div>
+      <div class="infoinve-field">
+        <label for="infoinvePeriodo">Edición</label>
+        <select id="infoinvePeriodo" disabled><option value="">Seleccionar mes</option></select>
+      </div>
     </div>
-    <div class="infoinve-field">
-      <label for="infoinvePeriodo">Mes</label>
-      <select id="infoinvePeriodo" disabled><option value="">Seleccionar mes</option></select>
+    <div id="infoinveStatus" class="infoinve-status" role="status" aria-live="polite"></div>
+    <div id="infoinvePreview" class="infoinve-preview">
+      <div class="infoinve-preview-head"><span id="infoinvePreviewTitle">Vista previa</span><span>PDF</span></div>
+      <iframe id="infoinveFrame" title="Vista previa del INFOINVE"></iframe>
     </div>
     <div class="infoinve-actions">
+      <a id="infoinveWord" class="infoinve-word" href="#" download>Descargar también en Word</a>
       <button id="infoinveDownload" class="infoinve-download" type="button" disabled>↓ Descargar INFOINVE</button>
     </div>
-    <div class="infoinve-note">Se muestran únicamente los países y períodos con informes disponibles.</div>
+    <div class="infoinve-note">Archivo histórico 2025–2026. Se muestran únicamente las combinaciones con informes disponibles.</div>
   </div>
 </div>
 
 <script>
 (function(){
-  const INFOINVE_CATALOGO = [
-    { pais:"India", periodo:"Septiembre 2026", archivo:"INFOINVE_India_septiembre_2026.docx" }
-  ];
+  const INFOINVE_INDICES = [2026,2025].map(anio=>({anio,ruta:`Infoinves_${anio}_GitHub/`}));
+  const MESES=["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
+  const NOMBRES={Belgica:"Bélgica",Canada:"Canadá",Espana:"España",Hungria:"Hungría",Mexico:"México",Panama:"Panamá","Paises Bajos":"Países Bajos",Peru:"Perú",Tunez:"Túnez",Turquia:"Turquía",Azerbaiyan:"Azerbaiyán","Emiratos Arabes":"Emiratos Árabes",UE:"Unión Europea"};
+  const nombrePais=pais=>NOMBRES[pais]||pais;
   function initInfoinve(){
     const modal=document.getElementById("infoinveModal");
     const openBtn=document.getElementById("openInfoinve");
     const closeBtn=document.getElementById("closeInfoinve");
+    const anio=document.getElementById("infoinveAnio");
     const pais=document.getElementById("infoinvePais");
     const periodo=document.getElementById("infoinvePeriodo");
     const download=document.getElementById("infoinveDownload");
-    if(!modal||!openBtn||!pais||!periodo||!download) return;
+    const word=document.getElementById("infoinveWord");
+    const status=document.getElementById("infoinveStatus");
+    const preview=document.getElementById("infoinvePreview");
+    const frame=document.getElementById("infoinveFrame");
+    const previewTitle=document.getElementById("infoinvePreviewTitle");
+    if(!modal||!openBtn||!anio||!pais||!periodo||!download) return;
+    let catalogo=[];
 
-    [...new Set(INFOINVE_CATALOGO.map(x=>x.pais))].sort((a,b)=>a.localeCompare(b,"es"))
-      .forEach(x=>pais.add(new Option(x,x)));
+    const setStatus=(mensaje,visible=true)=>{status.textContent=mensaje;status.classList.toggle("visible",visible);};
+    Promise.all(INFOINVE_INDICES.map(({anio,ruta})=>fetch(ruta+"index.json").then(r=>{
+      if(!r.ok) throw new Error(`No se pudo cargar el índice ${anio}`);
+      return r.json();
+    }).then(items=>items.map(item=>({...item,ruta}))))).then(indices=>{
+      catalogo=indices.flat();
+      [...new Set(catalogo.map(x=>x.anio))].sort((a,b)=>b-a).forEach(x=>anio.add(new Option(x,x)));
+      setStatus("",false);
+    }).catch(()=>setStatus("No fue posible cargar el archivo histórico. Intentá nuevamente más tarde."));
 
     const cerrar=()=>{modal.classList.remove("open");modal.setAttribute("aria-hidden","true");document.body.style.overflow="";};
-    openBtn.addEventListener("click",()=>{modal.classList.add("open");modal.setAttribute("aria-hidden","false");document.body.style.overflow="hidden";});
+    openBtn.addEventListener("click",()=>{modal.classList.add("open");modal.setAttribute("aria-hidden","false");document.body.style.overflow="hidden";anio.focus();});
     closeBtn?.addEventListener("click",cerrar);
     modal.addEventListener("click",e=>{if(e.target===modal)cerrar();});
     document.addEventListener("keydown",e=>{if(e.key==="Escape"&&modal.classList.contains("open"))cerrar();});
 
+    const limpiarResultado=()=>{periodo.innerHTML='<option value="">Seleccionar mes</option>';periodo.disabled=true;download.disabled=true;word.classList.remove("visible");word.removeAttribute("href");preview.classList.remove("visible");frame.removeAttribute("src");};
+    anio.addEventListener("change",()=>{
+      pais.innerHTML='<option value="">Seleccionar país</option>';
+      limpiarResultado();
+      const disponibles=[...new Set(catalogo.filter(x=>String(x.anio)===anio.value).map(x=>x.pais))]
+        .sort((a,b)=>nombrePais(a).localeCompare(nombrePais(b),"es"));
+      disponibles.forEach(x=>pais.add(new Option(nombrePais(x),x)));
+      pais.disabled=!anio.value||!disponibles.length;
+      setStatus("",false);
+    });
     pais.addEventListener("change",()=>{
       periodo.innerHTML='<option value="">Seleccionar mes</option>';
-      INFOINVE_CATALOGO.filter(x=>x.pais===pais.value).forEach(x=>periodo.add(new Option(x.periodo,x.archivo)));
-      periodo.disabled=!pais.value;
-      download.disabled=true;
+      const ediciones=[...new Set(catalogo.filter(x=>String(x.anio)===anio.value&&x.pais===pais.value).map(x=>x.mes))].sort((a,b)=>b-a);
+      ediciones.forEach(mes=>periodo.add(new Option(`${MESES[mes-1][0].toUpperCase()+MESES[mes-1].slice(1)} ${anio.value}`,mes)));
+      periodo.disabled=!pais.value||!ediciones.length;
+      download.disabled=true;word.classList.remove("visible");preview.classList.remove("visible");frame.removeAttribute("src");
+      setStatus(ediciones.length?`${ediciones.length} ${ediciones.length===1?"edición disponible":"ediciones disponibles"} para ${nombrePais(pais.value)} en ${anio.value}. Seleccioná una para consultarla.`:"",!!ediciones.length);
     });
-    periodo.addEventListener("change",()=>download.disabled=!periodo.value);
+    const seleccion=()=>catalogo.filter(x=>String(x.anio)===anio.value&&x.pais===pais.value&&String(x.mes)===periodo.value);
+    periodo.addEventListener("change",()=>{
+      const versiones=seleccion();
+      const pdf=versiones.filter(x=>String(x.formato).toUpperCase()==="PDF").sort((a,b)=>(b.revision||0)-(a.revision||0))[0];
+      const docx=versiones.filter(x=>String(x.formato).toUpperCase()==="DOCX").sort((a,b)=>(b.revision||0)-(a.revision||0))[0];
+      const principal=pdf||docx;
+      download.disabled=!principal;
+      download.dataset.archivo=principal?principal.ruta+principal.archivo:"";
+      word.classList.toggle("visible",!!(pdf&&docx));
+      if(pdf&&docx){word.href=docx.ruta+docx.archivo;word.download=docx.archivo;}
+      preview.classList.toggle("visible",!!pdf);
+      if(pdf){frame.src=pdf.ruta+pdf.archivo;previewTitle.textContent=`INFOINVE ${nombrePais(pais.value)} · ${MESES[pdf.mes-1]} ${pdf.anio}`;}
+      else frame.removeAttribute("src");
+      if(principal)setStatus(pdf?"Vista previa en PDF disponible.":"Esta edición está disponible en Word para descarga.");
+    });
     download.addEventListener("click",()=>{
-      if(!periodo.value)return;
+      const archivo=download.dataset.archivo;if(!archivo)return;
       const a=document.createElement("a");
-      a.href=periodo.value;a.download=periodo.value;
+      a.href=archivo;a.download=archivo.split("/").pop();
       document.body.appendChild(a);a.click();a.remove();
     });
   }
