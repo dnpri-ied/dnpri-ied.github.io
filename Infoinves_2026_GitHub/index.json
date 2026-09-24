@@ -1,0 +1,497 @@
+[
+  {
+    "pais": "Alemania",
+    "anio": 2026,
+    "mes": 1,
+    "formato": "DOCX",
+    "archivo": "infoinve-alemania-2026-01.docx",
+    "revision": 0,
+    "nombre_original": "INFOINVE Alemania enero de 2026.docx"
+  },
+  {
+    "pais": "Alemania",
+    "anio": 2026,
+    "mes": 2,
+    "formato": "DOCX",
+    "archivo": "infoinve-alemania-2026-02.docx",
+    "revision": 0,
+    "nombre_original": "INFOINVE Alemania febrero de 2026.docx"
+  },
+  {
+    "pais": "Armenia",
+    "anio": 2026,
+    "mes": 7,
+    "formato": "DOCX",
+    "archivo": "infoinve-armenia-2026-07.docx",
+    "revision": 0,
+    "nombre_original": "INFOINVE  Armenia julio de 2026.docx"
+  },
+  {
+    "pais": "Austria",
+    "anio": 2026,
+    "mes": 3,
+    "formato": "DOCX",
+    "archivo": "infoinve-austria-2026-03.docx",
+    "revision": 0,
+    "nombre_original": "INFOINVE Austria marzo de 2026.docx"
+  },
+  {
+    "pais": "Austria",
+    "anio": 2026,
+    "mes": 7,
+    "formato": "DOCX",
+    "archivo": "infoinve-austria-2026-07.docx",
+    "revision": 0,
+    "nombre_original": "INFOINVE Austria julio de 2026.docx"
+  },
+  {
+    "pais": "Belgica",
+    "anio": 2026,
+    "mes": 7,
+    "formato": "DOCX",
+    "archivo": "infoinve-belgica-2026-07.docx",
+    "revision": 0,
+    "nombre_original": "INFOINVE Bélgica julio de 2026.docx"
+  },
+  {
+    "pais": "Canada",
+    "anio": 2026,
+    "mes": 2,
+    "formato": "DOCX",
+    "archivo": "infoinve-canada-2026-02.docx",
+    "revision": 0,
+    "nombre_original": "INFOINVE Canadá febrero de 2026.docx"
+  },
+  {
+    "pais": "Canada",
+    "anio": 2026,
+    "mes": 6,
+    "formato": "DOCX",
+    "archivo": "infoinve-canada-2026-06.docx",
+    "revision": 0,
+    "nombre_original": "INFOINVE Canadá junio de 2026.docx"
+  },
+  {
+    "pais": "Chile",
+    "anio": 2026,
+    "mes": 3,
+    "formato": "DOCX",
+    "archivo": "infoinve-chile-2026-03.docx",
+    "revision": 0,
+    "nombre_original": "INFOINVE Chile marzo de 2026.docx"
+  },
+  {
+    "pais": "China",
+    "anio": 2026,
+    "mes": 3,
+    "formato": "DOCX",
+    "archivo": "infoinve-china-2026-03.docx",
+    "revision": 0,
+    "nombre_original": "INFOINVE China marzo de 2026.docx"
+  },
+  {
+    "pais": "Corea",
+    "anio": 2026,
+    "mes": 3,
+    "formato": "DOCX",
+    "archivo": "infoinve-corea-2026-03.docx",
+    "revision": 1,
+    "nombre_original": "INFOINVE COREA marzo de 2026_Rev1.docx"
+  },
+  {
+    "pais": "Corea",
+    "anio": 2026,
+    "mes": 3,
+    "formato": "PDF",
+    "archivo": "infoinve-corea-2026-03.pdf",
+    "revision": 2,
+    "nombre_original": "INFOINVE COREA marzo de 2026_Rev2.pdf"
+  },
+  {
+    "pais": "Emiratos Árabes",
+    "anio": 2026,
+    "mes": 6,
+    "formato": "DOCX",
+    "archivo": "infoinve-emiratos-arabes-2026-06.docx",
+    "revision": 0,
+    "nombre_original": "INFOINVE Emiratos ╡rabes junio de 2026.docx"
+  },
+  {
+    "pais": "Eslovenia",
+    "anio": 2026,
+    "mes": 3,
+    "formato": "DOCX",
+    "archivo": "infoinve-eslovenia-2026-03.docx",
+    "revision": 0,
+    "nombre_original": "INFOINVE Eslovenia marzo 2026.docx"
+  },
+  {
+    "pais": "España",
+    "anio": 2026,
+    "mes": 5,
+    "formato": "DOCX",
+    "archivo": "infoinve-espana-2026-05.docx",
+    "revision": 0,
+    "nombre_original": "INFOINVE España mayo de 2026.docx"
+  },
+  {
+    "pais": "Estados Unidos",
+    "anio": 2026,
+    "mes": 1,
+    "formato": "DOCX",
+    "archivo": "infoinve-estados-unidos-2026-01.docx",
+    "revision": 0,
+    "nombre_original": "INFOINVE Estados Unidos enero de 2026.docx"
+  },
+  {
+    "pais": "Estados Unidos",
+    "anio": 2026,
+    "mes": 3,
+    "formato": "DOCX",
+    "archivo": "infoinve-estados-unidos-2026-03.docx",
+    "revision": 0,
+    "nombre_original": "INFOINVE Estados Unidos marzo de 2026.docx"
+  },
+  {
+    "pais": "Filipinas",
+    "anio": 2026,
+    "mes": 3,
+    "formato": "DOCX",
+    "archivo": "infoinve-filipinas-2026-03.docx",
+    "revision": 0,
+    "nombre_original": "INFOINVE Filipinas marzo de 2026.docx"
+  },
+  {
+    "pais": "Filipinas",
+    "anio": 2026,
+    "mes": 3,
+    "formato": "PDF",
+    "archivo": "infoinve-filipinas-2026-03.pdf",
+    "revision": 0,
+    "nombre_original": "INFOINVE Filipinas marzo de 2026.pdf"
+  },
+  {
+    "pais": "Finlandia",
+    "anio": 2026,
+    "mes": 7,
+    "formato": "DOCX",
+    "archivo": "infoinve-finlandia-2026-07.docx",
+    "revision": 0,
+    "nombre_original": "INFOINVE Finlandia julio de 2026.docx"
+  },
+  {
+    "pais": "Francia",
+    "anio": 2026,
+    "mes": 3,
+    "formato": "DOCX",
+    "archivo": "infoinve-francia-2026-03.docx",
+    "revision": 0,
+    "nombre_original": "INFOINVE Francia marzo de 2026.docx"
+  },
+  {
+    "pais": "Hungria",
+    "anio": 2026,
+    "mes": 1,
+    "formato": "DOCX",
+    "archivo": "infoinve-hungria-2026-01.docx",
+    "revision": 0,
+    "nombre_original": "INFOINVE Hungría enero de 2026.docx"
+  },
+  {
+    "pais": "Hungria",
+    "anio": 2026,
+    "mes": 3,
+    "formato": "DOCX",
+    "archivo": "infoinve-hungria-2026-03.docx",
+    "revision": 0,
+    "nombre_original": "INFOINVE Hungría marzo de 2026.docx"
+  },
+  {
+    "pais": "India",
+    "anio": 2026,
+    "mes": 7,
+    "formato": "DOCX",
+    "archivo": "infoinve-india-2026-07.docx",
+    "revision": 0,
+    "nombre_original": "INFOINVE India julio de 2026.docx"
+  },
+  {
+    "pais": "Indonesia",
+    "anio": 2026,
+    "mes": 3,
+    "formato": "DOCX",
+    "archivo": "infoinve-indonesia-2026-03.docx",
+    "revision": 0,
+    "nombre_original": "INFOINVE Indonesia marzo de 2026.docx"
+  },
+  {
+    "pais": "Indonesia",
+    "anio": 2026,
+    "mes": 3,
+    "formato": "PDF",
+    "archivo": "infoinve-indonesia-2026-03.pdf",
+    "revision": 0,
+    "nombre_original": "INFOINVE Indonesia marzo de 2026.pdf"
+  },
+  {
+    "pais": "Irlanda",
+    "anio": 2026,
+    "mes": 3,
+    "formato": "DOCX",
+    "archivo": "infoinve-irlanda-2026-03.docx",
+    "revision": 0,
+    "nombre_original": "INFOINVE  Irlanda marzo de 2026.docx"
+  },
+  {
+    "pais": "Italia",
+    "anio": 2026,
+    "mes": 1,
+    "formato": "DOCX",
+    "archivo": "infoinve-italia-2026-01.docx",
+    "revision": 0,
+    "nombre_original": "INFOINVE Italia enero de 2026.docx"
+  },
+  {
+    "pais": "Italia",
+    "anio": 2026,
+    "mes": 3,
+    "formato": "DOCX",
+    "archivo": "infoinve-italia-2026-03.docx",
+    "revision": 0,
+    "nombre_original": "INFOINVE Italia marzo de 2026.docx"
+  },
+  {
+    "pais": "Kazajstan",
+    "anio": 2026,
+    "mes": 2,
+    "formato": "DOCX",
+    "archivo": "infoinve-kazajstan-2026-02.docx",
+    "revision": 0,
+    "nombre_original": "INFOINVE Kazajstán febrero de 2026.docx"
+  },
+  {
+    "pais": "Lituania",
+    "anio": 2026,
+    "mes": 2,
+    "formato": "DOCX",
+    "archivo": "infoinve-lituania-2026-02.docx",
+    "revision": 0,
+    "nombre_original": "INFOINVE Lituania febrero de 2026.docx"
+  },
+  {
+    "pais": "Luxemburgo",
+    "anio": 2026,
+    "mes": 5,
+    "formato": "DOCX",
+    "archivo": "infoinve-luxemburgo-2026-05.docx",
+    "revision": 0,
+    "nombre_original": "INFOINVE Luxemburgo mayo de 2026.docx"
+  },
+  {
+    "pais": "Malasia",
+    "anio": 2026,
+    "mes": 3,
+    "formato": "DOCX",
+    "archivo": "infoinve-malasia-2026-03.docx",
+    "revision": 0,
+    "nombre_original": "INFOINVE Malasia marzo de 2026.docx"
+  },
+  {
+    "pais": "Malasia",
+    "anio": 2026,
+    "mes": 3,
+    "formato": "PDF",
+    "archivo": "infoinve-malasia-2026-03.pdf",
+    "revision": 0,
+    "nombre_original": "INFOINVE Malasia marzo de 2026.pdf"
+  },
+  {
+    "pais": "México",
+    "anio": 2026,
+    "mes": 3,
+    "formato": "DOCX",
+    "archivo": "infoinve-mexico-2026-03.docx",
+    "revision": 0,
+    "nombre_original": "INFOINVE Mexico marzo de 2026.docx"
+  },
+  {
+    "pais": "México",
+    "anio": 2026,
+    "mes": 6,
+    "formato": "DOCX",
+    "archivo": "infoinve-mexico-2026-06.docx",
+    "revision": 0,
+    "nombre_original": "INFOINVE Mexico junio de 2026.docx"
+  },
+  {
+    "pais": "Noruega",
+    "anio": 2026,
+    "mes": 6,
+    "formato": "DOCX",
+    "archivo": "infoinve-noruega-2026-06.docx",
+    "revision": 0,
+    "nombre_original": "INFOINVE Noruega junio de 2026.docx"
+  },
+  {
+    "pais": "Panama",
+    "anio": 2026,
+    "mes": 2,
+    "formato": "DOCX",
+    "archivo": "infoinve-panama-2026-02.docx",
+    "revision": 0,
+    "nombre_original": "INFOINVE Panamá febrero de 2026.docx"
+  },
+  {
+    "pais": "Polonia",
+    "anio": 2026,
+    "mes": 3,
+    "formato": "DOCX",
+    "archivo": "infoinve-polonia-2026-03.docx",
+    "revision": 0,
+    "nombre_original": "INFOINVE Polonia marzo de 2026.docx"
+  },
+  {
+    "pais": "Polonia",
+    "anio": 2026,
+    "mes": 4,
+    "formato": "DOCX",
+    "archivo": "infoinve-polonia-2026-04.docx",
+    "revision": 0,
+    "nombre_original": "INFOINVE Polonia abril de 2026.docx"
+  },
+  {
+    "pais": "Polonia",
+    "anio": 2026,
+    "mes": 6,
+    "formato": "DOCX",
+    "archivo": "infoinve-polonia-2026-06.docx",
+    "revision": 0,
+    "nombre_original": "INFOINVE Polonia junio de 2026.docx"
+  },
+  {
+    "pais": "Portugal",
+    "anio": 2026,
+    "mes": 4,
+    "formato": "DOCX",
+    "archivo": "infoinve-portugal-2026-04.docx",
+    "revision": 0,
+    "nombre_original": "INFOINVE Portugal abril de 2026.docx"
+  },
+  {
+    "pais": "Rep. Checa",
+    "anio": 2026,
+    "mes": 4,
+    "formato": "DOCX",
+    "archivo": "infoinve-rep-checa-2026-04.docx",
+    "revision": 0,
+    "nombre_original": "INFOINVE Rep. Checa abril de 2026.docx"
+  },
+  {
+    "pais": "Serbia",
+    "anio": 2026,
+    "mes": 5,
+    "formato": "DOCX",
+    "archivo": "infoinve-serbia-2026-05.docx",
+    "revision": 0,
+    "nombre_original": "INFOINVE Serbia mayo de 2026.docx"
+  },
+  {
+    "pais": "Suecia",
+    "anio": 2026,
+    "mes": 1,
+    "formato": "DOCX",
+    "archivo": "infoinve-suecia-2026-01.docx",
+    "revision": 0,
+    "nombre_original": "INFOINVE Suecia enero de 2026.docx"
+  },
+  {
+    "pais": "Suiza",
+    "anio": 2026,
+    "mes": 6,
+    "formato": "DOCX",
+    "archivo": "infoinve-suiza-2026-06.docx",
+    "revision": 0,
+    "nombre_original": "INFOINVE Suiza junio de 2026.docx"
+  },
+  {
+    "pais": "Suiza",
+    "anio": 2026,
+    "mes": 9,
+    "formato": "DOCX",
+    "archivo": "infoinve-suiza-2026-09.docx",
+    "revision": 0,
+    "nombre_original": "INFOINVE Suiza septiembre de 2026.docx"
+  },
+  {
+    "pais": "Tailandia",
+    "anio": 2026,
+    "mes": 3,
+    "formato": "DOCX",
+    "archivo": "infoinve-tailandia-2026-03.docx",
+    "revision": 0,
+    "nombre_original": "INFOINVE Tailandia marzo de 2026.docx"
+  },
+  {
+    "pais": "Tailandia",
+    "anio": 2026,
+    "mes": 3,
+    "formato": "PDF",
+    "archivo": "infoinve-tailandia-2026-03.pdf",
+    "revision": 0,
+    "nombre_original": "INFOINVE Tailandia marzo de 2026.pdf"
+  },
+  {
+    "pais": "Turquia",
+    "anio": 2026,
+    "mes": 3,
+    "formato": "DOCX",
+    "archivo": "infoinve-turquia-2026-03.docx",
+    "revision": 0,
+    "nombre_original": "INFOINVE Turquía marzo de 2026.docx"
+  },
+  {
+    "pais": "UE",
+    "anio": 2026,
+    "mes": 1,
+    "formato": "DOCX",
+    "archivo": "infoinve-ue-2026-01.docx",
+    "revision": 0,
+    "nombre_original": "INFOINVE UE enero de 2026.docx"
+  },
+  {
+    "pais": "UE",
+    "anio": 2026,
+    "mes": 3,
+    "formato": "DOCX",
+    "archivo": "infoinve-ue-2026-03.docx",
+    "revision": 0,
+    "nombre_original": "INFOINVE UE marzo de 2026.docx"
+  },
+  {
+    "pais": "UE",
+    "anio": 2026,
+    "mes": 5,
+    "formato": "DOCX",
+    "archivo": "infoinve-ue-2026-05.docx",
+    "revision": 0,
+    "nombre_original": "INFOINVE UE mayo de 2026.docx"
+  },
+  {
+    "pais": "Vietnam",
+    "anio": 2026,
+    "mes": 3,
+    "formato": "DOCX",
+    "archivo": "infoinve-vietnam-2026-03.docx",
+    "revision": 0,
+    "nombre_original": "INFOINVE Vietnam marzo de 2026.docx"
+  },
+  {
+    "pais": "Vietnam",
+    "anio": 2026,
+    "mes": 3,
+    "formato": "PDF",
+    "archivo": "infoinve-vietnam-2026-03.pdf",
+    "revision": 0,
+    "nombre_original": "INFOINVE Vietnam marzo de 2026.pdf"
+  }
+]
