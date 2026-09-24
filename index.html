@@ -419,15 +419,15 @@ body:not(.auth-locked) .site-auth-gate{display:none}
 
 <div id="prospectoModal" class="investor-modal" aria-hidden="true"><div class="investor-shell" role="dialog" aria-modal="true" aria-labelledby="prospectoTitle"><div class="investor-modal-head"><div><div class="investor-kicker">Mapa de oportunidades</div><h2 id="prospectoTitle">Prospecto Inversores</h2><p>Explorá empresas con perfil de inversión extranjera por país de origen y actividad económica.</p></div><button id="closeProspecto" class="investor-close" type="button" aria-label="Cerrar">×</button></div><div class="investor-modal-body">
 <div class="investor-panel">
-  <div class="investor-heading"><div><h3>¿Quiénes invierten en el mundo?</h3><p>Seleccioná cualquier país registrado por el BCRA y uno de sus sectores económicos, y luego presioná Buscar.</p></div></div>
+  <div class="investor-heading"><div><h3>¿Quiénes invierten en el mundo?</h3><p>Explorá compañías de los países con mayor presencia inversora según el BCRA, clasificadas con los sectores económicos de Orbis (NACE Rev. 2).</p></div></div>
   <div class="investor-filters"><div class="investor-filter"><label for="investorCountry">País</label><select id="investorCountry"><option value="">Seleccionar país</option></select></div><div class="investor-filter"><label for="investorSector">Sector</label><select id="investorSector"><option value="">Seleccionar sector</option></select></div><button id="investorSearch" class="investor-search" type="button">Buscar</button></div>
 </div>
-<div class="investor-summary"><div id="investorCount" class="investor-count">5</div><div><h4 id="investorResultTitle">Seleccioná país y sector</h4><span id="investorUpdated">Los resultados se mostrarán al buscar.</span></div></div>
+<div class="investor-summary"><div id="investorCount" class="investor-count">0</div><div><h4 id="investorResultTitle">Seleccioná país y sector</h4><span id="investorUpdated">Los resultados se mostrarán al buscar.</span></div></div>
 <div id="investorList" class="investor-list" aria-live="polite"></div>
 <div id="investorMethod" class="investor-method"></div>
 </div></div></div>
 
-<section id="anuncios"><div class="title"><h3>Principales anuncios de inversión en Argentina</h3>
+<section id="anuncios"><div class="title"><h3>Anuncios Destacados en la Prensa</h3>
 <p>Hasta cinco mayores anuncios identificados por país durante 2022–2026, ordenados por monto anunciado.</p></div>
 <div class="tools" style="margin-top:0"><div class="field" style="min-width:320px"><label>País</label><select id="paisann"></select></div>
 <div class="source">Fuentes: prensa, compañías y organismos oficiales</div></div>
@@ -514,26 +514,28 @@ per.addEventListener('change',update);document.getElementById('topn').addEventLi
  if(!source||!country||!sector||!list)return;
  const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  const modal=document.getElementById('prospectoModal'),open=document.getElementById('openProspecto'),close=document.getElementById('closeProspecto'),search=document.getElementById('investorSearch'),count=document.getElementById('investorCount');
- const bcra=window.DATOS_BCRA||{};
- const countries=Object.keys(bcra.pie_paises_2026T1||{}).filter(x=>x!=='Sin Clasificar').sort((a,b)=>a.localeCompare(b,'es'));
- const latest=bcra.meta?.ultimo;
- const sectors=[...new Set((bcra.sectores||[]).filter(x=>x[0]===latest).map(x=>x[1]))].sort((a,b)=>a.localeCompare(b,'es'));
+ const countries=[...new Set(source.datos.map(x=>x.pais))].sort((a,b)=>a.localeCompare(b,'es'));
  countries.forEach(x=>country.add(new Option(x,x)));
- sectors.forEach(x=>sector.add(new Option(x,x)));
- const countryAliases={'Estados Unidos De América':'Estados Unidos'};
- const sectorAliases={'Explotación de minas y canteras':'Minería','Suministro de electricidad, gas, vapor y aire acondicionado':'Energía','Información y comunicaciones':'Tecnología','Industria manufacturera':'Automotriz'};
+ function updateSectors(){
+   const selected=country.value;
+   const available=[...new Set(source.datos.filter(x=>!selected||x.pais===selected).map(x=>x.sector))];
+   const ordered=(source.sectores||[]).filter(x=>available.includes(x));
+   sector.innerHTML='<option value="">Seleccionar sector Orbis</option>';
+   ordered.forEach(x=>sector.add(new Option(x,x)));
+ }
+ updateSectors();
  function render(){
    if(!country.value||!sector.value){title.textContent='Completá ambos campos';count.textContent='0';list.innerHTML='<div class="card empty">Seleccioná un país y un sector económico antes de buscar.</div>';return}
-   const selectedCountry=countryAliases[country.value]||country.value,selectedSector=sectorAliases[sector.value]||sector.value;
-   const selection=source.datos.find(x=>x.pais===selectedCountry&&x.sector===selectedSector);
-   title.textContent=selection?`Top 5 · ${selection.pais} en ${selection.sector}`:'Sin resultados para esta combinación';
+   const selection=source.datos.find(x=>x.pais===country.value&&x.sector===sector.value);
+   title.textContent=selection?`${selection.empresas.length} ${selection.empresas.length===1?'empresa':'empresas'} · ${selection.pais} en ${selection.sector}`:'Sin resultados para esta combinación';
    count.textContent=selection?selection.empresas.length:'0';
    document.getElementById('investorUpdated').textContent=`Actualizado: ${source.actualizado}`;
-   document.getElementById('investorMethod').innerHTML=`<b>Nota metodológica:</b> ${esc(source.metodologia)} Fuentes: perfiles y sitios corporativos enlazados en cada ficha.`;
-   list.innerHTML=selection?selection.empresas.slice(0,5).map((x,i)=>`<article class="investor-card"><div class="investor-rank"><div class="investor-logo" aria-hidden="true">${esc(x.sigla)}</div><div class="investor-number">0${i+1}</div></div><h5>${esc(x.nombre)}</h5><div class="investor-tag">${esc(x.especialidad)}</div><p>${esc(x.descripcion)}</p><div class="investor-presence"><b>Presencia internacional:</b> ${esc(x.presencia)}</div><a href="${esc(x.url)}" target="_blank" rel="noopener">Ver perfil corporativo →</a></article>`).join(''):'<div class="card empty">Todavía no hay cinco empresas verificadas para esta combinación. La selección editorial se ampliará sin completar resultados con información no validada.</div>';
+   document.getElementById('investorMethod').innerHTML=`<b>Clasificación:</b> ${esc(source.clasificacion)}. <b>Nota metodológica:</b> ${esc(source.metodologia)} Fuentes: perfiles y sitios corporativos enlazados en cada ficha.`;
+   list.innerHTML=selection?selection.empresas.slice(0,5).map((x,i)=>`<article class="investor-card"><div class="investor-rank"><div class="investor-logo" aria-hidden="true">${esc(x.sigla)}</div><div class="investor-number">0${i+1}</div></div><h5>${esc(x.nombre)}</h5><div class="investor-tag">${esc(x.especialidad)}</div><p>${esc(x.descripcion)}</p><div class="investor-presence"><b>Presencia internacional:</b> ${esc(x.presencia)}</div><a href="${esc(x.url)}" target="_blank" rel="noopener">Ver perfil corporativo →</a></article>`).join(''):'<div class="card empty">Todavía no hay empresas verificadas para esta combinación. La selección editorial se ampliará sin completar resultados con información no validada.</div>';
  }
  function show(){modal.classList.add('open');modal.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';country.focus()}
  function hide(){modal.classList.remove('open');modal.setAttribute('aria-hidden','true');document.body.style.overflow=''}
+ country.addEventListener('change',()=>{updateSectors();title.textContent='Seleccioná un sector';count.textContent='0';list.innerHTML=''});
  open?.addEventListener('click',show);close?.addEventListener('click',hide);search?.addEventListener('click',render);
  modal?.addEventListener('click',e=>{if(e.target===modal)hide()});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&modal.classList.contains('open'))hide()});
 })();
