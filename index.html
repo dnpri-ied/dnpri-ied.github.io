@@ -10,6 +10,7 @@
 <script src="prensa_destacada.js"></script>
 <script src="datos_rigi.js"></script>
 <script src="datos_inversores.js"></script>
+<link rel="stylesheet" href="ficha-empresa.css">
 <style>
 :root{--n:#0b1f3a;--b:#163f73;--bg:#f5f7fb;--tx:#172033;--mu:#667085;--bd:#e4e7ec;--g:#027a48;--r:#b42318}
 *{box-sizing:border-box}body{margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--tx)}
@@ -396,6 +397,7 @@ body:not(.auth-locked) .site-auth-gate{display:none}
   <div class="header-actions">
   <button id="openRigi" type="button" class="rigi-hero-btn header-action-btn"><span>Proyectos RIGI</span></button>
   <button id="openFichaPais" type="button" class="ficha-pais-btn header-action-btn"><span>Ficha País</span></button>
+  <button id="openFichaEmpresa" type="button" class="ficha-pais-btn header-action-btn"><span>Ficha Empresa</span></button>
   <button id="openInfoinve" type="button" class="infoinve-download-btn header-action-btn"><span>INFOINVE</span></button>
   <button id="openProspecto" type="button" class="infoinve-download-btn prospecto-btn header-action-btn"><span>Prospectos Inversores</span></button>
 </div>
@@ -1091,6 +1093,29 @@ per.addEventListener('change',update);document.getElementById('topn').addEventLi
   </div>
 </div>
 
+<div id="fichaEmpresaModal" class="fe-modal" aria-hidden="true">
+  <div class="fe-shell" role="dialog" aria-modal="true" aria-labelledby="feTitle">
+    <header class="fe-head"><div><span class="fe-kicker">DNPRI · Síntesis bilateral</span><h2 id="feTitle">Ficha Empresa</h2><p>Investigación documentada, edición y exportación institucional.</p></div><button id="closeFichaEmpresa" class="fe-close" type="button" aria-label="Cerrar">×</button></header>
+    <div class="fe-body">
+      <div id="feNotice" class="fe-notice" role="status" aria-live="polite"></div>
+      <form id="feGenerateForm" class="fe-generate">
+        <div class="fe-field"><label for="feCompany">Nombre de la empresa</label><input id="feCompany" name="company" required maxlength="160" autocomplete="organization" placeholder="Ej.: Siemens"></div>
+        <button id="feGenerate" class="fe-primary" type="submit">Generar ficha</button>
+      </form>
+      <nav class="fe-tabs" aria-label="Vistas de Ficha Empresa"><button type="button" class="active" data-fe-tab="editor">Editor</button><button type="button" data-fe-tab="history">Historial</button></nav>
+      <section id="feEditorView" class="fe-view">
+        <div id="feEmpty" class="fe-empty"><strong>Todavía no hay una ficha abierta.</strong><span>Ingresá una empresa o abrí un borrador desde el historial.</span></div>
+        <div id="feWorkspace" hidden>
+          <div class="fe-document-head"><div><span>Borrador editable</span><h3 id="feDocumentTitle"></h3></div><div class="fe-actions"><button id="feSave" type="button">Guardar borrador</button><button id="feRegenerate" type="button">Regenerar información</button><button id="feWord" type="button">Descargar Word</button><button id="fePdf" type="button">Descargar PDF</button></div></div>
+          <div id="feSections" class="fe-sections"></div>
+          <section class="fe-sources"><h3>Fuentes consultadas</h3><div id="feSources"></div></section>
+        </div>
+      </section>
+      <section id="feHistoryView" class="fe-view" hidden><div class="fe-history-wrap"><table><thead><tr><th>Empresa</th><th>Fecha</th><th>Usuario</th><th>Estado</th><th>Acciones</th></tr></thead><tbody id="feHistory"></tbody></table></div></section>
+    </div>
+  </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/html2pdf.js@0.10.2/dist/html2pdf.bundle.min.js"></script>
 
@@ -1403,4 +1428,5 @@ per.addEventListener('change',update);document.getElementById('topn').addEventLi
 })();
 </script>
 
+<script src="ficha-empresa.js"></script>
 </body></html>
