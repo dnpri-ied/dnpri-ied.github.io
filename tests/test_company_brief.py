@@ -21,6 +21,24 @@ def test_frontend_contract_and_no_server_secrets():
     assert 'OPENAI_API_KEY' not in html+js
     assert "['administrador','editor']" in js
 
+def test_generated_brief_opens_editor_and_photo_has_safe_fallback():
+    js=(ROOT/'ficha-empresa.js').read_text()
+    css=(ROOT/'ficha-empresa.css').read_text()
+    assert "current=normalizeBrief(data); data=current; showTab('editor')" in js
+    assert ".fe-modal [hidden]{display:none!important}" in css
+    assert "u.protocol==='https:'?u.href:''" in js
+    assert 'fe-photo-placeholder' in js
+    assert "image.onerror=()=>{frame.innerHTML=photoHtml('');}" in js
+
+def test_all_company_brief_response_fields_are_mapped_to_editor():
+    js=(ROOT/'ficha-empresa.js').read_text()
+    for field in ('photo_url','name','role','nationality','education','career','tenure_functions',
+                  'company_information','overview','projects'):
+        assert field in js
+    assert 'normalizeBrief' in js
+    assert 'company_profile' in js
+    assert 'presence_in_argentina' in js
+
 def test_backend_uses_master_and_libreoffice():
     app=(ROOT/'backend/app.py').read_text()
     assert "TEMPLATE=ROOT/'2026-09 Total Energies.docx'" in app
