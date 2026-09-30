@@ -42,11 +42,18 @@ Deno.serve(async req=>{
     }
     if(action==='export'){
       if(!['docx','pdf'].includes(body.format))return json({error:'Formato inválido.'},400);
-      const {data:b,error}=await client.from('fichas_empresa').select('*').eq('id',body.id).single();if(error)throw error;
+      let b:any;
+      if(body.brief?.id===body.id){
+        const edited=body.brief;
+        const payload={empresa:String(edited.company_name||'').slice(0,160),estado:'borrador',contenido:edited.content,fuentes:edited.sources||[],actualizado_en:new Date().toISOString()};
+        const saved=await client.from('fichas_empresa').update(payload).eq('id',body.id).select().single();if(saved.error)throw saved.error;b=saved.data;
+      }else{
+        const stored=await client.from('fichas_empresa').select('*').eq('id',body.id).single();if(stored.error)throw stored.error;b=stored.data;
+      }
       const renderer=Deno.env.get('DOCUMENT_RENDERER_URL'),secret=Deno.env.get('DOCUMENT_RENDERER_SECRET');
       if(!renderer||!secret)return json({error:'El servicio de documentos no está configurado.'},503);
       const response=await fetch(`${renderer}/render/${body.format}`,{method:'POST',headers:{'content-type':'application/json','x-render-secret':secret},body:JSON.stringify(normalize(b))});
-      if(!response.ok)throw new Error(`No se pudo generar el documento (${response.status}).`);
+      if(!response.ok){const detail=await response.text();throw new Error(`No se pudo generar el documento (${response.status})${detail?`: ${detail.slice(0,300)}`:''}.`);}
       const filename=`${slug(b.empresa)}-${new Date().toISOString().slice(0,10)}.${body.format}`,path=`${user.id}/${crypto.randomUUID()}-${filename}`;
       const bytes=await response.arrayBuffer();const mime=body.format==='pdf'?'application/pdf':'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
       const {error:uploadError}=await client.storage.from('fichas-empresa').upload(path,bytes,{contentType:mime});if(uploadError)throw uploadError;
@@ -63,8 +70,23 @@ function slug(s:string){return s.normalize('NFD').replace(/[\u0300-\u036f]/g,'')
 async function research(company:string){
   const key=Deno.env.get('OPENAI_API_KEY');if(!key)throw new Error('El servicio de investigación no está configurado.');
   const schema={type:'object',additionalProperties:false,required:['content','sources'],properties:{content:{type:'object',additionalProperties:false,required:['executive','company_information','argentina'],properties:{executive:{type:'object',additionalProperties:false,required:['photo_url','name','role','nationality','education','career','tenure_functions'],properties:Object.fromEntries(['photo_url','name','role','nationality','education','career','tenure_functions'].map(k=>[k,{type:'string'}]))},company_information:{type:'string'},argentina:{type:'object',additionalProperties:false,required:['overview','projects'],properties:{overview:{type:'string'},projects:{type:'array',items:{type:'object',additionalProperties:false,required:['title','description'],properties:{title:{type:'string'},description:{type:'string'}}}}}}}},sources:{type:'array',items:{type:'object',additionalProperties:false,required:['title','publisher','url','consulted_at'],properties:{title:{type:'string'},publisher:{type:'string'},url:{type:'string'},consulted_at:{type:'string'}}}}}};
-  const prompt=`Investigá y redactá en español una Ficha Empresa DNPRI sobre ${company}. Priorizá estrictamente: web oficial, Investor Relations, último Annual Report, estados financieros/presentaciones, comunicados oficiales y web oficial argentina. Sólo para vacíos de Argentina usá fuentes públicas confiables. No inventes ni infieras: escribí exactamente "${unavailable}" en todo dato ausente. Perfil: CEO/presidente por defecto, fotografía oficial, nombre, cargo, nacionalidad, formación, trayectoria, antigüedad y funciones. Empresa: denominación, origen, sede, fundación, descripción, segmentos, países, propiedad/accionistas, empleados, últimos ingresos, EBITDA, resultado neto, indicadores y estrategia, indicando ejercicio y moneda. Argentina: llegada, sociedades, actividades, activos, proyectos, inversiones, anuncios, desarrollo y RIGI. Proyectos principales numerados. Cada afirmación relevante debe estar respaldada por una entrada en sources con URL directa y fecha de consulta ${new Date().toISOString().slice(0,10)}. Evitá prensa si existe fuente primaria.`;
+  const prompt=`Investigá y redactá en español una Ficha Empresa DNPRI sobre ${company}. Priorizá estrictamente: web oficial, Investor Relations, último Annual Report, estados financieros/presentaciones, comunicados oficiales y web oficial argentina. Sólo para vacíos de Argentina usá fuentes públicas confiables. No inventes ni infieras: escribí exactamente "${unavailable}" en todo dato ausente. Perfil: CEO/presidente por defecto, fotografía oficial, nombre, cargo, nacionalidad, formación, trayectoria, antigüedad y funciones. Para photo_url buscá activamente en la biografía, sala de prensa o biblioteca multimedia del sitio oficial de la empresa y devolvé exclusivamente una URL HTTPS directa al archivo de imagen (no una página HTML, buscador ni URL de miniatura/proxy). Empresa: denominación, origen, sede, fundación, descripción, segmentos, países, propiedad/accionistas, empleados, últimos ingresos, EBITDA, resultado neto, indicadores y estrategia, indicando ejercicio y moneda. Argentina: llegada, sociedades, actividades, activos, proyectos, inversiones, anuncios, desarrollo y RIGI. Proyectos principales numerados. Cada afirmación relevante debe estar respaldada por una entrada en sources con URL directa y fecha de consulta ${new Date().toISOString().slice(0,10)}. Evitá prensa si existe fuente primaria.`;
   const response=await fetch('https://api.openai.com/v1/responses',{method:'POST',headers:{authorization:`Bearer ${key}`,'content-type':'application/json'},body:JSON.stringify({model:Deno.env.get('RESEARCH_MODEL')||'gpt-5.2',tools:[{type:'web_search'}],input:prompt,text:{format:{type:'json_schema',name:'company_brief',strict:true,schema}}})});
   if(!response.ok)throw new Error(`Falló la investigación (${response.status}).`);const result=await response.json();
-  const text=result.output?.flatMap((x:any)=>x.content||[]).find((x:any)=>x.type==='output_text')?.text;if(!text)throw new Error('La investigación no devolvió contenido.');return JSON.parse(text);
+  const text=result.output?.flatMap((x:any)=>x.content||[]).find((x:any)=>x.type==='output_text')?.text;if(!text)throw new Error('La investigación no devolvió contenido.');
+  const researched=JSON.parse(text),executive=researched.content?.executive;
+  if(executive)executive.photo_url=await normalizePhotoUrl(executive.photo_url);
+  return researched;
+}
+
+export async function normalizePhotoUrl(value:unknown,fetcher:typeof fetch=fetch):Promise<string>{
+  const candidate=String(value||'').trim().replace(/^['"`]|['"`]$/g,'');
+  let url:URL;try{url=new URL(candidate);}catch{return '';}
+  if(url.protocol!=='https:')return '';
+  try{
+    const response=await fetcher(url.href,{headers:{Accept:'image/*','User-Agent':'DNPRI company brief/1.0'},redirect:'follow'});
+    const type=(response.headers.get('content-type')||'').toLowerCase();
+    if(!response.ok||!type.startsWith('image/')){response.body?.cancel();return '';}
+    response.body?.cancel();return response.url.startsWith('https://')?response.url:url.href;
+  }catch{return '';}
 }

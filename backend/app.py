@@ -38,6 +38,23 @@ def replace_exact(root,old,new):
     for p in root.xpath('.//w:p',namespaces=NS):
         if paragraph_text(p)==old:set_paragraph(p,new)
 
+def append_sources(root,sources):
+    if not sources:return
+    body=root.find('.//w:body',NS);sect=body.find('w:sectPr',NS) if body is not None else None
+    if body is None:return
+    def add(text,bold=False):
+        p=etree.Element(W+'p');r=etree.SubElement(p,W+'r')
+        if bold:
+            props=etree.SubElement(r,W+'rPr');etree.SubElement(props,W+'b')
+        node=etree.SubElement(r,W+'t');node.text=text
+        body.insert(len(body)-1 if sect is not None else len(body),p)
+    add('Fuentes consultadas',True)
+    for source in sources:
+        label=str(source.get('title') or source.get('publisher') or 'Fuente')
+        url=str(source.get('url') or 'URL no disponible')
+        consulted=str(source.get('consulted_at') or 'Información no disponible')
+        add(f'{label} · consulta {consulted} · {url}')
+
 def download_photo(url:str)->bytes|None:
     if not url or not url.startswith('https://'):return None
     req=Request(url,headers={'User-Agent':'DNPRI document renderer/1.0'})
@@ -45,6 +62,10 @@ def download_photo(url:str)->bytes|None:
         raw=r.read(5_000_001)
     if len(raw)>5_000_000:return None
     image=Image.open(BytesIO(raw)).convert('RGB');out=BytesIO();image.thumbnail((1600,1600));image.save(out,'JPEG',quality=92);return out.getvalue()
+
+def placeholder_photo()->bytes:
+    image=Image.new('RGB',(800,960),'#eef2f6')
+    out=BytesIO();image.save(out,'JPEG',quality=90);return out.getvalue()
 
 def create_docx(brief:Brief)->bytes:
     if not TEMPLATE.is_file():raise HTTPException(500,'Master template is missing')
@@ -96,11 +117,11 @@ def create_docx(brief:Brief)->bytes:
     residual_prefixes=('Es una de las primeras iniciativas','El objetivo de este desarrollo','En tal sentido, directivos','Por otra parte, la división')
     for p in root.xpath('.//w:p',namespaces=NS):
         if paragraph_text(p).startswith(residual_prefixes):set_paragraph(p,'')
+    append_sources(root,brief.sources)
     files['word/document.xml']=etree.tostring(root,xml_declaration=True,encoding='UTF-8',standalone=True)
-    try:
-        photo=download_photo(str(executive.get('photo_url') or ''))
-        if photo and 'word/media/image2.jpeg' in files:files['word/media/image2.jpeg']=photo
-    except Exception:pass
+    try: photo=download_photo(str(executive.get('photo_url') or ''))
+    except Exception: photo=None
+    if 'word/media/image2.jpeg' in files:files['word/media/image2.jpeg']=photo or placeholder_photo()
     out=BytesIO()
     with zipfile.ZipFile(out,'w',zipfile.ZIP_DEFLATED) as dst:
         for name,data in files.items():dst.writestr(name,data)
@@ -114,7 +135,9 @@ def render(format:str,brief:Brief,x_render_secret:str|None=Header(None)):
     if format=='docx':return Response(docx,media_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
     with tempfile.TemporaryDirectory() as tmp:
         source=Path(tmp)/'ficha.docx';source.write_bytes(docx)
-        process=subprocess.run(['libreoffice','--headless','--convert-to','pdf','--outdir',tmp,str(source)],capture_output=True,timeout=90)
+        try: process=subprocess.run(['libreoffice','--headless','--convert-to','pdf','--outdir',tmp,str(source)],capture_output=True,timeout=90)
+        except FileNotFoundError: raise HTTPException(503,'El conversor PDF no está instalado en el servicio')
+        except subprocess.TimeoutExpired: raise HTTPException(504,'La conversión a PDF excedió el tiempo disponible')
         target=Path(tmp)/'ficha.pdf'
-        if process.returncode or not target.exists():raise HTTPException(500,'PDF conversion failed')
+        if process.returncode or not target.exists():raise HTTPException(500,f'Falló la conversión a PDF: {process.stderr.decode(errors="replace")[:300]}')
         return Response(target.read_bytes(),media_type='application/pdf')

@@ -1,8 +1,8 @@
 (() => {
   'use strict';
-  const URL = 'https://lrlioufcjzqbpeiigtxr.supabase.co';
+  const SUPABASE_URL = 'https://lrlioufcjzqbpeiigtxr.supabase.co';
   const KEY = 'sb_publishable_yiZ7cH1Ss8V5VL1tuYs38g_iN2zyKMb';
-  const db = window.supabase?.createClient(URL, KEY);
+  const db = window.supabase?.createClient(SUPABASE_URL, KEY);
   const $ = id => document.getElementById(id);
   const modal = $('fichaEmpresaModal');
   if (!modal || !db) return;
@@ -42,6 +42,17 @@
     if(error) throw new Error(error.context?.body ? await error.context.text() : error.message);
     if(data?.error) throw new Error(data.error);
     return data;
+  }
+  async function downloadExport(url,filename,format){
+    const response=await fetch(url,{credentials:'omit'});
+    if(!response.ok)throw new Error(`No se pudo descargar el archivo generado (HTTP ${response.status}).`);
+    const blob=await response.blob();
+    const header=new Uint8Array(await blob.slice(0,5).arrayBuffer());
+    const valid=format==='pdf'?String.fromCharCode(...header)==='%PDF-':header[0]===0x50&&header[1]===0x4b;
+    if(!blob.size||!valid)throw new Error(`El servicio devolvió un archivo ${format.toUpperCase()} inválido o vacío.`);
+    const objectUrl=URL.createObjectURL(blob),a=document.createElement('a');
+    a.href=objectUrl;a.download=filename;document.body.appendChild(a);a.click();a.remove();
+    setTimeout(()=>URL.revokeObjectURL(objectUrl),1000);
   }
   async function assertRole() {
     const {data:{user}}=await db.auth.getUser();
@@ -86,9 +97,20 @@
   async function generate(regenerate=false){
     try{await assertRole();if(regenerate&&!confirm('La regeneración puede reemplazar el contenido visible. ¿Deseás guardar primero tus cambios manuales? Seleccioná Cancelar para volver y guardarlos.'))return;busy(true);notice('Investigando fuentes corporativas oficiales. Esto puede demorar unos minutos…');const company=regenerate?current.company_name:$('feCompany').value.trim();if(!company)throw new Error('Ingresá el nombre de la empresa.');const data=await invoke('generate',{company,brief_id:regenerate?current.id:null});render(data.brief);notice('Ficha generada. Revisá y editá el contenido antes de descargar.');await loadHistory();}catch(e){notice(e.message||'No fue posible generar la ficha.',true);}finally{busy(false);}
   }
-  async function save(){try{busy(true);const data=await invoke('save',{brief:collect()});current=data.brief;notice('Borrador guardado correctamente.');await loadHistory();}catch(e){notice(e.message,true);}finally{busy(false);}}
+  async function persist(brief=collect()){const data=await invoke('save',{brief});current=normalizeBrief(data.brief);return current;}
+  async function save(){try{busy(true);await persist();notice('Borrador guardado correctamente.');await loadHistory();}catch(e){notice(`No se pudo guardar: ${e.message}`,true);}finally{busy(false);}}
   async function loadHistory(){try{const data=await invoke('history');$('feHistory').innerHTML=(data.briefs||[]).map(x=>`<tr><td>${escapeHtml(x.company_name)}</td><td>${new Date(x.updated_at).toLocaleString('es-AR')}</td><td>${escapeHtml(x.user_email)}</td><td><span class="fe-status">${escapeHtml(x.status)}</span></td><td><button data-open="${x.id}">Abrir/Editar</button> · <button data-download="${x.id}">Descargar</button></td></tr>`).join('')||'<tr><td colspan="5">No hay fichas generadas.</td></tr>';document.querySelectorAll('[data-open]').forEach(b=>b.onclick=async()=>{const d=await invoke('get',{id:b.dataset.open});render(d.brief);showTab('editor');});document.querySelectorAll('[data-download]').forEach(b=>b.onclick=()=>exportFile('docx',b.dataset.download));}catch(e){notice(e.message,true);}}
-  async function exportFile(format,id=current?.id){try{if(!id)return;busy(true);if(id===current?.id)await save();const result=await invoke('export',{id,format});const a=document.createElement('a');a.href=result.url;a.download=result.filename;a.rel='noopener';document.body.appendChild(a);a.click();a.remove();}catch(e){notice(e.message,true);}finally{busy(false);}}
+  async function exportFile(format,id=current?.id){
+    try{
+      if(!id)throw new Error('Abrí o generá una ficha antes de exportar.');
+      busy(true);notice(`Generando ${format.toUpperCase()}…`);
+      let brief;
+      if(id===current?.id){brief=collect();await persist(brief);}
+      const result=await invoke('export',{id,format,brief});
+      await downloadExport(result.url,result.filename,format);
+      notice(`${format.toUpperCase()} generado y descargado correctamente.`);
+    }catch(e){notice(`No se pudo exportar a ${format.toUpperCase()}: ${e.message||'error desconocido'}`,true);}finally{busy(false);}
+  }
   function showTab(name){document.querySelectorAll('[data-fe-tab]').forEach(b=>b.classList.toggle('active',b.dataset.feTab===name));$('feEditorView').hidden=name!=='editor';$('feHistoryView').hidden=name!=='history';if(name==='history')loadHistory();}
   $('openFichaEmpresa').onclick=async()=>{try{await assertRole();modal.classList.add('open');modal.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';$('feCompany').focus();loadHistory();}catch(e){alert(e.message);}};
   $('closeFichaEmpresa').onclick=()=>{modal.classList.remove('open');modal.setAttribute('aria-hidden','true');document.body.style.overflow='';};
